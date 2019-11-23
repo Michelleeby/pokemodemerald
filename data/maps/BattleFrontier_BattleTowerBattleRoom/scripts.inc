@@ -20,7 +20,7 @@ BattleFrontier_BattleTowerBattleRoom_EventScript_241B6C:: @ 8241B6C
 	setvar VAR_TEMP_0, 1
 	applymovement EVENT_OBJ_ID_PLAYER, BattleFrontier_BattleTowerBattleRoom_Movement_242179
 	waitmovement 0
-	setvar VAR_0x8004, 1
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_1
 	setvar VAR_0x8005, 2
 	special CallFrontierUtilFunc
 	compare VAR_RESULT, 0
@@ -30,21 +30,21 @@ BattleFrontier_BattleTowerBattleRoom_EventScript_241B6C:: @ 8241B6C
 	applymovement EVENT_OBJ_ID_PLAYER, BattleFrontier_BattleTowerBattleRoom_Movement_24217E
 	waitmovement 0
 	setvar VAR_TEMP_2, 1
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 6
 	setvar VAR_0x8006, 1
 	special CallFrontierUtilFunc
 	goto BattleFrontier_BattleTowerBattleRoom_EventScript_241C8F
 
 BattleFrontier_BattleTowerBattleRoom_EventScript_241BC3:: @ 8241BC3
-	setvar VAR_0x8004, 3
-	special sub_8161F74
+	setvar VAR_0x8004, BATTLE_TOWER_FUNC_CHOOSE_TRAINER
+	special CallBattleTowerFunc
 	addobject 1
 	applymovement 1, BattleFrontier_BattleTowerBattleRoom_Movement_242182
 	waitmovement 0
-	setvar VAR_0x8004, 7
+	setvar VAR_0x8004, BATTLE_TOWER_FUNC_7
 	setvar VAR_0x8005, 0
-	special sub_8161F74
+	special CallBattleTowerFunc
 	msgbox gStringVar4, MSGBOX_DEFAULT
 	waitmessage
 	call BattleFrontier_BattleTowerBattleRoom_EventScript_24210E
@@ -53,27 +53,27 @@ BattleFrontier_BattleTowerBattleRoom_EventScript_241BC3:: @ 8241BC3
 
 BattleFrontier_BattleTowerBattleRoom_EventScript_241C03:: @ 8241C03
 BattleFrontier_BattleTowerMultiBattleRoom_EventScript_241C03:: @ 8241C03
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 0
 	setvar VAR_0x8006, 4
 	special CallFrontierUtilFunc
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, BATTLE_TOWER_FUNC_2
 	setvar VAR_0x8005, 3
-	special sub_8161F74
+	special CallBattleTowerFunc
 	setvar VAR_0x8004, 3
-	special sub_813BF7C
+	special Script_TryGainNewFanFromCounter
 	goto BattleFrontier_BattleTowerBattleRoom_EventScript_2421B8
 
 BattleFrontier_BattleTowerBattleRoom_EventScript_241C2F:: @ 8241C2F
 	call BattleFrontier_BattleTowerBattleRoom_EventScript_241EBA
-	setvar VAR_0x8004, 4
-	special sub_8161F74
+	setvar VAR_0x8004, BATTLE_TOWER_FUNC_4
+	special CallBattleTowerFunc
 	switch VAR_RESULT
 	case 7, BattleFrontier_BattleTowerBattleRoom_EventScript_241DF6
 	applymovement 1, BattleFrontier_BattleTowerBattleRoom_Movement_242188
 	waitmovement 0
 	removeobject 1
-	setvar VAR_0x8004, 9
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_9
 	special CallFrontierUtilFunc
 	compare VAR_RESULT, 0
 	call_if_ne BattleFrontier_BattleTowerBattleRoom_EventScript_241EC3
@@ -87,42 +87,42 @@ BattleFrontier_BattleTowerBattleRoom_EventScript_241C2F:: @ 8241C2F
 	special HealPlayerParty
 
 BattleFrontier_BattleTowerBattleRoom_EventScript_241C8F:: @ 8241C8F
-	setvar VAR_0x8004, 9
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_9
 	special CallFrontierUtilFunc
 	copyvar VAR_TEMP_F, VAR_RESULT
 	compare VAR_RESULT, 0
 	goto_if_ne BattleFrontier_BattleTowerBattleRoom_EventScript_241F0A
-	setvar VAR_0x8004, 1
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_1
 	setvar VAR_0x8005, 2
 	special CallFrontierUtilFunc
 	call BattleFrontier_BattleTowerBattleRoom_EventScript_241E44
 	call BattleFrontier_BattleTowerBattleRoom_EventScript_23E8E0
 	compare VAR_RESULT, 1
 	goto_if_eq BattleFrontier_BattleTowerBattleRoom_EventScript_241D0A
-	multichoice 19, 4, 103, 1
+	multichoice 19, 4, MULTI_GO_ON_RECORD_REST_RETIRE, 1
 	switch VAR_RESULT
 	case 0, BattleFrontier_BattleTowerBattleRoom_EventScript_241DDC
 	case 1, BattleFrontier_BattleTowerBattleRoom_EventScript_241D40
 	case 2, BattleFrontier_BattleTowerBattleRoom_EventScript_241D7C
 	case 3, BattleFrontier_BattleTowerBattleRoom_EventScript_241DAA
-	case 127, BattleFrontier_BattleTowerBattleRoom_EventScript_241C8F
+	case MULTI_B_PRESSED, BattleFrontier_BattleTowerBattleRoom_EventScript_241C8F
 
 BattleFrontier_BattleTowerBattleRoom_EventScript_241D0A:: @ 8241D0A
-	multichoice 20, 6, 104, 1
+	multichoice 20, 6, MULTI_GO_ON_REST_RETIRE, 1
 	switch VAR_RESULT
 	case 0, BattleFrontier_BattleTowerBattleRoom_EventScript_241DDC
 	case 1, BattleFrontier_BattleTowerBattleRoom_EventScript_241D7C
 	case 2, BattleFrontier_BattleTowerBattleRoom_EventScript_241DAA
-	case 127, BattleFrontier_BattleTowerBattleRoom_EventScript_241C8F
+	case MULTI_B_PRESSED, BattleFrontier_BattleTowerBattleRoom_EventScript_241C8F
 
 BattleFrontier_BattleTowerBattleRoom_EventScript_241D40:: @ 8241D40
 	message BattleFrontier_BattleTowerBattleRoom_Text_2423A3
 	waitmessage
-	multichoicedefault 20, 8, 94, 1, 0
+	multichoicedefault 20, 8, MULTI_YESNO, 1, 0
 	switch VAR_RESULT
 	case 1, BattleFrontier_BattleTowerBattleRoom_EventScript_241C8F
 	case 0, BattleFrontier_BattleTowerBattleRoom_EventScript_241D72
-	case 127, BattleFrontier_BattleTowerBattleRoom_EventScript_241C8F
+	case MULTI_B_PRESSED, BattleFrontier_BattleTowerBattleRoom_EventScript_241C8F
 
 BattleFrontier_BattleTowerBattleRoom_EventScript_241D72:: @ 8241D72
 	call BattleFrontier_BattleTowerBattleRoom_EventScript_23E8B4
@@ -131,18 +131,18 @@ BattleFrontier_BattleTowerBattleRoom_EventScript_241D72:: @ 8241D72
 BattleFrontier_BattleTowerBattleRoom_EventScript_241D7C:: @ 8241D7C
 	msgbox BattleFrontier_BattleTowerBattleRoom_Text_2423FC, MSGBOX_YESNO
 	switch VAR_RESULT
-	case 0, BattleFrontier_BattleTowerBattleRoom_EventScript_241C8F
-	case 1, BattleFrontier_BattleTowerBattleRoom_EventScript_241E22
-	case 127, BattleFrontier_BattleTowerBattleRoom_EventScript_241C8F
+	case NO, BattleFrontier_BattleTowerBattleRoom_EventScript_241C8F
+	case YES, BattleFrontier_BattleTowerBattleRoom_EventScript_241E22
+	case MULTI_B_PRESSED, BattleFrontier_BattleTowerBattleRoom_EventScript_241C8F
 
 BattleFrontier_BattleTowerBattleRoom_EventScript_241DAA:: @ 8241DAA
 	message BattleFrontier_BattleTowerBattleRoom_Text_24244C
 	waitmessage
-	multichoicedefault 20, 8, 94, 1, 0
+	multichoicedefault 20, 8, MULTI_YESNO, 1, 0
 	switch VAR_RESULT
 	case 1, BattleFrontier_BattleTowerBattleRoom_EventScript_241C8F
 	case 0, BattleFrontier_BattleTowerBattleRoom_EventScript_24220E
-	case 127, BattleFrontier_BattleTowerBattleRoom_EventScript_241C8F
+	case MULTI_B_PRESSED, BattleFrontier_BattleTowerBattleRoom_EventScript_241C8F
 
 BattleFrontier_BattleTowerBattleRoom_EventScript_241DDC:: @ 8241DDC
 	closemessage
@@ -153,27 +153,27 @@ BattleFrontier_BattleTowerBattleRoom_EventScript_241DDC:: @ 8241DDC
 	goto BattleFrontier_BattleTowerBattleRoom_EventScript_241BC3
 
 BattleFrontier_BattleTowerBattleRoom_EventScript_241DF6:: @ 8241DF6
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 0
 	setvar VAR_0x8006, 3
 	special CallFrontierUtilFunc
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, BATTLE_TOWER_FUNC_2
 	setvar VAR_0x8005, 3
-	special sub_8161F74
+	special CallBattleTowerFunc
 	setvar VAR_0x8004, 3
-	special sub_813BF7C
+	special Script_TryGainNewFanFromCounter
 	goto BattleFrontier_BattleTowerBattleRoom_EventScript_2421B8
 
 BattleFrontier_BattleTowerBattleRoom_EventScript_241E22:: @ 8241E22
 	message BattleFrontier_BattleTowerBattleRoom_Text_242426
 	waitmessage
-	setvar VAR_0x8004, 6
+	setvar VAR_0x8004, BATTLE_TOWER_FUNC_SAVE
 	setvar VAR_0x8005, 2
-	special sub_8161F74
+	special CallBattleTowerFunc
 	playse SE_SAVE
 	waitse
 	fadescreen 1
-	setvar VAR_0x8004, 4
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_SOFT_RESET
 	special CallFrontierUtilFunc
 	end
 
@@ -223,14 +223,14 @@ BattleFrontier_BattleFactoryBattleRoom_EventScript_241EBA:: @ 8241EBA
 BattleFrontier_BattlePalaceBattleRoom_EventScript_241EBA:: @ 8241EBA
 BattleFrontier_BattleTowerBattleRoom2_EventScript_241EBA:: @ 8241EBA
 BattleFrontier_BattleTowerBattleRoom_EventScript_241EBA:: @ 8241EBA
-	setvar VAR_0x8004, 17
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_17
 	special CallFrontierUtilFunc
 	return
 
 BattleFrontier_BattleTowerBattleRoom_EventScript_241EC3:: @ 8241EC3
 	applymovement 3, BattleFrontier_BattleTowerBattleRoom_Movement_24219A
 	waitmovement 0
-	applymovement 3, BattleFrontier_BattleTowerBattleRoom_Movement_2725B6
+	applymovement 3, Common_Movement_WalkInPlaceLeft
 	waitmovement 0
 	playse SE_PIN
 	applymovement 2, Common_Movement_ExclamationMark
@@ -256,21 +256,21 @@ BattleFrontier_BattleTowerBattleRoom_EventScript_241F22:: @ 8241F22
 	call BattleFrontier_BattleTowerBattleRoom_EventScript_23E8E0
 	compare VAR_RESULT, 1
 	goto_if_eq BattleFrontier_BattleTowerBattleRoom_EventScript_241F79
-	multichoice 19, 4, 103, 1
+	multichoice 19, 4, MULTI_GO_ON_RECORD_REST_RETIRE, 1
 	switch VAR_RESULT
 	case 0, BattleFrontier_BattleTowerBattleRoom_EventScript_241FAF
 	case 1, BattleFrontier_BattleTowerBattleRoom_EventScript_241D40
 	case 2, BattleFrontier_BattleTowerBattleRoom_EventScript_241D7C
 	case 3, BattleFrontier_BattleTowerBattleRoom_EventScript_241DAA
-	case 127, BattleFrontier_BattleTowerBattleRoom_EventScript_241F22
+	case MULTI_B_PRESSED, BattleFrontier_BattleTowerBattleRoom_EventScript_241F22
 
 BattleFrontier_BattleTowerBattleRoom_EventScript_241F79:: @ 8241F79
-	multichoice 20, 6, 104, 1
+	multichoice 20, 6, MULTI_GO_ON_REST_RETIRE, 1
 	switch VAR_RESULT
 	case 0, BattleFrontier_BattleTowerBattleRoom_EventScript_241FAF
 	case 1, BattleFrontier_BattleTowerBattleRoom_EventScript_241D7C
 	case 2, BattleFrontier_BattleTowerBattleRoom_EventScript_241DAA
-	case 127, BattleFrontier_BattleTowerBattleRoom_EventScript_241F22
+	case MULTI_B_PRESSED, BattleFrontier_BattleTowerBattleRoom_EventScript_241F22
 
 BattleFrontier_BattleTowerBattleRoom_EventScript_241FAF:: @ 8241FAF
 	call BattleFrontier_BattleTowerBattleRoom_EventScript_242170
@@ -286,13 +286,13 @@ BattleFrontier_BattleTowerBattleRoom_EventScript_241FAF:: @ 8241FAF
 	case 2, BattleFrontier_BattleTowerBattleRoom_EventScript_242085
 	case 3, BattleFrontier_BattleTowerBattleRoom_EventScript_242029
 	case 4, BattleFrontier_BattleTowerBattleRoom_EventScript_2420B2
-	setvar VAR_0x8004, 1
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_1
 	setvar VAR_0x8005, 7
 	special CallFrontierUtilFunc
 	compare VAR_RESULT, 0
 	goto_if_ne BattleFrontier_BattleTowerBattleRoom_EventScript_242029
 	msgbox BattleFrontier_BattleTowerBattleRoom_Text_242579, MSGBOX_DEFAULT
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 7
 	special CallFrontierUtilFunc
 
@@ -305,7 +305,7 @@ BattleFrontier_BattleTowerBattleRoom_EventScript_242029:: @ 8242029
 
 BattleFrontier_BattleTowerBattleRoom_EventScript_242046:: @ 8242046
 	call BattleFrontier_BattleTowerBattleRoom_EventScript_241EBA
-	setvar VAR_0x8004, 12
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_GET_FACILITY_SYMBOLS
 	special CallFrontierUtilFunc
 	compare VAR_RESULT, 0
 	goto_if_ne BattleFrontier_BattleTowerBattleRoom_EventScript_241DF6
@@ -314,19 +314,19 @@ BattleFrontier_BattleTowerBattleRoom_EventScript_242046:: @ 8242046
 	message BattleFrontier_BattleTowerBattleRoom_Text_24270E
 	waitmessage
 	waitfanfare
-	setvar VAR_0x8004, 13
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_GIVE_FACILITY_SYMBOL
 	special CallFrontierUtilFunc
 	msgbox BattleFrontier_BattleTowerBattleRoom_Text_242744, MSGBOX_DEFAULT
 	goto BattleFrontier_BattleTowerBattleRoom_EventScript_241DF6
 
 BattleFrontier_BattleTowerBattleRoom_EventScript_242085:: @ 8242085
-	setvar VAR_0x8004, 1
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_1
 	setvar VAR_0x8005, 7
 	special CallFrontierUtilFunc
 	compare VAR_RESULT, 0
 	goto_if_ne BattleFrontier_BattleTowerBattleRoom_EventScript_2420B2
 	msgbox BattleFrontier_BattleTowerBattleRoom_Text_2427F9, MSGBOX_DEFAULT
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 7
 	special CallFrontierUtilFunc
 
@@ -339,7 +339,7 @@ BattleFrontier_BattleTowerBattleRoom_EventScript_2420B2:: @ 82420B2
 
 BattleFrontier_BattleTowerBattleRoom_EventScript_2420CF:: @ 82420CF
 	call BattleFrontier_BattleTowerBattleRoom_EventScript_241EBA
-	setvar VAR_0x8004, 12
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_GET_FACILITY_SYMBOLS
 	special CallFrontierUtilFunc
 	compare VAR_RESULT, 2
 	goto_if_eq BattleFrontier_BattleTowerBattleRoom_EventScript_241DF6
@@ -348,7 +348,7 @@ BattleFrontier_BattleTowerBattleRoom_EventScript_2420CF:: @ 82420CF
 	message BattleFrontier_BattleTowerBattleRoom_Text_242932
 	waitmessage
 	waitfanfare
-	setvar VAR_0x8004, 13
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_GIVE_FACILITY_SYMBOL
 	special CallFrontierUtilFunc
 	msgbox BattleFrontier_BattleTowerBattleRoom_Text_24295D, MSGBOX_DEFAULT
 	goto BattleFrontier_BattleTowerBattleRoom_EventScript_241DF6
@@ -357,7 +357,7 @@ BattleFrontier_BattleTowerBattleRoom2_EventScript_24210E:: @ 824210E
 BattleFrontier_BattleTowerBattleRoom_EventScript_24210E:: @ 824210E
 	closemessage
 	setvar VAR_TEMP_2, 0
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 6
 	setvar VAR_0x8006, 0
 	special CallFrontierUtilFunc
@@ -369,16 +369,16 @@ BattleFrontier_BattleTowerBattleRoom_EventScript_24210E:: @ 824210E
 	copyvar VAR_0x8004, VAR_FRONTIER_BATTLE_MODE
 	compare VAR_0x8004, 3
 	goto_if_eq BattleFrontier_BattleTowerBattleRoom_EventScript_24215A
-	setvar VAR_0x8004, 18
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_18
 	special CallFrontierUtilFunc
 	special HealPlayerParty
-	setvar VAR_0x8004, 21
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_21
 	special CallFrontierUtilFunc
 
 BattleFrontier_BattleTowerBattleRoom_EventScript_24215A:: @ 824215A
-	setvar VAR_0x8004, 15
-	special sub_8161F74
-	setvar VAR_0x8004, 1
+	setvar VAR_0x8004, BATTLE_TOWER_FUNC_15
+	special CallBattleTowerFunc
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_1
 	setvar VAR_0x8005, 5
 	special CallFrontierUtilFunc
 	return
@@ -389,7 +389,7 @@ BattleFrontier_BattleFactoryBattleRoom_EventScript_242170:: @ 8242170
 BattleFrontier_BattlePalaceBattleRoom_EventScript_242170:: @ 8242170
 BattleFrontier_BattlePyramidTop_EventScript_242170:: @ 8242170
 BattleFrontier_BattleTowerBattleRoom_EventScript_242170:: @ 8242170
-	setvar VAR_0x8004, 22
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_SET_BRAIN_OBJECT
 	special CallFrontierUtilFunc
 	return
 
@@ -506,8 +506,8 @@ BattleFrontier_BattleTowerBattleRoom_EventScript_2421F2:: @ 82421F2
 	end
 
 BattleFrontier_BattleTowerBattleRoom_EventScript_2421FC:: @ 82421FC
-	setvar VAR_0x8004, 13
-	special sub_8161F74
+	setvar VAR_0x8004, BATTLE_TOWER_FUNC_13
+	special CallBattleTowerFunc
 	warp MAP_BATTLE_FRONTIER_BATTLE_TOWER_LOBBY, 255, 18, 6
 	waitstate
 	end

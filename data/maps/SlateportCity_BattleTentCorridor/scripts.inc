@@ -12,10 +12,10 @@ SlateportCity_BattleTentCorridor_EventScript_208E3B:: @ 8208E3B
 	compare VAR_0x8006, 1
 	goto_if_ne SlateportCity_BattleTentCorridor_EventScript_208E56
 	setobjectxy 1, 2, 2
-	turnobject 1, 1
+	turnobject 1, DIR_SOUTH
 
 SlateportCity_BattleTentCorridor_EventScript_208E56:: @ 8208E56
-	turnobject EVENT_OBJ_ID_PLAYER, 2
+	turnobject EVENT_OBJ_ID_PLAYER, DIR_NORTH
 	end
 
 SlateportCity_BattleTentCorridor_MapScript2_208E5B: @ 8208E5B
@@ -44,7 +44,7 @@ SlateportCity_BattleTentCorridor_EventScript_208E65:: @ 8208E65
 SlateportCity_BattleTentCorridor_EventScript_208EB4:: @ 8208EB4
 	msgbox SlateportCity_BattleTentCorridor_Text_25AB96, MSGBOX_DEFAULT
 	closemessage
-	applymovement 1, Common_Movement_WalkInPlaceUp
+	applymovement 1, Common_Movement_WalkInPlaceFastestUp
 	waitmovement 0
 	opendoor 2, 1
 	waitdooranim
@@ -68,14 +68,14 @@ SlateportCity_BattleTentCorridor_EventScript_208EEE:: @ 8208EEE
 	special HealPlayerParty
 
 SlateportCity_BattleTentCorridor_EventScript_208F0D:: @ 8208F0D
-	setvar VAR_0x8004, 1
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_1
 	setvar VAR_0x8005, 2
 	special CallFrontierUtilFunc
 	compare VAR_RESULT, 1
 	call_if_eq SlateportCity_BattleTentCorridor_EventScript_209014
 	compare VAR_RESULT, 2
 	call_if_eq SlateportCity_BattleTentCorridor_EventScript_20901B
-	multichoice 20, 6, 104, 1
+	multichoice 20, 6, MULTI_GO_ON_REST_RETIRE, 1
 	switch VAR_RESULT
 	case 0, SlateportCity_BattleTentCorridor_EventScript_208FBB
 	case 1, SlateportCity_BattleTentCorridor_EventScript_208F5B
@@ -84,27 +84,27 @@ SlateportCity_BattleTentCorridor_EventScript_208F0D:: @ 8208F0D
 SlateportCity_BattleTentCorridor_EventScript_208F5B:: @ 8208F5B
 	msgbox SlateportCity_BattleTentCorridor_Text_25A350, MSGBOX_YESNO
 	switch VAR_RESULT
-	case 0, SlateportCity_BattleTentCorridor_EventScript_208F0D
-	case 1, SlateportCity_BattleTentCorridor_EventScript_209022
-	case 127, SlateportCity_BattleTentCorridor_EventScript_208F0D
+	case NO, SlateportCity_BattleTentCorridor_EventScript_208F0D
+	case YES, SlateportCity_BattleTentCorridor_EventScript_209022
+	case MULTI_B_PRESSED, SlateportCity_BattleTentCorridor_EventScript_208F0D
 
 SlateportCity_BattleTentCorridor_EventScript_208F89:: @ 8208F89
 	message SlateportCity_BattleTentCorridor_Text_25A37A
 	waitmessage
-	multichoicedefault 20, 8, 94, 1, 0
+	multichoicedefault 20, 8, MULTI_YESNO, 1, 0
 	switch VAR_RESULT
 	case 1, SlateportCity_BattleTentCorridor_EventScript_208F0D
 	case 0, SlateportCity_BattleTentCorridor_EventScript_209A1B
-	case 127, SlateportCity_BattleTentCorridor_EventScript_208F0D
+	case MULTI_B_PRESSED, SlateportCity_BattleTentCorridor_EventScript_208F0D
 
 SlateportCity_BattleTentCorridor_EventScript_208FBB:: @ 8208FBB
 	setvar VAR_0x8004, 8
 	special sub_81B9D08
 	msgbox SlateportCity_BattleTentCorridor_Text_25AB2E, MSGBOX_YESNO
 	switch VAR_RESULT
-	case 0, SlateportCity_BattleTentCorridor_EventScript_208EB4
-	case 1, SlateportCity_BattleTentCorridor_EventScript_208FF1
-	case 127, SlateportCity_BattleTentCorridor_EventScript_208EB4
+	case NO, SlateportCity_BattleTentCorridor_EventScript_208EB4
+	case YES, SlateportCity_BattleTentCorridor_EventScript_208FF1
+	case MULTI_B_PRESSED, SlateportCity_BattleTentCorridor_EventScript_208EB4
 
 SlateportCity_BattleTentCorridor_EventScript_208FF1:: @ 8208FF1
 	fadescreen 1
@@ -135,7 +135,7 @@ SlateportCity_BattleTentCorridor_EventScript_209022:: @ 8209022
 	playse SE_SAVE
 	waitse
 	fadescreen 1
-	setvar VAR_0x8004, 4
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_SOFT_RESET
 	special CallFrontierUtilFunc
 	end
 

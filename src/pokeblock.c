@@ -1,9 +1,8 @@
 #include "global.h"
-#include "alloc.h"
+#include "malloc.h"
 #include "battle.h"
 #include "battle_controllers.h"
 #include "battle_message.h"
-#include "berry.h"
 #include "bg.h"
 #include "decompress.h"
 #include "event_data.h"
@@ -30,6 +29,7 @@
 #include "task.h"
 #include "text.h"
 #include "text_window.h"
+#include "constants/berry.h"
 #include "constants/items.h"
 #include "constants/songs.h"
 #include "constants/rgb.h"
@@ -462,7 +462,7 @@ void OpenPokeblockCase(u8 caseId, void (*callback)(void))
 
 void OpenPokeblockCaseInBattle(void)
 {
-    OpenPokeblockCase(PBLOCK_CASE_BATTLE, SetCB2ToReshowScreenAfterMenu2);
+    OpenPokeblockCase(PBLOCK_CASE_BATTLE, CB2_SetUpReshowBattleScreenAfterMenu2);
 }
 
 void OpenPokeblockCaseOnFeeder(void)

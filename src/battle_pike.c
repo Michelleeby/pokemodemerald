@@ -9,7 +9,7 @@
 #include "task.h"
 #include "battle_tower.h"
 #include "party_menu.h"
-#include "alloc.h"
+#include "malloc.h"
 #include "palette.h"
 #include "script.h"
 #include "battle_setup.h"
@@ -22,20 +22,8 @@
 #include "constants/trainers.h"
 #include "constants/species.h"
 #include "constants/moves.h"
-
-#define PIKE_ROOM_SINGLE_BATTLE 0
-#define PIKE_ROOM_HEAL_FULL 1
-#define PIKE_ROOM_NPC 2
-#define PIKE_ROOM_STATUS 3
-#define PIKE_ROOM_HEAL_PART 4
-#define PIKE_ROOM_WILD_MONS 5
-#define PIKE_ROOM_HARD_BATTLE 6
-#define PIKE_ROOM_DOUBLE_BATTLE 7
-#define PIKE_ROOM_BRAIN 8
-
-// For the room with a status effect.
-#define PIKE_STATUS_KIRLIA 0
-#define PIKE_STATUS_DUSCLOPS 1
+#include "constants/party_menu.h"
+#include "constants/battle_pike.h"
 
 struct PikeRoomNPC
 {
@@ -49,15 +37,15 @@ struct PikeWildMon
 {
     u16 species;
     u8 levelDelta;
-    u16 moves[4];
+    u16 moves[MAX_MON_MOVES];
 };
 
 // IWRAM bss
-static IWRAM_DATA u8 sRoomType;
-static IWRAM_DATA u8 sStatusMon;
-static IWRAM_DATA bool8 sUnknown_0300128E;
-static IWRAM_DATA u32 sStatusFlags;
-static IWRAM_DATA u8 sNpcId;
+static u8 sRoomType;
+static u8 sStatusMon;
+static bool8 sUnknown_0300128E;
+static u32 sStatusFlags;
+static u8 sNpcId;
 
 // This file's functions.
 static void SetRoomType(void);
@@ -935,7 +923,7 @@ static bool8 TryInflictRandomStatus(void)
             for (i = 0; i < 3; i++)
             {
                 mon = &gPlayerParty[indices[i]];
-                if (pokemon_ailments_get_primary(GetMonData(mon, MON_DATA_STATUS)) == 0
+                if (GetAilmentFromStatus(GetMonData(mon, MON_DATA_STATUS)) == AILMENT_NONE
                     && GetMonData(mon, MON_DATA_HP) != 0)
                 {
                     j++;
@@ -977,7 +965,7 @@ static bool8 TryInflictRandomStatus(void)
     for (i = 0; i < 3; i++)
     {
         mon = &gPlayerParty[indices[i]];
-        if (pokemon_ailments_get_primary(GetMonData(mon, MON_DATA_STATUS)) == 0
+        if (GetAilmentFromStatus(GetMonData(mon, MON_DATA_STATUS)) == AILMENT_NONE
             && GetMonData(mon, MON_DATA_HP) != 0)
         {
             j++;
@@ -1009,7 +997,7 @@ static bool8 AtLeastOneHealthyMon(void)
     for (i = 0; i < 3; i++)
     {
         struct Pokemon *mon = &gPlayerParty[i];
-        if (pokemon_ailments_get_primary(GetMonData(mon, MON_DATA_STATUS)) == 0
+        if (GetAilmentFromStatus(GetMonData(mon, MON_DATA_STATUS)) == AILMENT_NONE
             && GetMonData(mon, MON_DATA_HP) != 0)
         {
             healthyMonsCount++;
@@ -1298,7 +1286,7 @@ static void TryHealMons(u8 healCount)
         {
             canBeHealed = TRUE;
         }
-        else if (pokemon_ailments_get_primary(GetMonData(mon, MON_DATA_STATUS)) != 0)
+        else if (GetAilmentFromStatus(GetMonData(mon, MON_DATA_STATUS)) != AILMENT_NONE)
         {
             canBeHealed = TRUE;
         }
@@ -1569,7 +1557,7 @@ static void CanAnyPartyMonsBeHealed(void)
         struct Pokemon *mon = &gPlayerParty[i];
         u16 curr = GetMonData(mon, MON_DATA_HP);
         u16 max = GetMonData(mon, MON_DATA_MAX_HP);
-        if (curr >= max && pokemon_ailments_get_primary(GetMonData(mon, MON_DATA_STATUS)) == 0)
+        if (curr >= max && GetAilmentFromStatus(GetMonData(mon, MON_DATA_STATUS)) == AILMENT_NONE)
         {
             u8 ppBonuses = GetMonData(mon, MON_DATA_PP_BONUSES);
             for (j = 0; j < MAX_MON_MOVES; j++)

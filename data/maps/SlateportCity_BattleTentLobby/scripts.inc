@@ -9,7 +9,7 @@ SlateportCity_BattleTentLobby_MapScript2_20873B: @ 820873B
 
 SlateportCity_BattleTentLobby_EventScript_208745:: @ 8208745
 	setvar VAR_TEMP_1, 1
-	turnobject EVENT_OBJ_ID_PLAYER, 2
+	turnobject EVENT_OBJ_ID_PLAYER, DIR_NORTH
 	end
 
 SlateportCity_BattleTentLobby_MapScript2_20874F: @ 820874F
@@ -21,7 +21,7 @@ SlateportCity_BattleTentLobby_MapScript2_20874F: @ 820874F
 	.2byte 0
 
 SlateportCity_BattleTentLobby_EventScript_208779:: @ 8208779
-	setvar VAR_0x8004, 0
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_0
 	special CallFrontierUtilFunc
 	end
 
@@ -29,12 +29,12 @@ SlateportCity_BattleTentLobby_EventScript_208782:: @ 8208782
 	lockall
 	msgbox SlateportCity_BattleTentLobby_Text_2C5DFA, MSGBOX_DEFAULT
 	closemessage
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 0
 	setvar VAR_0x8006, 0
 	special CallFrontierUtilFunc
 	setvar VAR_TEMP_0, 255
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 1
 	setvar VAR_0x8006, 0
 	special CallFrontierUtilFunc
@@ -47,7 +47,7 @@ SlateportCity_BattleTentLobby_EventScript_2087B7:: @ 82087B7
 	waitmessage
 	setvar VAR_0x8004, 4
 	special sub_81B9D08
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 1
 	setvar VAR_0x8006, 0
 	special CallFrontierUtilFunc
@@ -63,7 +63,7 @@ SlateportCity_BattleTentLobby_EventScript_2087E9:: @ 82087E9
 	special sub_81B9D08
 	switch VAR_RESULT
 	case 0, SlateportCity_BattleTentLobby_EventScript_20882A
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 0
 	setvar VAR_0x8006, 0
 	special CallFrontierUtilFunc
@@ -81,7 +81,7 @@ SlateportCity_BattleTentLobby_EventScript_208837:: @ 8208837
 	lockall
 	message SlateportCity_BattleTentLobby_Text_2C5BA2
 	waitmessage
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 1
 	setvar VAR_0x8006, 0
 	special CallFrontierUtilFunc
@@ -107,7 +107,7 @@ SlateportCity_BattleTentLobby_EventScript_208871:: @ 8208871
 	special sub_81B9D08
 	playse SE_SAVE
 	waitse
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 3
 	setvar VAR_0x8006, 0
 	special CallFrontierUtilFunc
@@ -128,38 +128,38 @@ SlateportCity_BattleTentLobby_EventScript_2088AA:: @ 82088AA
 SlateportCity_BattleTentLobby_EventScript_2088CA:: @ 82088CA
 	message SlateportCity_BattleTentLobby_Text_2C586A
 	waitmessage
-	multichoice 17, 6, 23, 0
+	multichoice 17, 6, MULTI_CHALLENGEINFO, 0
 	switch VAR_RESULT
 	case 0, SlateportCity_BattleTentLobby_EventScript_208906
 	case 1, SlateportCity_BattleTentLobby_EventScript_208A07
 	case 2, SlateportCity_BattleTentLobby_EventScript_208A2E
-	case 127, SlateportCity_BattleTentLobby_EventScript_208A2E
+	case MULTI_B_PRESSED, SlateportCity_BattleTentLobby_EventScript_208A2E
 
 SlateportCity_BattleTentLobby_EventScript_208906:: @ 8208906
 	setvar VAR_FRONTIER_FACILITY, 4
 	setvar VAR_FRONTIER_BATTLE_MODE, 0
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 1
 	setvar VAR_0x8006, 2
 	special CallFrontierUtilFunc
 	msgbox SlateportCity_BattleTentLobby_Text_2C5B06, MSGBOX_YESNO
 	switch VAR_RESULT
-	case 0, SlateportCity_BattleTentLobby_EventScript_208A2B
-	case 1, SlateportCity_BattleTentLobby_EventScript_208950
-	case 127, SlateportCity_BattleTentLobby_EventScript_208A2B
+	case NO, SlateportCity_BattleTentLobby_EventScript_208A2B
+	case YES, SlateportCity_BattleTentLobby_EventScript_208950
+	case MULTI_B_PRESSED, SlateportCity_BattleTentLobby_EventScript_208A2B
 
 SlateportCity_BattleTentLobby_EventScript_208950:: @ 8208950
 	setvar VAR_TEMP_0, 0
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 4
 	special CallFrontierUtilFunc
 	setvar VAR_0x8004, 0
 	special sub_81B9D08
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 0
 	setvar VAR_0x8006, 1
 	special CallFrontierUtilFunc
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 3
 	setvar VAR_0x8006, 0
 	special CallFrontierUtilFunc
@@ -221,7 +221,7 @@ SlateportCity_BattleTentLobby_EventScript_208A07:: @ 8208A07
 	goto SlateportCity_BattleTentLobby_EventScript_2088CA
 
 SlateportCity_BattleTentLobby_EventScript_208A14:: @ 8208A14
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 0
 	setvar VAR_0x8006, 0
 	special CallFrontierUtilFunc
@@ -281,7 +281,7 @@ SlateportCity_BattleTentLobby_EventScript_208A99:: @ 8208A99
 SlateportCity_BattleTentLobby_EventScript_208AA8:: @ 8208AA8
 	message SlateportCity_BattleTentLobby_Text_259743
 	waitmessage
-	multichoice 17, 0, 111, 0
+	multichoice 17, 0, MULTI_SLATEPORT_TENT_RULES, 0
 	switch VAR_RESULT
 	case 0, SlateportCity_BattleTentLobby_EventScript_208B06
 	case 1, SlateportCity_BattleTentLobby_EventScript_208B14
@@ -289,7 +289,7 @@ SlateportCity_BattleTentLobby_EventScript_208AA8:: @ 8208AA8
 	case 3, SlateportCity_BattleTentLobby_EventScript_208B30
 	case 4, SlateportCity_BattleTentLobby_EventScript_208B3E
 	case 5, SlateportCity_BattleTentLobby_EventScript_208B4C
-	case 127, SlateportCity_BattleTentLobby_EventScript_208B4C
+	case MULTI_B_PRESSED, SlateportCity_BattleTentLobby_EventScript_208B4C
 	end
 
 SlateportCity_BattleTentLobby_EventScript_208B06:: @ 8208B06

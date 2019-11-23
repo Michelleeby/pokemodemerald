@@ -9,7 +9,7 @@
 #include "field_weather.h"
 #include "gpu_regs.h"
 #include "main.h"
-#include "alloc.h"
+#include "malloc.h"
 #include "overworld.h"
 #include "palette.h"
 #include "random.h"
@@ -262,10 +262,10 @@ static bool8 sub_814842C(struct Sprite *sprite);
 static bool8 sub_8148458(struct Sprite *sprite);
 
 // iwram bss vars
-IWRAM_DATA static s16 sUnusedRectangularSpiralVar;
-IWRAM_DATA static u8 sTestingTransitionId;
-IWRAM_DATA static u8 sTestingTransitionState;
-IWRAM_DATA static struct StructRectangularSpiral sRectangularSpiralTransition[4];
+static s16 sUnusedRectangularSpiralVar;
+static u8 sTestingTransitionId;
+static u8 sTestingTransitionState;
+static struct StructRectangularSpiral sRectangularSpiralTransition[4];
 
 // ewram vars
 EWRAM_DATA static struct TransitionData *sTransitionStructPtr = NULL;
@@ -1961,9 +1961,10 @@ static bool8 Phase2_Ripple_Func2(struct Task *task)
 
     for (i = 0; i < 160; i++, r4 += r8)
     {
-        // todo: fix the asm
         s16 var = r4 >> 8;
-        asm("");
+        
+        var++;
+        var--;
         gScanlineEffectRegBuffers[0][i] = sTransitionStructPtr->field_16 + Sin(var, r3);
     }
 

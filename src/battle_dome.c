@@ -8,7 +8,7 @@
 #include "event_data.h"
 #include "overworld.h"
 #include "util.h"
-#include "alloc.h"
+#include "malloc.h"
 #include "string_util.h"
 #include "random.h"
 #include "task.h"
@@ -1024,13 +1024,13 @@ static const union AnimCmd gUnknown_0860D020[] =
 
 static const union AnimCmd gUnknown_0860D028[] =
 {
-    ANIMCMD_FRAME(18, 129, .vFlip = TRUE),
+    ANIMCMD_FRAME(18, 1, .vFlip = TRUE),
     ANIMCMD_END,
  };
 
 static const union AnimCmd gUnknown_0860D030[] =
 {
-    ANIMCMD_FRAME(16, 65, .hFlip = TRUE),
+    ANIMCMD_FRAME(16, 1, .hFlip = TRUE),
     ANIMCMD_END,
 };
 
@@ -2330,7 +2330,7 @@ static void GetDomeData(void)
         }
         break;
     case 8:
-        sub_81B8558();
+        ClearSelectedPartyOrder();
         gSelectedOrderFromParty[0] = gSaveBlock2Ptr->frontier.field_CB0;
         gSelectedOrderFromParty[1] = gSaveBlock2Ptr->frontier.field_CB0 >> 8;
         break;
@@ -3414,7 +3414,7 @@ static void Task_ShowOpponentInfo(u8 taskId)
         LoadCompressedSpriteSheet(sDomeOptionsSpriteSheet);
         LoadCompressedPalette(gUnknown_08D85358, 0, 0x200);
         LoadCompressedPalette(gUnknown_08D85444, 0x100, 0x200);
-        LoadCompressedPalette(gUnknown_08D85600, 0xF0, 0x20);
+        LoadCompressedPalette(gBattleWindowTextPalette, 0xF0, 0x20);
         if (r9 == 2)
             LoadCompressedPalette(gUnknown_08D854C8, 0x50, 0x20);
         CpuFill32(0, gPlttBufferFaded, 0x400);
@@ -5574,7 +5574,7 @@ static void Task_ShowTourneyTree(u8 taskId)
         DecompressAndLoadBgGfxUsingHeap(3, gUnknown_08D83C3C, 0x2000, 0, 1);
         LoadCompressedPalette(gUnknown_08D85358, 0, 0x200);
         LoadCompressedPalette(gUnknown_08D85444, 0x100, 0x200);
-        LoadCompressedPalette(gUnknown_08D85600, 0xF0, 0x20);
+        LoadCompressedPalette(gBattleWindowTextPalette, 0xF0, 0x20);
         CpuFill32(0, gPlttBufferFaded, 0x400);
         ShowBg(0);
         ShowBg(1);

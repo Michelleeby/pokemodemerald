@@ -1,9 +1,9 @@
 	.include "src/decompress.o"
 	.include "src/main.o"
-	.include "src/window.o"
-	.include "src/text.o"
-	.include "src/sprite.o"
-	.include "src/string_util.o"
+	.include "gflib/window.o"
+	.include "gflib/text.o"
+	.include "gflib/sprite.o"
+	.include "gflib/string_util.o"
 	.include "src/link.o"
 	.include "src/link_rfu.o"
 	.include "src/union_room.o"
@@ -18,14 +18,7 @@
 	.include "src/berry_crush.o"
 	.include "src/berry_powder.o"
 	.include "src/dodrio_berry_picking.o"
-
-    @ pokemon_jump
-gUnknown_02022CFC: @ 2022CFC
-	.space 0x4
-
-gUnknown_02022D00: @ 2022D00
-	.space 0x4
-
+	.include "src/pokemon_jump.o"
 	.include "src/main_menu.o"
 	.include "src/battle_controllers.o"
 	.include "src/rom_8034C54.o"
@@ -136,7 +129,7 @@ gUnknown_02022D00: @ 2022D00
 	.include "src/match_call.o"
 	.include "src/menu.o"
 	.include "src/battle_factory_screen.o"
-	.include "src/mossdeep_gym.o"
+	.include "src/rotating_tile_puzzle.o"
 	.include "src/item_menu.o"
 	.include "src/list_menu.o"
 	.include "src/dynamic_placeholder_text_util.o"

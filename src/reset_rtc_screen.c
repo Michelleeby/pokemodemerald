@@ -142,7 +142,7 @@ static const union AnimCmd sSpriteAnim_85104CC[] =
 
 static const union AnimCmd sSpriteAnim_85104D4[] =
 {
-    ANIMCMD_FRAME(0, 158, .vFlip = TRUE),
+    ANIMCMD_FRAME(0, 30, .vFlip = TRUE),
     ANIMCMD_JUMP(0),
 };
 
@@ -300,19 +300,19 @@ static void PrintTime(u8 windowId, u8 x, u8 y, u16 days, u8 hours, u8 minutes, u
 {
     u8 *dest = gStringVar4;
 
-    ConvertIntToDecimalStringN(gStringVar1, days, 1, 4);
+    ConvertIntToDecimalStringN(gStringVar1, days, STR_CONV_MODE_RIGHT_ALIGN, 4);
     dest = StringCopy(dest, gStringVar1);
     dest = StringCopy(dest, gText_Day);
 
-    ConvertIntToDecimalStringN(gStringVar1, hours, 1, 3);
+    ConvertIntToDecimalStringN(gStringVar1, hours, STR_CONV_MODE_RIGHT_ALIGN, 3);
     dest = StringCopy(dest, gStringVar1);
     dest = StringCopy(dest, gText_Colon3);
 
-    ConvertIntToDecimalStringN(gStringVar1, minutes, 2, 2);
+    ConvertIntToDecimalStringN(gStringVar1, minutes, STR_CONV_MODE_LEADING_ZEROS, 2);
     dest = StringCopy(dest, gStringVar1);
     dest = StringCopy(dest, gText_Colon3);
 
-    ConvertIntToDecimalStringN(gStringVar1, seconds, 2, 2);
+    ConvertIntToDecimalStringN(gStringVar1, seconds, STR_CONV_MODE_LEADING_ZEROS, 2);
     dest = StringCopy(dest, gStringVar1);
 
     AddTextPrinterParameterized(windowId, 1, gStringVar4, x, y, TEXT_SPEED_FF, NULL);

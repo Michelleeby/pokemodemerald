@@ -16,7 +16,7 @@ BattleFrontier_BattlePyramidLobby_MapScript2_2497FB: @ 82497FB
 
 BattleFrontier_BattleDomeLobby_EventScript_249805:: @ 8249805
 	setvar VAR_TEMP_1, 1
-	turnobject EVENT_OBJ_ID_PLAYER, 2
+	turnobject EVENT_OBJ_ID_PLAYER, DIR_NORTH
 	end
 
 BattleFrontier_BattleDomeLobby_MapScript2_24980F: @ 824980F
@@ -28,7 +28,7 @@ BattleFrontier_BattleDomeLobby_MapScript2_24980F: @ 824980F
 	.2byte 0
 
 BattleFrontier_BattleDomeLobby_EventScript_249839:: @ 8249839
-	setvar VAR_0x8004, 0
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_0
 	special CallFrontierUtilFunc
 	end
 
@@ -48,7 +48,7 @@ BattleFrontier_BattleDomeLobby_EventScript_249842:: @ 8249842
 	setvar VAR_0x8005, 6
 	setvar VAR_0x8006, 1
 	special CallBattleDomeFunction
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 0
 	setvar VAR_0x8006, 0
 	special CallFrontierUtilFunc
@@ -59,9 +59,9 @@ BattleFrontier_BattleDomeLobby_EventScript_249842:: @ 8249842
 BattleFrontier_BattleDomeLobby_EventScript_24989B:: @ 824989B
 	call BattleFrontier_BattleDomeLobby_EventScript_241EBA
 	lockall
-	setvar VAR_0x8004, 10
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_IS_FRONTIER_BRAIN
 	special CallFrontierUtilFunc
-	compare VAR_RESULT, 1
+	compare VAR_RESULT, TRUE
 	goto_if_eq BattleFrontier_BattleDomeLobby_EventScript_2498C1
 	msgbox BattleFrontier_BattleDomeLobby_Text_24A4E9, MSGBOX_DEFAULT
 	goto BattleFrontier_BattleDomeLobby_EventScript_2498C9
@@ -71,16 +71,16 @@ BattleFrontier_BattleDomeLobby_EventScript_2498C1:: @ 82498C1
 
 BattleFrontier_BattleDomeLobby_EventScript_2498C9:: @ 82498C9
 	msgbox BattleFrontier_BattleDomeLobby_Text_24ADB1, MSGBOX_DEFAULT
-	setvar VAR_0x8004, 11
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_11
 	special CallFrontierUtilFunc
-	msgbox BattleFrontier_BattleDomeLobby_Text_241520, 9
+	msgbox BattleFrontier_Text_ObtainedXBattlePoints, MSGBOX_GETPOINTS
 	message BattleFrontier_BattleDomeLobby_Text_24A5D6
 	waitmessage
 	special LoadPlayerParty
-	setvar VAR_0x8004, 3
-	setvar VAR_0x8005, 3
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_LOAD_SELECTED_PARTY
+	setvar VAR_0x8005, FRONTIER_PARTY_SIZE
 	special CallFrontierUtilFunc
-	setvar VAR_0x8004, 8
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_8
 	special CallFrontierUtilFunc
 	setvar VAR_0x8004, 2
 	setvar VAR_0x8005, 6
@@ -104,10 +104,10 @@ BattleFrontier_BattleDomeLobby_EventScript_249940:: @ 8249940
 	message BattleFrontier_BattleDomeLobby_Text_24A5D6
 	waitmessage
 	special LoadPlayerParty
-	setvar VAR_0x8004, 3
-	setvar VAR_0x8005, 3
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_LOAD_SELECTED_PARTY
+	setvar VAR_0x8005, FRONTIER_PARTY_SIZE
 	special CallFrontierUtilFunc
-	setvar VAR_0x8004, 8
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_8
 	special CallFrontierUtilFunc
 	setvar VAR_0x8004, 2
 	setvar VAR_0x8005, 1
@@ -131,11 +131,11 @@ BattleFrontier_BattleDomeLobby_EventScript_249991:: @ 8249991
 	goto_if_eq BattleFrontier_BattleDomeLobby_EventScript_2499E9
 	message BattleFrontier_BattleDomeLobby_Text_24AE17
 	waitmessage
-	multichoicedefault 20, 8, 94, 1, 0
+	multichoicedefault 20, 8, MULTI_YESNO, 1, 0
 	switch VAR_RESULT
 	case 1, BattleFrontier_BattleDomeLobby_EventScript_2499E9
 	case 0, BattleFrontier_BattleDomeLobby_EventScript_2499E4
-	case 127, BattleFrontier_BattleDomeLobby_EventScript_2499E9
+	case MULTI_B_PRESSED, BattleFrontier_BattleDomeLobby_EventScript_2499E9
 
 BattleFrontier_BattleDomeLobby_EventScript_2499E4:: @ 82499E4
 	call BattleFrontier_BattleDomeLobby_EventScript_23E8B4
@@ -157,7 +157,7 @@ BattleFrontier_BattleDomeLobby_EventScript_2499F9:: @ 82499F9
 	special CallBattleDomeFunction
 	playse SE_SAVE
 	waitse
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 3
 	setvar VAR_0x8006, 0
 	special CallFrontierUtilFunc
@@ -193,25 +193,25 @@ BattleFrontier_BattleDomeLobby_EventScript_249A72:: @ 8249A72
 	compare VAR_FRONTIER_BATTLE_MODE, 1
 	call_if_eq BattleFrontier_BattleDomeLobby_EventScript_249D15
 	waitmessage
-	multichoice 17, 6, 23, 0
+	multichoice 17, 6, MULTI_CHALLENGEINFO, 0
 	switch VAR_RESULT
 	case 0, BattleFrontier_BattleDomeLobby_EventScript_249ABF
 	case 1, BattleFrontier_BattleDomeLobby_EventScript_249BFA
 	case 2, BattleFrontier_BattleDomeLobby_EventScript_249C64
-	case 127, BattleFrontier_BattleDomeLobby_EventScript_249C64
+	case MULTI_B_PRESSED, BattleFrontier_BattleDomeLobby_EventScript_249C64
 
 BattleFrontier_BattleDomeLobby_EventScript_249ABF:: @ 8249ABF
 	message BattleFrontier_BattleDomeLobby_Text_24A210
 	waitmessage
-	multichoice 17, 6, 24, 0
+	multichoice 17, 6, MULTI_LEVEL_MODE, 0
 	switch VAR_RESULT
 	case 2, BattleFrontier_BattleDomeLobby_EventScript_249C64
-	case 127, BattleFrontier_BattleDomeLobby_EventScript_249C64
-	setvar VAR_0x8004, 15
+	case MULTI_B_PRESSED, BattleFrontier_BattleDomeLobby_EventScript_249C64
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_15
 	special CallFrontierUtilFunc
 	compare VAR_0x8004, 1
 	goto_if_eq BattleFrontier_BattleDomeLobby_EventScript_249C15
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 1
 	copyvar VAR_0x8006, VAR_RESULT
 	special CallFrontierUtilFunc
@@ -226,22 +226,22 @@ BattleFrontier_BattleDomeLobby_EventScript_249ABF:: @ 8249ABF
 	goto_if_eq BattleFrontier_BattleDomeLobby_EventScript_249C61
 	msgbox BattleFrontier_BattleDomeLobby_Text_24A1C6, MSGBOX_YESNO
 	switch VAR_RESULT
-	case 0, BattleFrontier_BattleDomeLobby_EventScript_249C61
-	case 1, BattleFrontier_BattleDomeLobby_EventScript_249B60
-	case 127, BattleFrontier_BattleDomeLobby_EventScript_249C61
+	case NO, BattleFrontier_BattleDomeLobby_EventScript_249C61
+	case YES, BattleFrontier_BattleDomeLobby_EventScript_249B60
+	case MULTI_B_PRESSED, BattleFrontier_BattleDomeLobby_EventScript_249C61
 
 BattleFrontier_BattleDomeLobby_EventScript_249B60:: @ 8249B60
 	setvar VAR_TEMP_0, 0
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 4
 	special CallFrontierUtilFunc
 	setvar VAR_0x8004, 0
 	special CallBattleDomeFunction
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 0
 	setvar VAR_0x8006, 1
 	special CallFrontierUtilFunc
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 3
 	setvar VAR_0x8006, 0
 	special CallFrontierUtilFunc
@@ -257,8 +257,8 @@ BattleFrontier_BattleDomeLobby_EventScript_249B60:: @ 8249B60
 
 BattleFrontier_BattleDomeLobby_EventScript_249BC2:: @ 8249BC2
 	special SavePlayerParty
-	setvar VAR_0x8004, 3
-	setvar VAR_0x8005, 3
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_LOAD_SELECTED_PARTY
+	setvar VAR_0x8005, FRONTIER_PARTY_SIZE
 	special CallFrontierUtilFunc
 	setvar VAR_0x8004, 15
 	special CallBattleDomeFunction
@@ -292,7 +292,7 @@ BattleFrontier_BattleDomeLobby_EventScript_249C3D:: @ 8249C3D
 	goto BattleFrontier_BattleDomeLobby_EventScript_249C6C
 
 BattleFrontier_BattleDomeLobby_EventScript_249C4A:: @ 8249C4A
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 0
 	setvar VAR_0x8006, 0
 	special CallFrontierUtilFunc
@@ -410,7 +410,7 @@ BattleFrontier_BattleDomeLobby_Movement_249D4E: @ 8249D4E
 
 BattleFrontier_BattleDomeLobby_EventScript_249D52:: @ 8249D52
 	lockall
-	setvar VAR_0x8004, 7
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_RESULTS_WINDOW
 	setvar VAR_0x8005, 1
 	setvar VAR_0x8006, 0
 	special CallFrontierUtilFunc
@@ -421,7 +421,7 @@ BattleFrontier_BattleDomeLobby_EventScript_249D52:: @ 8249D52
 
 BattleFrontier_BattleDomeLobby_EventScript_249D6B:: @ 8249D6B
 	lockall
-	setvar VAR_0x8004, 7
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_RESULTS_WINDOW
 	setvar VAR_0x8005, 1
 	setvar VAR_0x8006, 1
 	special CallFrontierUtilFunc
@@ -482,16 +482,17 @@ BattleFrontier_BattleDomeLobby_EventScript_249E10:: @ 8249E10
 	msgbox BattleFrontier_BattleDomeLobby_Text_24ACD3, MSGBOX_NPC
 	end
 
-BattleFrontier_OutsideWest_EventScript_249E19:: @ 8249E19
+@ A few OutsideWest event scripts are inserted here instead, two of which are unused
+BattleFrontier_OutsideWest_EventScript_Man3:: @ 8249E19
 	msgbox BattleFrontier_OutsideWest_Text_24AB06, MSGBOX_NPC
 	end
 
-BattleFrontier_OutsideWest_EventScript_249E22:: @ 8249E22
-	msgbox BattleFrontier_OutsideWest_Text_24AB44, MSGBOX_NPC
+BattleFrontier_OutsideWest_EventScript_BattleDomeSign2:: @ 8249E22
+	msgbox BattleFrontier_OutsideWest_Text_BattleDomeSign2, MSGBOX_NPC
 	end
 
-BattleFrontier_OutsideWest_EventScript_249E2B:: @ 8249E2B
-	msgbox BattleFrontier_OutsideWest_Text_24AB75, MSGBOX_NPC
+BattleFrontier_OutsideWest_EventScript_UnderConstructionSign:: @ 8249E2B
+	msgbox BattleFrontier_OutsideWest_Text_QuestionMarkUnderConstruction, MSGBOX_NPC
 	end
 
 BattleFrontier_BattleDomeLobby_EventScript_249E34:: @ 8249E34
@@ -503,13 +504,13 @@ BattleFrontier_BattleDomeLobby_EventScript_249E34:: @ 8249E34
 BattleFrontier_BattleDomeLobby_EventScript_249E43:: @ 8249E43
 	message BattleFrontier_BattleDomeLobby_Text_24AE8B
 	waitmessage
-	multichoice 17, 4, 98, 0
+	multichoice 17, 4, MULTI_BATTLE_DOME_RULES, 0
 	switch VAR_RESULT
 	case 0, BattleFrontier_BattleDomeLobby_EventScript_249E8B
 	case 1, BattleFrontier_BattleDomeLobby_EventScript_249E99
 	case 2, BattleFrontier_BattleDomeLobby_EventScript_249EA7
 	case 3, BattleFrontier_BattleDomeLobby_EventScript_249EB5
-	case 127, BattleFrontier_BattleDomeLobby_EventScript_249EB5
+	case MULTI_B_PRESSED, BattleFrontier_BattleDomeLobby_EventScript_249EB5
 	end
 
 BattleFrontier_BattleDomeLobby_EventScript_249E8B:: @ 8249E8B
@@ -699,11 +700,11 @@ BattleFrontier_OutsideWest_Text_24AB06: @ 824AB06
 	.string "The BATTLE FRONTIER…\n"
 	.string "I've long dreamed about a place like it.$"
 
-BattleFrontier_OutsideWest_Text_24AB44: @ 824AB44
+BattleFrontier_OutsideWest_Text_BattleDomeSign2: @ 824AB44
 	.string "The BATTLE DOME\n"
 	.string "Become the Unbeatable Superstar!$"
 
-BattleFrontier_OutsideWest_Text_24AB75: @ 824AB75
+BattleFrontier_OutsideWest_Text_QuestionMarkUnderConstruction: @ 824AB75
 	.string "The ??????\n"
 	.string "Under Construction!$"
 

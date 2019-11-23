@@ -22,6 +22,7 @@
 #include "constants/metatile_behaviors.h"
 #include "constants/songs.h"
 #include "constants/vars.h"
+#include "constants/metatile_labels.h"
 
 EWRAM_DATA struct MapPosition gPlayerFacingPosition = {0};
 
@@ -582,7 +583,7 @@ bool8 SetUpFieldMove_SecretPower(void)
 static void FieldCallback_SecretBaseCave(void)
 {
     gFieldEffectArguments[0] = GetCursorSelectionMonId();
-    ScriptContext1_SetupScript(EventScript_275A86);
+    ScriptContext1_SetupScript(SecretBase_EventScript_CaveUseSecretPower);
 }
 
 bool8 FldEff_UseSecretPowerCave(void)
@@ -642,7 +643,7 @@ static void CaveEntranceSpriteCallbackEnd(struct Sprite *sprite)
 static void FieldCallback_SecretBaseTree(void)
 {
     gFieldEffectArguments[0] = GetCursorSelectionMonId();
-    ScriptContext1_SetupScript(EventScript_275ADF);
+    ScriptContext1_SetupScript(SecretBase_EventScript_TreeUseSecretPower);
 }
 
 bool8 FldEff_UseSecretPowerTree(void)
@@ -716,7 +717,7 @@ static void TreeEntranceSpriteCallbackEnd(struct Sprite *sprite)
 static void FieldCallback_SecretBaseShrub(void)
 {
     gFieldEffectArguments[0] = GetCursorSelectionMonId();
-    ScriptContext1_SetupScript(EventScript_275B38);
+    ScriptContext1_SetupScript(SecretBase_EventScript_ShrubUseSecretPower);
 }
 
 bool8 FldEff_UseSecretPowerShrub(void)
@@ -800,16 +801,16 @@ static void Task_SecretBasePCTurnOn(u8 taskId)
     {
     case 4:
     case 12:
-        MapGridSetMetatileIdAt(data[0], data[1], 548);
+        MapGridSetMetatileIdAt(data[0], data[1], 0x224);
         CurrentMapDrawMetatileAt(data[0], data[1]);
         break;
     case 8:
     case 16:
-        MapGridSetMetatileIdAt(data[0], data[1], 544);
+        MapGridSetMetatileIdAt(data[0], data[1], 0x220);
         CurrentMapDrawMetatileAt(data[0], data[1]);
         break;
     case 20:
-        MapGridSetMetatileIdAt(data[0], data[1], 548);
+        MapGridSetMetatileIdAt(data[0], data[1], 0x224);
         CurrentMapDrawMetatileAt(data[0], data[1]);
         FieldEffectActiveListRemove(FLDEFF_PCTURN_ON);
         EnableBothScriptContexts();
@@ -828,9 +829,9 @@ void DoSecretBasePCTurnOffEffect(void)
     PlaySE(SE_PC_OFF);
 
     if (!VarGet(VAR_CURRENT_SECRET_BASE))
-        MapGridSetMetatileIdAt(x, y, 3616);
+        MapGridSetMetatileIdAt(x, y, 0x220 | METATILE_COLLISION_MASK);
     else
-        MapGridSetMetatileIdAt(x, y, 3617);
+        MapGridSetMetatileIdAt(x, y, 0x221 | METATILE_COLLISION_MASK);
 
     CurrentMapDrawMetatileAt(x, y);
 }
@@ -902,8 +903,8 @@ bool8 FldEff_NopA700(void)
 static void DoSecretBaseBreakableDoorEffect(s16 x, s16 y)
 {
     PlaySE(SE_TOY_KABE);
-    MapGridSetMetatileIdAt(x, y, 630);
-    MapGridSetMetatileIdAt(x, y - 1, 622);
+    MapGridSetMetatileIdAt(x, y, 0x276);
+    MapGridSetMetatileIdAt(x, y - 1, 0x26E);
     CurrentMapDrawMetatileAt(x, y);
     CurrentMapDrawMetatileAt(x, y - 1);
 }

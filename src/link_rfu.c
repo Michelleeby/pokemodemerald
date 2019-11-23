@@ -1,5 +1,5 @@
 #include "global.h"
-#include "alloc.h"
+#include "malloc.h"
 #include "battle.h"
 #include "berry_blender.h"
 #include "decompress.h"
@@ -24,10 +24,10 @@ extern u16 gHeldKeyCodeToSend;
 struct UnkRfuStruct_1 gUnknown_03004140;
 struct UnkRfuStruct_2 gUnknown_03005000;
 
-IWRAM_DATA u8 gUnknown_03000D74;
-ALIGNED(4) IWRAM_DATA u8 gUnknown_03000D78[8];
-IWRAM_DATA u8 gUnknown_03000D80[16];
-IWRAM_DATA u16 gUnknown_03000D90[8];
+BSS_DATA u8 gUnknown_03000D74;
+ALIGNED(4) BSS_DATA u8 gUnknown_03000D78[8];
+BSS_DATA u8 gUnknown_03000D80[16];
+BSS_DATA u16 gUnknown_03000D90[8];
 
 EWRAM_DATA u8 gWirelessStatusIndicatorSpriteId = 0;
 EWRAM_DATA ALIGNED(4) struct UnkLinkRfuStruct_02022B14 gUnknown_02022B14 = {};
@@ -2021,6 +2021,8 @@ void sub_800DBF8(u8 *q1, u8 mode)
     }
 }
 
+// File boundary here maybe?
+
 void PkmnStrToASCII(u8 *q1, const u8 *q2)
 {
     s32 i;
@@ -2163,9 +2165,9 @@ void sub_800DD94(struct UnkLinkRfuStruct_02022B14 *data, u8 r9, bool32 r2, s32 r
     data->unk_00.unk_00_4 = 0;
     data->unk_00.unk_00_5 = 0;
     data->unk_00.unk_00_6 = 0;
-    data->unk_00.unk_00_7 = FlagGet(FLAG_IS_CHAMPION);
-    data->unk_00.unk_01_0 = IsNationalPokedexEnabled();
-    data->unk_00.unk_01_1 = FlagGet(FLAG_SYS_GAME_CLEAR);
+    data->unk_00.isChampion = FlagGet(FLAG_IS_CHAMPION);
+    data->unk_00.hasNationalDex = IsNationalPokedexEnabled();
+    data->unk_00.gameClear = FlagGet(FLAG_SYS_GAME_CLEAR);
 }
 
 bool8 sub_800DE7C(struct UnkLinkRfuStruct_02022B14 *buff1, u8 *buff2, u8 idx)
@@ -2413,7 +2415,7 @@ void RecordMixTrainerNames(void)
                 }
             }
         }
-        
+
         // Save the connected trainers first, at the top of the list.
         nextSpace = 0;
         for (i = 0; i < GetLinkPlayerCount(); i++)
@@ -2444,7 +2446,7 @@ void RecordMixTrainerNames(void)
                 }
             }
         }
-        
+
         // Finalize the new list, and clean up.
         memcpy(gSaveBlock1Ptr->trainerNameRecords, newRecords, 20 * sizeof(struct TrainerNameRecord));
         free(newRecords);
@@ -2480,7 +2482,7 @@ void WipeTrainerNameRecords(void)
     }
 }
 
-void nullsub_5(const char *unused_0, u8 unused_1, u8 unused_2)
+void nullsub_5(const void *unused_0, u8 unused_1, u8 unused_2)
 {
     // debug?
 }
@@ -2510,7 +2512,7 @@ void sub_800E604(void)
     sub_800D724(&gUnknown_03005000.unk_9e8);
     CpuFill16(0, gSendCmd, sizeof gSendCmd);
     CpuFill16(0, gRecvCmds, sizeof gRecvCmds);
-    CpuFill16(0, gLinkPlayers, sizeof gLinkPlayers)
+    CpuFill16(0, gLinkPlayers, sizeof gLinkPlayers);
 }
 
 void sub_800E6D0(void)
@@ -2914,70 +2916,21 @@ void sub_800EF88(u8 a0)
     }
 }
 
-#ifdef NONMATCHING
-// FIXME: gUnknown_03005000.unk_c87 should be in r5
-// FIXME: gRecvCmds should be in r6 and r7
 void sub_800EFB0(void)
 {
     s32 i, j;
+
     for (i = 0; i < 5; i++)
     {
+        struct UnkRfuStruct_2 *ptr = &gUnknown_03005000;
         for (j = 0; j < 7; j++)
         {
-            gUnknown_03005000.unk_c87[i][j][1] = gRecvCmds[i][j] >> 8;
-            gUnknown_03005000.unk_c87[i][j][0] = gRecvCmds[i][j];
+            ptr->unk_c87[i][j][1] = gRecvCmds[i][j] >> 8;
+            ptr->unk_c87[i][j][0] = gRecvCmds[i][j];
         }
     }
     CpuFill16(0, gRecvCmds, sizeof gRecvCmds);
 }
-#else
-NAKED void sub_800EFB0(void)
-{
-    asm_unified("\tpush {r4-r7,lr}\n"
-                    "\tsub sp, 0x4\n"
-                    "\tmovs r2, 0\n"
-                    "\tldr r7, =gRecvCmds\n"
-                    "\tldr r0, =gUnknown_03005000\n"
-                    "\tadds r6, r7, 0\n"
-                    "\tldr r1, =0x00000c87\n"
-                    "\tadds r5, r0, r1\n"
-                    "_0800EFC0:\n"
-                    "\tmovs r3, 0\n"
-                    "\tlsls r0, r2, 3\n"
-                    "\tlsls r1, r2, 4\n"
-                    "\tadds r4, r2, 0x1\n"
-                    "\tsubs r0, r2\n"
-                    "\tlsls r0, 1\n"
-                    "\tadds r2, r0, r5\n"
-                    "\tadds r1, r6\n"
-                    "_0800EFD0:\n"
-                    "\tldrh r0, [r1]\n"
-                    "\tlsrs r0, 8\n"
-                    "\tstrb r0, [r2, 0x1]\n"
-                    "\tldrh r0, [r1]\n"
-                    "\tstrb r0, [r2]\n"
-                    "\tadds r2, 0x2\n"
-                    "\tadds r1, 0x2\n"
-                    "\tadds r3, 0x1\n"
-                    "\tcmp r3, 0x6\n"
-                    "\tble _0800EFD0\n"
-                    "\tadds r2, r4, 0\n"
-                    "\tcmp r2, 0x4\n"
-                    "\tble _0800EFC0\n"
-                    "\tmovs r0, 0\n"
-                    "\tmov r1, sp\n"
-                    "\tstrh r0, [r1]\n"
-                    "\tldr r2, =0x01000028\n"
-                    "\tmov r0, sp\n"
-                    "\tadds r1, r7, 0\n"
-                    "\tbl CpuSet\n"
-                    "\tadd sp, 0x4\n"
-                    "\tpop {r4-r7}\n"
-                    "\tpop {r0}\n"
-                    "\tbx r0\n"
-                    "\t.pool");
-}
-#endif
 
 void sub_800F014(void)
 {
@@ -3216,7 +3169,7 @@ bool32 sub_800F4F0(void)
             sub_8011A64(2, 0x9000);
         rfu_clearAllSlot();
         gReceivedRemoteLinkPlayers = FALSE;
-        gUnknown_03005000.unk_00 = 0;
+        gUnknown_03005000.linkRfuCallback = NULL;
         if (gUnknown_03005000.unk_ce4 == 1)
         {
             sub_8011A64(2, 0x9000);
@@ -3311,17 +3264,17 @@ struct UnkLinkRfuStruct_02022B14 *sub_800F7DC(void)
 
 bool32 IsSendingKeysToRfu(void)
 {
-    return gUnknown_03005000.unk_00 == rfu_func_080F97B8;
+    return gUnknown_03005000.linkRfuCallback == rfu_func_080F97B8;
 }
 
 void sub_800F804(void)
 {
-    gUnknown_03005000.unk_00 = rfu_func_080F97B8;
+    gUnknown_03005000.linkRfuCallback = rfu_func_080F97B8;
 }
 
-void Rfu_set_zero(void)
+void ClearLinkRfuCallback(void)
 {
-    gUnknown_03005000.unk_00 = NULL;
+    gUnknown_03005000.linkRfuCallback = NULL;
 }
 
 void sub_800F820(void)
@@ -3334,8 +3287,8 @@ void sub_800F820(void)
 
 void sub_800F850(void)
 {
-    if (gUnknown_03005000.unk_00 == NULL)
-        gUnknown_03005000.unk_00 = sub_800F820;
+    if (gUnknown_03005000.linkRfuCallback == NULL)
+        gUnknown_03005000.linkRfuCallback = sub_800F820;
 }
 
 static void sub_800F86C(u8 unused)
@@ -3542,7 +3495,7 @@ void sub_800FD14(u16 command)
     }
 }
 
-void sub_800FE50(u16 *a0)
+void sub_800FE50(void *a0)
 {
     if (gSendCmd[0] == 0 && !sub_8011A80())
     {
@@ -3554,7 +3507,7 @@ void sub_800FE50(u16 *a0)
 bool32 sub_800FE84(const u8 *src, size_t size)
 {
     bool8 r4;
-    if (gUnknown_03005000.unk_00 != NULL)
+    if (gUnknown_03005000.linkRfuCallback != NULL)
         return FALSE;
     if (gSendCmd[0] != 0)
         return FALSE;
@@ -3577,7 +3530,7 @@ bool32 sub_800FE84(const u8 *src, size_t size)
         gUnknown_03005000.unk_6c.unk_04 = gBlockSendBuffer;
     }
     sub_800FD14(0x8800);
-    gUnknown_03005000.unk_00 = rfufunc_80F9F44;
+    gUnknown_03005000.linkRfuCallback = rfufunc_80F9F44;
     gUnknown_03005000.unk_5b = 0;
     return TRUE;
 }
@@ -3590,12 +3543,12 @@ static void rfufunc_80F9F44(void)
         if (gUnknown_03005000.unk_0c == 1)
         {
             if (++gUnknown_03005000.unk_5b > 2)
-                gUnknown_03005000.unk_00 = sub_800FFB0;
+                gUnknown_03005000.linkRfuCallback = sub_800FFB0;
         }
         else
         {
             if ((gRecvCmds[GetMultiplayerId()][0] & 0xff00) == 0x8800)
-                gUnknown_03005000.unk_00 = sub_800FFB0;
+                gUnknown_03005000.linkRfuCallback = sub_800FFB0;
         }
     }
 }
@@ -3611,7 +3564,7 @@ static void sub_800FFB0(void)
     if (gUnknown_03005000.unk_6c.unk_02 <= gUnknown_03005000.unk_6c.unk_00)
     {
         gUnknown_03005000.unk_6c.unk_10 = 0;
-        gUnknown_03005000.unk_00 = rfufunc_80FA020;
+        gUnknown_03005000.linkRfuCallback = rfufunc_80FA020;
     }
 }
 
@@ -3633,11 +3586,11 @@ static void rfufunc_80FA020(void)
                 gUnknown_02022B44.unk_64++;
             }
             else
-                gUnknown_03005000.unk_00 = NULL;
+                gUnknown_03005000.linkRfuCallback = NULL;
         }
     }
     else
-        gUnknown_03005000.unk_00 = NULL;
+        gUnknown_03005000.linkRfuCallback = NULL;
 }
 
 bool8 sub_8010100(u8 a0)
@@ -3653,7 +3606,7 @@ void sub_801011C(void)
     sub_800C048();
     gReceivedRemoteLinkPlayers = 0;
     gUnknown_03005000.unk_ef = 1;
-    gUnknown_03005000.unk_00 = NULL;
+    gUnknown_03005000.linkRfuCallback = NULL;
 }
 
 void sub_8010148(void)
@@ -3671,7 +3624,7 @@ void sub_8010168(void)
         gUnknown_03005000.unk_ce4 = 2;
     }
     else
-        gUnknown_03005000.unk_00 = sub_8010148;
+        gUnknown_03005000.linkRfuCallback = sub_8010148;
 }
 
 void LinkRfu_FatalError(void)
@@ -3701,7 +3654,7 @@ void sub_80101CC(void)
             sub_8010168();
         }
         else
-            gUnknown_03005000.unk_00 = sub_8010168;
+            gUnknown_03005000.linkRfuCallback = sub_8010168;
     }
 }
 
@@ -3710,16 +3663,16 @@ void sub_801022C(void)
     if (gSendCmd[0] == 0 && gUnknown_03005000.unk_ce8 == 0)
     {
         sub_800FD14(0x5f00);
-        gUnknown_03005000.unk_00 = sub_80101CC;
+        gUnknown_03005000.linkRfuCallback = sub_80101CC;
     }
 }
 
 void sub_8010264(u8 taskId)
 {
-    if (gUnknown_03005000.unk_00 == NULL)
+    if (gUnknown_03005000.linkRfuCallback == NULL)
     {
         gUnknown_03005000.unk_cd9 = 1;
-        gUnknown_03005000.unk_00 = sub_801022C;
+        gUnknown_03005000.linkRfuCallback = sub_801022C;
         DestroyTask(taskId);
     }
 }
@@ -3755,7 +3708,7 @@ void sub_80102B8(void)
         for (i = 0; i < MAX_RFU_PLAYERS; i++)
             gUnknown_03005000.unk_e9[i] = 0;
         gUnknown_03005000.unk_100++;
-        gUnknown_03005000.unk_00 = NULL;
+        gUnknown_03005000.linkRfuCallback = NULL;
     }
     gUnknown_03005000.unk_fe++;
 }
@@ -3765,7 +3718,7 @@ void sub_8010358(void)
     if (gUnknown_03005000.unk_124.unk_8c2 == 0 && gSendCmd[0] == 0)
     {
         sub_800FD14(0x6600);
-        gUnknown_03005000.unk_00 = sub_80102B8;
+        gUnknown_03005000.linkRfuCallback = sub_80102B8;
     }
 }
 
@@ -3779,7 +3732,7 @@ void sub_8010390(void)
         if (gUnknown_03005000.unk_124.unk_8c2 == 0 && gSendCmd[0] == 0)
         {
             sub_800FD14(0x6600);
-            gUnknown_03005000.unk_00 = sub_80102B8;
+            gUnknown_03005000.linkRfuCallback = sub_80102B8;
         }
     }
     else
@@ -3795,7 +3748,7 @@ void sub_8010390(void)
             if (gUnknown_03005000.unk_124.unk_8c2 == 0 && gSendCmd[0] == 0)
             {
                 sub_800FD14(0x6600);
-                gUnknown_03005000.unk_00 = sub_8010358;
+                gUnknown_03005000.linkRfuCallback = sub_8010358;
             }
         }
     }
@@ -3803,9 +3756,9 @@ void sub_8010390(void)
 
 void sub_8010434(void)
 {
-    if (gUnknown_03005000.unk_00 == NULL)
+    if (gUnknown_03005000.linkRfuCallback == NULL)
     {
-        gUnknown_03005000.unk_00 = sub_8010390;
+        gUnknown_03005000.linkRfuCallback = sub_8010390;
         gUnknown_03005000.unk_fe = 0;
     }
 }
@@ -3847,17 +3800,17 @@ u8 sub_80104F4(void)
     return gUnknown_03005000.playerCount;
 }
 
-bool8 sub_8010500(void)
+bool8 IsLinkRfuTaskFinished(void)
 {
     if (gUnknown_03005000.unk_f1 == 2)
         return FALSE;
-    return gUnknown_03005000.unk_00 ? FALSE : TRUE;
+    return gUnknown_03005000.linkRfuCallback ? FALSE : TRUE;
 }
 
 static void sub_8010528(void)
 {
-    if (gUnknown_03005000.unk_00)
-        gUnknown_03005000.unk_00();
+    if (gUnknown_03005000.linkRfuCallback)
+        gUnknown_03005000.linkRfuCallback();
 }
 
 bool8 sub_8010540(void)
@@ -4302,11 +4255,11 @@ void sub_8010FA0(bool32 a0, bool32 a1)
     gUnknown_02022B14.unk_00.unk_00_5 = a1;
 }
 
-void sub_8010FCC(u32 a0, u32 a1, u32 a2)
+void sub_8010FCC(u32 type, u32 species, u32 level)
 {
-    gUnknown_02022B14.type = a0;
-    gUnknown_02022B14.species = a1;
-    gUnknown_02022B14.unk_0b_1 = a2;
+    gUnknown_02022B14.type = type;
+    gUnknown_02022B14.species = species;
+    gUnknown_02022B14.level = level;
 }
 
 u8 sub_801100C(s32 a0)
@@ -4392,12 +4345,12 @@ void sub_80111B0(bool32 a0)
 void sub_80111DC(void)
 {
     sub_8011E94(gUnknown_03004140.unk_00, 1);
-    gUnknown_03005000.unk_00 = NULL;
+    gUnknown_03005000.linkRfuCallback = NULL;
 }
 
 void sub_80111FC(void)
 {
-    gUnknown_03005000.unk_00 = sub_80111DC;
+    gUnknown_03005000.linkRfuCallback = sub_80111DC;
 }
 
 void sub_801120C(u8 a0, u8 unused1)
@@ -4788,7 +4741,7 @@ void sub_8011AFC(void)
     SetVBlankCallback(sub_8011AE8);
     if (IsWirelessAdapterConnected())
     {
-        gLinkType = 0x1111;
+        gLinkType = LINKTYPE_0x1111;
         sub_800B488();
         OpenLink();
         SeedRng(gMain.vblankCounter2);
@@ -5026,7 +4979,7 @@ bool32 sub_801200C(s16 a1, struct UnkLinkRfuStruct_02022B14 *structPtr)
                 return TRUE;
         }
         else if (structPtr->species != structPtr2->species
-                 || structPtr->unk_0b_1 != structPtr2->unk_0b_1
+                 || structPtr->level != structPtr2->level
                  || structPtr->type != structPtr2->type)
         {
             return TRUE;
@@ -5191,4 +5144,3 @@ u32 GetRfuRecvQueueLength(void)
 {
     return gUnknown_03005000.unk_124.unk_8c2;
 }
-

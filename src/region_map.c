@@ -2,7 +2,7 @@
 #include "main.h"
 #include "text.h"
 #include "menu.h"
-#include "alloc.h"
+#include "malloc.h"
 #include "gpu_regs.h"
 #include "palette.h"
 #include "party_menu.h"
@@ -24,6 +24,7 @@
 #include "region_map.h"
 #include "constants/region_map_sections.h"
 #include "heal_location.h"
+#include "constants/field_specials.h"
 #include "constants/heal_locations.h"
 #include "constants/map_types.h"
 #include "constants/rgb.h"
@@ -54,7 +55,7 @@ static EWRAM_DATA struct {
     /*0x008*/ struct RegionMap regionMap;
     /*0x88c*/ u8 unk_88c[0x1c0];
     /*0xa4c*/ u8 unk_a4c[0x26];
-    /*0xa72*/ bool8 unk_a72;
+    /*0xa72*/ bool8 choseFlyLocation;
 } *sFlyMap = NULL; // a74
 
 static bool32 gUnknown_03001180;
@@ -1144,20 +1145,20 @@ static void RegionMap_InitializeStateBasedOnSSTidalLocation(void)
     x = 0;
     switch (GetSSTidalLocation(&mapGroup, &mapNum, &xOnMap, &yOnMap))
     {
-        case 1:
+        case SS_TIDAL_LOCATION_SLATEPORT:
             gRegionMap->mapSecId = MAPSEC_SLATEPORT_CITY;
             break;
-        case 2:
+        case SS_TIDAL_LOCATION_LILYCOVE:
             gRegionMap->mapSecId = MAPSEC_LILYCOVE_CITY;
             break;
-        case 3:
+        case SS_TIDAL_LOCATION_ROUTE124:
             gRegionMap->mapSecId = MAPSEC_ROUTE_124;
             break;
-        case 4:
+        case SS_TIDAL_LOCATION_ROUTE131:
             gRegionMap->mapSecId = MAPSEC_ROUTE_131;
             break;
         default:
-        case 0:
+        case SS_TIDAL_LOCATION_OTHER:
             mapHeader = Overworld_GetMapHeaderByGroupAndId(mapGroup, mapNum);
 
             gRegionMap->mapSecId = mapHeader->regionMapSectionId;
@@ -1604,7 +1605,8 @@ u8 *GetMapName(u8 *dest, u16 regionMapId, u16 padLength)
     return str;
 }
 
-u8 *sub_81245DC(u8 *dest, u16 mapSecId)
+// TODO: probably needs a better name
+u8 *GetMapNameGeneric(u8 *dest, u16 mapSecId)
 {
     switch (mapSecId)
     {
@@ -1625,7 +1627,7 @@ u8 *sub_8124610(u8 *dest, u16 mapSecId)
     }
     else
     {
-        return sub_81245DC(dest, mapSecId);
+        return GetMapNameGeneric(dest, mapSecId);
     }
 }
 
@@ -1971,13 +1973,13 @@ static void sub_8124D64(void)
                 if (sFlyMap->regionMap.iconDrawType == MAPSECTYPE_CITY_CANFLY || sFlyMap->regionMap.iconDrawType == MAPSECTYPE_BATTLE_FRONTIER)
                 {
                     m4aSongNumStart(SE_SELECT);
-                    sFlyMap->unk_a72 = TRUE;
+                    sFlyMap->choseFlyLocation = TRUE;
                     sub_81248F4(sub_8124E0C);
                 }
                 break;
             case INPUT_EVENT_B_BUTTON:
                 m4aSongNumStart(SE_SELECT);
-                sFlyMap->unk_a72 = FALSE;
+                sFlyMap->choseFlyLocation = FALSE;
                 sub_81248F4(sub_8124E0C);
                 break;
         }
@@ -1996,7 +1998,7 @@ static void sub_8124E0C(void)
             if (!UpdatePaletteFade())
             {
                 FreeRegionMapIconResources();
-                if (sFlyMap->unk_a72)
+                if (sFlyMap->choseFlyLocation)
                 {
                     switch (sFlyMap->regionMap.mapSecId)
                     {
@@ -2023,11 +2025,11 @@ static void sub_8124E0C(void)
                             }
                             break;
                     }
-                    sub_80B69DC();
+                    ReturnToFieldFromFlyMapSelect();
                 }
                 else
                 {
-                    SetMainCallback2(sub_81B58A8);
+                    SetMainCallback2(CB2_ReturnToPartyMenuFromFlyMap);
                 }
                 if (sFlyMap != NULL)
                 {

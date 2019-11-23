@@ -9,7 +9,7 @@ BattleFrontier_BattlePyramidLobby_MapScript2_250721: @ 8250721
 
 BattleFrontier_BattlePyramidLobby_EventScript_25072B: @ 825072B
 	setvar VAR_TEMP_1, 1
-	turnobject EVENT_OBJ_ID_PLAYER, 2
+	turnobject EVENT_OBJ_ID_PLAYER, DIR_NORTH
 	end
 
 BattleFrontier_BattlePyramidLobby_MapScript2_250735: @ 8250735
@@ -21,7 +21,7 @@ BattleFrontier_BattlePyramidLobby_MapScript2_250735: @ 8250735
 	.2byte 0
 
 BattleFrontier_BattlePyramidLobby_EventScript_25075F:: @ 825075F
-	setvar VAR_0x8004, 0
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_0
 	special CallFrontierUtilFunc
 	end
 
@@ -32,15 +32,15 @@ BattleFrontier_BattlePyramidLobby_EventScript_250768:: @ 8250768
 	playse SE_EXPMAX
 	waitse
 	closemessage
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, BATTLE_PYRAMID_FUNC_SET_DATA
 	setvar VAR_0x8005, 1
 	setvar VAR_0x8006, 0
 	special CallBattlePyramidFunction
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, BATTLE_PYRAMID_FUNC_SET_DATA
 	setvar VAR_0x8005, 2
 	setvar VAR_0x8006, 0
 	special CallBattlePyramidFunction
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 0
 	setvar VAR_0x8006, 0
 	special CallFrontierUtilFunc
@@ -50,9 +50,9 @@ BattleFrontier_BattlePyramidLobby_EventScript_250768:: @ 8250768
 
 BattleFrontier_BattlePyramidLobby_EventScript_2507B1:: @ 82507B1
 	lockall
-	setvar VAR_0x8004, 10
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_IS_FRONTIER_BRAIN
 	special CallFrontierUtilFunc
-	compare VAR_RESULT, 1
+	compare VAR_RESULT, TRUE
 	goto_if_eq BattleFrontier_BattlePyramidLobby_EventScript_2507D2
 	msgbox BattleFrontier_BattlePyramidLobby_Text_2517B5, MSGBOX_DEFAULT
 	goto BattleFrontier_BattlePyramidLobby_EventScript_2507DA
@@ -61,14 +61,14 @@ BattleFrontier_BattlePyramidLobby_EventScript_2507D2:: @ 82507D2
 	msgbox BattleFrontier_BattlePyramidLobby_Text_2525F4, MSGBOX_DEFAULT
 
 BattleFrontier_BattlePyramidLobby_EventScript_2507DA:: @ 82507DA
-	special sub_81B95E0
-	compare VAR_RESULT, 1
+	special DoBattlePyramidMonsHaveHeldItem
+	compare VAR_RESULT, TRUE
 	call_if_eq BattleFrontier_BattlePyramidLobby_EventScript_250DDB
-	clearflag FLAG_SPECIAL_FLAG_0x4004
-	setvar VAR_0x8004, 8
+	clearflag FLAG_STORING_ITEMS_IN_PYRAMID_BAG
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_8
 	special CallFrontierUtilFunc
 	special LoadPlayerParty
-	setvar VAR_0x8004, 14
+	setvar VAR_0x8004, BATTLE_PYRAMID_FUNC_CLEAR_HELD_ITEMS
 	special CallBattlePyramidFunction
 	special HealPlayerParty
 	message BattleFrontier_BattlePyramidLobby_Text_2519F8
@@ -76,14 +76,14 @@ BattleFrontier_BattlePyramidLobby_EventScript_2507DA:: @ 82507DA
 	playse SE_EXPMAX
 	waitse
 	msgbox BattleFrontier_BattlePyramidLobby_Text_252662, MSGBOX_DEFAULT
-	setvar VAR_0x8004, 11
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_11
 	special CallFrontierUtilFunc
-	msgbox BattleFrontier_BattlePyramidLobby_Text_241520, 9
+	msgbox BattleFrontier_Text_ObtainedXBattlePoints, MSGBOX_GETPOINTS
 	message BattleFrontier_BattlePyramidLobby_Text_251A77
 	waitmessage
-	setvar VAR_0x8004, 4
+	setvar VAR_0x8004, BATTLE_PYRAMID_FUNC_SET_REWARD
 	special CallBattlePyramidFunction
-	setvar VAR_0x8004, 3
+	setvar VAR_0x8004, BATTLE_PYRAMID_FUNC_3
 	setvar VAR_0x8005, 0
 	special CallBattlePyramidFunction
 	playse SE_SAVE
@@ -95,10 +95,10 @@ BattleFrontier_BattlePyramidLobby_EventScript_2507DA:: @ 82507DA
 	end
 
 BattleFrontier_BattlePyramidLobby_EventScript_250852:: @ 8250852
-	setvar VAR_0x8004, 8
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_8
 	special CallFrontierUtilFunc
 	special LoadPlayerParty
-	setvar VAR_0x8004, 14
+	setvar VAR_0x8004, BATTLE_PYRAMID_FUNC_CLEAR_HELD_ITEMS
 	special CallBattlePyramidFunction
 	special HealPlayerParty
 	lockall
@@ -108,11 +108,11 @@ BattleFrontier_BattlePyramidLobby_EventScript_250852:: @ 8250852
 	waitse
 	message BattleFrontier_BattlePyramidLobby_Text_251A77
 	waitmessage
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, BATTLE_PYRAMID_FUNC_SET_DATA
 	setvar VAR_0x8005, 2
 	setvar VAR_0x8006, 0
 	special CallBattlePyramidFunction
-	setvar VAR_0x8004, 3
+	setvar VAR_0x8004, BATTLE_PYRAMID_FUNC_3
 	setvar VAR_0x8005, 0
 	special CallBattlePyramidFunction
 	playse SE_SAVE
@@ -137,25 +137,25 @@ BattleFrontier_BattlePyramidLobby_EventScript_2508B1:: @ 82508B1
 BattleFrontier_BattlePyramidLobby_EventScript_2508C8:: @ 82508C8
 	message BattleFrontier_BattlePyramidLobby_Text_250FA7
 	waitmessage
-	multichoice 17, 6, 23, 0
+	multichoice 17, 6, MULTI_CHALLENGEINFO, 0
 	switch VAR_RESULT
 	case 0, BattleFrontier_BattlePyramidLobby_EventScript_250904
 	case 1, BattleFrontier_BattlePyramidLobby_EventScript_250A68
 	case 2, BattleFrontier_BattlePyramidLobby_EventScript_250AC4
-	case 127, BattleFrontier_BattlePyramidLobby_EventScript_250AC4
+	case MULTI_B_PRESSED, BattleFrontier_BattlePyramidLobby_EventScript_250AC4
 
 BattleFrontier_BattlePyramidLobby_EventScript_250904:: @ 8250904
 	message BattleFrontier_BattlePyramidLobby_Text_251248
 	waitmessage
-	multichoice 17, 6, 24, 0
+	multichoice 17, 6, MULTI_LEVEL_MODE, 0
 	switch VAR_RESULT
 	case 2, BattleFrontier_BattlePyramidLobby_EventScript_250AC4
-	case 127, BattleFrontier_BattlePyramidLobby_EventScript_250AC4
-	setvar VAR_0x8004, 15
+	case MULTI_B_PRESSED, BattleFrontier_BattlePyramidLobby_EventScript_250AC4
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_15
 	special CallFrontierUtilFunc
 	compare VAR_0x8004, 1
 	goto_if_eq BattleFrontier_BattlePyramidLobby_EventScript_250A75
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 1
 	copyvar VAR_0x8006, VAR_RESULT
 	special CallFrontierUtilFunc
@@ -170,32 +170,32 @@ BattleFrontier_BattlePyramidLobby_EventScript_250904:: @ 8250904
 	goto_if_eq BattleFrontier_BattlePyramidLobby_EventScript_250AC1
 	msgbox BattleFrontier_BattlePyramidLobby_Text_2514E6, MSGBOX_YESNO
 	switch VAR_RESULT
-	case 0, BattleFrontier_BattlePyramidLobby_EventScript_250AC1
-	case 1, BattleFrontier_BattlePyramidLobby_EventScript_2509A5
-	case 127, BattleFrontier_BattlePyramidLobby_EventScript_250AC1
+	case NO, BattleFrontier_BattlePyramidLobby_EventScript_250AC1
+	case YES, BattleFrontier_BattlePyramidLobby_EventScript_2509A5
+	case MULTI_B_PRESSED, BattleFrontier_BattlePyramidLobby_EventScript_250AC1
 
 BattleFrontier_BattlePyramidLobby_EventScript_2509A5:: @ 82509A5
 	setvar VAR_TEMP_0, 0
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 4
 	special CallFrontierUtilFunc
-	setvar VAR_0x8004, 0
+	setvar VAR_0x8004, BATTLE_PYRAMID_FUNC_INIT_CHALLENGE
 	special CallBattlePyramidFunction
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, BATTLE_PYRAMID_FUNC_SET_DATA
 	setvar VAR_0x8005, 2
 	setvar VAR_0x8006, 1
 	special CallBattlePyramidFunction
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 0
 	setvar VAR_0x8006, 1
 	special CallFrontierUtilFunc
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 3
 	setvar VAR_0x8006, 0
 	special CallFrontierUtilFunc
-	setvar VAR_0x8004, 6
+	setvar VAR_0x8004, BATTLE_PYRAMID_FUNC_SEED_FLOOR
 	special CallBattlePyramidFunction
-	setvar VAR_0x8004, 9
+	setvar VAR_0x8004, BATTLE_PYRAMID_FUNC_INIT_TRAINERS
 	special CallBattlePyramidFunction
 	special LoadPlayerParty
 	closemessage
@@ -207,13 +207,13 @@ BattleFrontier_BattlePyramidLobby_EventScript_2509A5:: @ 82509A5
 
 BattleFrontier_BattlePyramidLobby_EventScript_250A21:: @ 8250A21
 	special SavePlayerParty
-	setvar VAR_0x8004, 3
-	setvar VAR_0x8005, 3
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_LOAD_SELECTED_PARTY
+	setvar VAR_0x8005, FRONTIER_PARTY_SIZE
 	special CallFrontierUtilFunc
 	msgbox BattleFrontier_BattlePyramidLobby_Text_251531, MSGBOX_DEFAULT
 	closemessage
 	call BattleFrontier_BattlePyramidLobby_EventScript_250D56
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 0
 	setvar VAR_0x8006, 0
 	special CallFrontierUtilFunc
@@ -242,7 +242,7 @@ BattleFrontier_BattlePyramidLobby_EventScript_250A9D:: @ 8250A9D
 	goto BattleFrontier_BattlePyramidLobby_EventScript_250ACC
 
 BattleFrontier_BattlePyramidLobby_EventScript_250AAA:: @ 8250AAA
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 0
 	setvar VAR_0x8006, 0
 	special CallFrontierUtilFunc
@@ -269,12 +269,12 @@ BattleFrontier_BattlePyramidLobby_EventScript_250ACE:: @ 8250ACE
 	end
 
 BattleFrontier_BattlePyramidLobby_EventScript_250AF0:: @ 8250AF0
-	multichoice 17, 6, 24, 0
+	multichoice 17, 6, MULTI_LEVEL_MODE, 0
 	switch VAR_RESULT
 	case 0, BattleFrontier_BattlePyramidLobby_EventScript_250B28
 	case 1, BattleFrontier_BattlePyramidLobby_EventScript_250B66
 	case 2, BattleFrontier_BattlePyramidLobby_EventScript_250B27
-	case 127, BattleFrontier_BattlePyramidLobby_EventScript_250B27
+	case MULTI_B_PRESSED, BattleFrontier_BattlePyramidLobby_EventScript_250B27
 	return
 
 BattleFrontier_BattlePyramidLobby_EventScript_250B27:: @ 8250B27
@@ -282,7 +282,7 @@ BattleFrontier_BattlePyramidLobby_EventScript_250B27:: @ 8250B27
 
 BattleFrontier_BattlePyramidLobby_EventScript_250B28:: @ 8250B28
 	msgbox BattleFrontier_BattlePyramidLobby_Text_251C8A, MSGBOX_DEFAULT
-	setvar VAR_0x8004, 1
+	setvar VAR_0x8004, BATTLE_PYRAMID_FUNC_GET_DATA
 	setvar VAR_0x8005, 5
 	special CallBattlePyramidFunction
 	compare VAR_RESULT, 0
@@ -292,7 +292,7 @@ BattleFrontier_BattlePyramidLobby_EventScript_250B28:: @ 8250B28
 	return
 
 BattleFrontier_BattlePyramidLobby_EventScript_250B53:: @ 8250B53
-	setvar VAR_0x8004, 1
+	setvar VAR_0x8004, BATTLE_PYRAMID_FUNC_GET_DATA
 	setvar VAR_0x8005, 3
 	special CallBattlePyramidFunction
 	goto BattleFrontier_BattlePyramidLobby_EventScript_250BA4
@@ -300,7 +300,7 @@ BattleFrontier_BattlePyramidLobby_EventScript_250B53:: @ 8250B53
 
 BattleFrontier_BattlePyramidLobby_EventScript_250B66:: @ 8250B66
 	msgbox BattleFrontier_BattlePyramidLobby_Text_251C8A, MSGBOX_DEFAULT
-	setvar VAR_0x8004, 1
+	setvar VAR_0x8004, BATTLE_PYRAMID_FUNC_GET_DATA
 	setvar VAR_0x8005, 6
 	special CallBattlePyramidFunction
 	compare VAR_RESULT, 0
@@ -310,7 +310,7 @@ BattleFrontier_BattlePyramidLobby_EventScript_250B66:: @ 8250B66
 	return
 
 BattleFrontier_BattlePyramidLobby_EventScript_250B91:: @ 8250B91
-	setvar VAR_0x8004, 1
+	setvar VAR_0x8004, BATTLE_PYRAMID_FUNC_GET_DATA
 	setvar VAR_0x8005, 4
 	special CallBattlePyramidFunction
 	goto BattleFrontier_BattlePyramidLobby_EventScript_250BA4
@@ -318,7 +318,7 @@ BattleFrontier_BattlePyramidLobby_EventScript_250B91:: @ 8250B91
 
 BattleFrontier_BattlePyramidLobby_EventScript_250BA4:: @ 8250BA4
 	copyvar VAR_0x8004, VAR_RESULT
-	special sub_813B968
+	special GetBattlePyramidHint
 	switch VAR_RESULT
 	case 0, BattleFrontier_BattlePyramidLobby_EventScript_250C8E
 	case 1, BattleFrontier_BattlePyramidLobby_EventScript_250C97
@@ -424,7 +424,7 @@ BattleFrontier_BattlePyramidLobby_EventScript_250D39:: @ 8250D39
 
 BattleFrontier_BattlePyramidLobby_EventScript_250D42:: @ 8250D42
 	lockall
-	setvar VAR_0x8004, 7
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_RESULTS_WINDOW
 	setvar VAR_0x8005, 6
 	special CallFrontierUtilFunc
 	waitbuttonpress
@@ -437,7 +437,7 @@ BattleFrontier_BattlePyramidLobby_EventScript_250D56:: @ 8250D56
 	applymovement EVENT_OBJ_ID_PLAYER, BattleFrontier_BattlePyramidLobby_Movement_250DCD
 	waitmovement 0
 	msgbox BattleFrontier_BattlePyramidLobby_Text_251569, MSGBOX_DEFAULT
-	setvar VAR_0x8004, 1
+	setvar VAR_0x8004, BATTLE_PYRAMID_FUNC_GET_DATA
 	setvar VAR_0x8005, 1
 	special CallBattlePyramidFunction
 	compare VAR_RESULT, 0
@@ -494,8 +494,8 @@ BattleFrontier_BattlePyramidLobby_Movement_250DD8: @ 8250DD8
 
 BattleFrontier_BattlePyramidLobby_EventScript_250DDB:: @ 8250DDB
 	msgbox BattleFrontier_BattlePyramidLobby_Text_2517FC, MSGBOX_DEFAULT
-	setflag FLAG_SPECIAL_FLAG_0x4004
-	special sub_81C6A94
+	setflag FLAG_STORING_ITEMS_IN_PYRAMID_BAG
+	special TryStoreHeldItemsInPyramidBag
 	compare VAR_RESULT, 0
 	goto_if_eq BattleFrontier_BattlePyramidLobby_EventScript_250E00
 	message BattleFrontier_BattlePyramidLobby_Text_2518C6
@@ -508,12 +508,12 @@ BattleFrontier_BattlePyramidLobby_EventScript_250E00:: @ 8250E00
 	return
 
 BattleFrontier_BattlePyramidLobby_EventScript_250E09:: @ 8250E09
-	multichoice 17, 6, 83, 0
+	multichoice 17, 6, MULTI_FRONTIER_ITEM_CHOOSE, 0
 	switch VAR_RESULT
 	case 0, BattleFrontier_BattlePyramidLobby_EventScript_250E40
 	case 1, BattleFrontier_BattlePyramidLobby_EventScript_250E50
 	case 2, BattleFrontier_BattlePyramidLobby_EventScript_250E60
-	case 127, BattleFrontier_BattlePyramidLobby_EventScript_250E60
+	case MULTI_B_PRESSED, BattleFrontier_BattlePyramidLobby_EventScript_250E60
 	end
 
 BattleFrontier_BattlePyramidLobby_EventScript_250E40:: @ 8250E40
@@ -525,7 +525,7 @@ BattleFrontier_BattlePyramidLobby_EventScript_250E40:: @ 8250E40
 	end
 
 BattleFrontier_BattlePyramidLobby_EventScript_250E50:: @ 8250E50
-	special sub_81B9620
+	special BattlePyramidChooseMonHeldItems
 	waitstate
 	message BattleFrontier_BattlePyramidLobby_Text_25197E
 	waitmessage
@@ -533,8 +533,8 @@ BattleFrontier_BattlePyramidLobby_EventScript_250E50:: @ 8250E50
 	end
 
 BattleFrontier_BattlePyramidLobby_EventScript_250E60:: @ 8250E60
-	special sub_81B95E0
-	compare VAR_RESULT, 1
+	special DoBattlePyramidMonsHaveHeldItem
+	compare VAR_RESULT, TRUE
 	goto_if_eq BattleFrontier_BattlePyramidLobby_EventScript_250E6F
 	return
 
@@ -562,14 +562,14 @@ BattleFrontier_BattlePyramidLobby_EventScript_250E95:: @ 8250E95
 BattleFrontier_BattlePyramidLobby_EventScript_250EA4:: @ 8250EA4
 	message BattleFrontier_BattlePyramidLobby_Text_2526D9
 	waitmessage
-	multichoice 15, 2, 101, 0
+	multichoice 15, 2, MULTI_BATTLE_PYRAMID_RULES, 0
 	switch VAR_RESULT
 	case 0, BattleFrontier_BattlePyramidLobby_EventScript_250EF7
 	case 1, BattleFrontier_BattlePyramidLobby_EventScript_250F05
 	case 2, BattleFrontier_BattlePyramidLobby_EventScript_250F13
 	case 3, BattleFrontier_BattlePyramidLobby_EventScript_250F21
 	case 4, BattleFrontier_BattlePyramidLobby_EventScript_250F2F
-	case 127, BattleFrontier_BattlePyramidLobby_EventScript_250F2F
+	case MULTI_B_PRESSED, BattleFrontier_BattlePyramidLobby_EventScript_250F2F
 	end
 
 BattleFrontier_BattlePyramidLobby_EventScript_250EF7:: @ 8250EF7

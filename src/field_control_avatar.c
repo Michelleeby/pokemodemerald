@@ -33,6 +33,7 @@
 #include "constants/map_types.h"
 #include "constants/maps.h"
 #include "constants/songs.h"
+#include "constants/trainer_hill.h"
 
 static EWRAM_DATA u8 sWildEncounterImmunitySteps = 0;
 static EWRAM_DATA u16 sPreviousPlayerMetatileBehavior = 0;
@@ -223,10 +224,10 @@ static bool8 TryStartInteractionScript(struct MapPosition *position, u16 metatil
         return FALSE;
 
     // Don't play interaction sound for certain scripts.
-    if (script != EventScript_PlayerPCMale
-     && script != EventScript_PlayerPCFemale
-     && script != EventScript_SecretBasePC
-     && script != EventScript_RecordMixingSecretBasePC
+    if (script != LittlerootTown_BrendansHouse_2F_EventScript_PC
+     && script != LittlerootTown_MaysHouse_2F_EventScript_PC
+     && script != SecretBase_EventScript_PC
+     && script != SecretBase_EventScript_RecordMixingPC
      && script != SecretBase_EventScript_DollInteract
      && script != SecretBase_EventScript_CushionInteract
      && script != EventScript_PC)
@@ -304,7 +305,7 @@ static const u8 *GetInteractedEventObjectScript(struct MapPosition *position, u8
     gSpecialVar_Facing = direction;
 
     if (InTrainerHill() == TRUE)
-        script = sub_81D62AC();
+        script = GetTrainerHillTrainerScript();
     else
         script = GetEventObjectScriptPointerByEventObjectId(eventObjectId);
 
@@ -355,7 +356,7 @@ static const u8 *GetInteractedBackgroundEventScript(struct MapPosition *position
         {
             gSpecialVar_0x8004 = bgEvent->bgUnion.secretBaseId;
             if (TrySetCurSecretBase())
-                return EventScript_2759F1;
+                return SecretBase_EventScript_CheckEntrance;
         }
         return NULL;
     }
@@ -373,14 +374,14 @@ static const u8 *GetInteractedMetatileScript(struct MapPosition *position, u8 me
         return EventScript_PC;
     if (MetatileBehavior_IsClosedSootopolisDoor(metatileBehavior) == TRUE)
         return EventScript_ClosedSootopolisDoor;
-    if (MetatileBehavior_IsUnknownClosedDoor(metatileBehavior) == TRUE)
-        return SkyPillar_Outside_EventScript_2393F9;
+    if (MetatileBehavior_IsSkyPillarClosedDoor(metatileBehavior) == TRUE)
+        return SkyPillar_Outside_EventScript_ClosedDoor;
     if (MetatileBehavior_IsCableBoxResults1(metatileBehavior) == TRUE)
         return EventScript_CableBoxResults;
     if (MetatileBehavior_IsPokeblockFeeder(metatileBehavior) == TRUE)
         return EventScript_PokeBlockFeeder;
     if (MetatileBehavior_IsTrickHousePuzzleDoor(metatileBehavior) == TRUE)
-        return Route110_TrickHouseEntrance_EventScript_26A22A;
+        return Route110_TrickHousePuzzle_EventScript_Door;
     if (MetatileBehavior_IsRegionMap(metatileBehavior) == TRUE)
         return EventScript_RegionMap;
     if (MetatileBehavior_IsRunningShoesManual(metatileBehavior) == TRUE)
@@ -412,13 +413,13 @@ static const u8 *GetInteractedMetatileScript(struct MapPosition *position, u8 me
     if (height == MapGridGetZCoordAt(position->x, position->y))
     {
         if (MetatileBehavior_IsSecretBasePC(metatileBehavior) == TRUE)
-            return EventScript_SecretBasePC;
+            return SecretBase_EventScript_PC;
         if (MetatileBehavior_IsRecordMixingSecretBasePC(metatileBehavior) == TRUE)
-            return EventScript_RecordMixingSecretBasePC;
+            return SecretBase_EventScript_RecordMixingPC;
         if (MetatileBehavior_IsSecretBaseSandOrnament(metatileBehavior) == TRUE)
-            return EventScript_SecretBaseSandOrnament;
+            return SecretBase_EventScript_SandOrnament;
         if (MetatileBehavior_IsSecretBaseShieldOrToyTV(metatileBehavior) == TRUE)
-            return EventScript_SecretBaseShieldOrToyTV;
+            return SecretBase_EventScript_ShieldOrToyTV;
         if (MetatileBehavior_IsMB_C6(metatileBehavior) == TRUE)
         {
             SetSecretBaseSecretsTvFlags_MiscFurnature();
@@ -547,7 +548,7 @@ static bool8 TryStartStepCountScript(u16 metatileBehavior)
     {
         if (UpdatePoisonStepCounter() == TRUE)
         {
-            ScriptContext1_SetupScript(EventScript_Poison);
+            ScriptContext1_SetupScript(EventScript_FieldPoison);
             return TRUE;
         }
         if (ShouldEggHatch())
@@ -563,32 +564,32 @@ static bool8 TryStartStepCountScript(u16 metatileBehavior)
         }
         if (ShouldDoBrailleRegicePuzzle() == TRUE)
         {
-            ScriptContext1_SetupScript(IslandCave_EventScript_238EAF);
+            ScriptContext1_SetupScript(IslandCave_EventScript_OpenRegiEntrance);
             return TRUE;
         }
         if (ShouldDoWallyCall() == TRUE)
         {
-            ScriptContext1_SetupScript(MauvilleCity_EventScript_1DF7BA);
+            ScriptContext1_SetupScript(MauvilleCity_EventScript_RegisterWallyCall);
             return TRUE;
         }
-        if (ShouldDoWinonaCall() == TRUE)
+        if (ShouldDoScottFortreeCall() == TRUE)
         {
-            ScriptContext1_SetupScript(Route119_EventScript_1F49EC);
+            ScriptContext1_SetupScript(Route119_EventScript_ScottWonAtFortreeGymCall);
             return TRUE;
         }
-        if (ShouldDoScottCall() == TRUE)
+        if (ShouldDoScottBattleFrontierCall() == TRUE)
         {
-            ScriptContext1_SetupScript(LittlerootTown_ProfessorBirchsLab_EventScript_1FA4D6);
+            ScriptContext1_SetupScript(LittlerootTown_ProfessorBirchsLab_EventScript_ScottAboardSSTidalCall);
             return TRUE;
         }
         if (ShouldDoRoxanneCall() == TRUE)
         {
-            ScriptContext1_SetupScript(RustboroCity_Gym_EventScript_21307B);
+            ScriptContext1_SetupScript(RustboroCity_Gym_EventScript_RegisterRoxanne);
             return TRUE;
         }
         if (ShouldDoRivalRayquazaCall() == TRUE)
         {
-            ScriptContext1_SetupScript(MossdeepCity_SpaceCenter_2F_EventScript_224175);
+            ScriptContext1_SetupScript(MossdeepCity_SpaceCenter_2F_EventScript_RivalRayquazaCall);
             return TRUE;
         }
     }
@@ -597,7 +598,7 @@ static bool8 TryStartStepCountScript(u16 metatileBehavior)
         return TRUE;
     if (CountSSTidalStep(1) == TRUE)
     {
-        ScriptContext1_SetupScript(SSTidalCorridor_EventScript_23C050);
+        ScriptContext1_SetupScript(SSTidalCorridor_EventScript_ReachedStepCount);
         return TRUE;
     }
     if (TryStartMatchCall())
@@ -733,12 +734,12 @@ static bool8 TryStartWarpEventScript(struct MapPosition *position, u16 metatileB
         }
         if (MetatileBehavior_IsMtPyreHole(metatileBehavior) == TRUE)
         {
-            ScriptContext1_SetupScript(gUnknown_082A8350);
+            ScriptContext1_SetupScript(EventScript_FallDownHoleMtPyre);
             return TRUE;
         }
         if (MetatileBehavior_IsMossdeepGymWarp(metatileBehavior) == TRUE)
         {
-            sub_80AF87C();
+            DoMossdeepGymWarp();
             return TRUE;
         }
         DoWarp();
@@ -792,20 +793,16 @@ static void SetupWarp(struct MapHeader *unused, s8 warpEventId, struct MapPositi
 
     if (trainerHillMapId)
     {
-        if (trainerHillMapId == sub_81D6490())
+        if (trainerHillMapId == GetNumFloorsInTrainerHillChallenge())
         {
             if (warpEventId == 0)
-            {
                 warpEvent = &gMapHeader.events->warps[0];
-            }
             else
-            {
-                warpEvent = sub_81D6120();
-            }
+                warpEvent = SetWarpDestinationTrainerHill4F();
         }
-        else if (trainerHillMapId == 5)
+        else if (trainerHillMapId == TRAINER_HILL_ROOF)
         {
-            warpEvent = sub_81D6134(warpEventId);
+            warpEvent = SetWarpDestinationTrainerHillFinalFloor(warpEventId);
         }
         else
         {

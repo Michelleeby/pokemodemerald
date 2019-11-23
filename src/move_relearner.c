@@ -9,7 +9,7 @@
 #include "gpu_regs.h"
 #include "move_relearner.h"
 #include "list_menu.h"
-#include "alloc.h"
+#include "malloc.h"
 #include "menu.h"
 #include "menu_helpers.h"
 #include "menu_specialized.h"
@@ -154,7 +154,7 @@ static EWRAM_DATA struct
 {
     u8 state;
     u8 heartSpriteIds[16];              /*0x001*/
-    u16 movesToLearn[4];                /*0x012*/
+    u16 movesToLearn[MAX_MON_MOVES];    /*0x012*/
     u8 filler1A[0x44 - 0x1A];           /*0x01A*/
     u8 partyMon;                        /*0x044*/
     u8 moveSlot;                        /*0x045*/
@@ -513,7 +513,7 @@ static void DoMoveRelearnerMain(void)
 
             if (selection == 0)
             {
-                if (GiveMoveToMon(&gPlayerParty[sMoveRelearnerStruct->partyMon], GetCurrentSelectedMove()) != 0xFFFF)
+                if (GiveMoveToMon(&gPlayerParty[sMoveRelearnerStruct->partyMon], GetCurrentSelectedMove()) != MON_HAS_MAX_MOVES)
                 {
                     FormatAndPrintText(gText_MoveRelearnerPkmnLearnedMove);
                     gSpecialVar_0x8004 = TRUE;
@@ -778,7 +778,7 @@ static void HandleInput(bool8 showContest)
     switch (itemId)
     {
     case LIST_NOTHING_CHOSEN:
-        if (!(gMain.newKeys & (DPAD_LEFT | DPAD_RIGHT)) && !GetLRKeysState())
+        if (!(gMain.newKeys & (DPAD_LEFT | DPAD_RIGHT)) && !GetLRKeysPressed())
         {
             break;
         }

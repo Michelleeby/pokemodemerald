@@ -11,12 +11,12 @@ BattleFrontier_BattlePikeRandomRoom3_MapScript2_25E42A: @ 825E42A
 
 BattleFrontier_BattlePikeRandomRoom3_EventScript_25E43C:: @ 825E43C
 	setvar VAR_TEMP_0, 1
-	setvar VAR_0x8004, 6
+	setvar VAR_0x8004, BATTLE_PIKE_FUNC_6
 	special CallBattlePikeFunction
 	end
 
 BattleFrontier_BattlePikeRandomRoom3_EventScript_25E44A:: @ 825E44A
-	setvar VAR_0x8004, 2
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
 	setvar VAR_0x8005, 0
 	setvar VAR_0x8006, 4
 	special CallFrontierUtilFunc
@@ -30,12 +30,12 @@ BattleFrontier_BattlePikeRandomRoom3_MapScript2_25E466: @ 825E466
 
 BattleFrontier_BattlePikeRandomRoom3_EventScript_25E470:: @ 825E470
 	setvar VAR_TEMP_4, 1
-	turnobject EVENT_OBJ_ID_PLAYER, 2
+	turnobject EVENT_OBJ_ID_PLAYER, DIR_NORTH
 	end
 
 BattleFrontier_BattlePikeRandomRoom3_MapScript1_25E47A: @ 825E47A
 	call BattleFrontier_BattlePikeRandomRoom3_EventScript_2C4271
-	setvar VAR_0x8004, 1
+	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_1
 	setvar VAR_0x8005, 5
 	special CallFrontierUtilFunc
 	compare VAR_RESULT, 2

@@ -26,7 +26,7 @@
 #include "link_rfu.h"
 #include "load_save.h"
 #include "main.h"
-#include "alloc.h"
+#include "malloc.h"
 #include "m4a.h"
 #include "map_name_popup.h"
 #include "match_call.h"
@@ -64,6 +64,7 @@
 #include "constants/region_map_sections.h"
 #include "constants/songs.h"
 #include "constants/species.h"
+#include "constants/trainer_hill.h"
 #include "constants/weather.h"
 
 #define PLAYER_TRADING_STATE_IDLE 0x80
@@ -85,19 +86,19 @@
 extern const u8 EventScript_WhiteOut[];
 extern const u8 EventScript_ResetMrBriney[];
 extern const u8 EventScript_DoLinkRoomExit[];
-extern const u8 gEventScript_TradeRoom_TooBusyToNotice[];
-extern const u8 gEventScript_TradeRoom_ReadTrainerCard_NoColor[];
-extern const u8 gEventScript_TradeRoom_ReadTrainerCard_Normal[];
-extern const u8 EventScript_DoubleBattleColosseum_PlayerSpot0[];
-extern const u8 EventScript_DoubleBattleColosseum_PlayerSpot1[];
-extern const u8 EventScript_DoubleBattleColosseum_PlayerSpot2[];
-extern const u8 EventScript_DoubleBattleColosseum_PlayerSpot3[];
+extern const u8 CableClub_EventScript_TooBusyToNotice[];
+extern const u8 CableClub_EventScript_ReadTrainerCard[];
+extern const u8 CableClub_EventScript_ReadTrainerCardColored[];
+extern const u8 EventScript_BattleColosseum4P_PlayerSpot0[];
+extern const u8 EventScript_BattleColosseum4P_PlayerSpot1[];
+extern const u8 EventScript_BattleColosseum4P_PlayerSpot2[];
+extern const u8 EventScript_BattleColosseum4P_PlayerSpot3[];
 extern const u8 EventScript_RecordCenter_Spot0[];
 extern const u8 EventScript_RecordCenter_Spot1[];
 extern const u8 EventScript_RecordCenter_Spot2[];
 extern const u8 EventScript_RecordCenter_Spot3[];
-extern const u8 EventScript_SingleBattleColosseum_PlayerSpot0[];
-extern const u8 EventScript_SingleBattleColosseum_PlayerSpot1[];
+extern const u8 EventScript_BattleColosseum2P_PlayerSpot0[];
+extern const u8 EventScript_BattleColosseum2P_PlayerSpot1[];
 extern const u8 EventScript_TradeCenter_Chair1[];
 extern const u8 EventScript_TradeCenter_Chair0[];
 extern const u8 EventScript_ConfirmLeaveTradeRoom[];
@@ -186,15 +187,15 @@ static u8 GetAdjustedInitialDirection(struct InitialPlayerAvatarState *playerStr
 static u16 GetCenterScreenMetatileBehavior(void);
 
 // IWRAM bss vars
-IWRAM_DATA static void *sUnusedOverworldCallback;
-IWRAM_DATA static u8 sPlayerTradingStates[4];
+static void *sUnusedOverworldCallback;
+static u8 sPlayerTradingStates[4];
 // This callback is called with a player's key code. It then returns an
 // adjusted key code, effectively intercepting the input before anything
 // can process it.
-IWRAM_DATA static u16 (*sPlayerKeyInterceptCallback)(u32);
-IWRAM_DATA static bool8 sUnknown_03000E18;
-IWRAM_DATA static u8 sRfuKeepAliveTimer;
-IWRAM_DATA static u32 sUnusedVar;
+static u16 (*sPlayerKeyInterceptCallback)(u32);
+static bool8 sUnknown_03000E18;
+static u8 sRfuKeepAliveTimer;
+static u32 sUnusedVar;
 
 // IWRAM common
 u16 *gBGTilemapBuffers1;
@@ -854,7 +855,7 @@ static void mli0_load_map(u32 a1)
         if (gMapHeader.mapLayoutId == LAYOUT_BATTLE_FRONTIER_BATTLE_PYRAMID_EMPTY_SQUARE)
             LoadBattlePyramidEventObjectTemplates();
         else if (InTrainerHill())
-            sub_81D5DF8();
+            LoadTrainerHillEventObjectTemplates();
         else
             LoadEventObjTemplatesFromHeader();
     }
@@ -1040,7 +1041,7 @@ static bool16 ShouldLegendaryMusicPlayAtLocation(struct WarpData *warp)
         case MAP_NUM(ROUTE128):
             return TRUE;
         default:
-            if (VarGet(VAR_RAYQUAZA_STATE) < 4)
+            if (VarGet(VAR_SOOTOPOLIS_CITY_STATE) < 4)
                 return FALSE;
             switch (warp->mapNum)
             {
@@ -1081,9 +1082,9 @@ static bool16 IsInfiltratedWeatherInstitute(struct WarpData *warp)
 
 static bool16 IsInflitratedSpaceCenter(struct WarpData *warp)
 {
-    if (VarGet(VAR_MOSSDEEP_STATE) == 0)
+    if (VarGet(VAR_MOSSDEEP_CITY_STATE) == 0)
         return FALSE;
-    else if (VarGet(VAR_MOSSDEEP_STATE) > 2)
+    else if (VarGet(VAR_MOSSDEEP_CITY_STATE) > 2)
         return FALSE;
     else if (warp->mapGroup != MAP_GROUP(MOSSDEEP_CITY_SPACE_CENTER_1F))
         return FALSE;
@@ -1183,7 +1184,7 @@ void Overworld_ClearSavedMusic(void)
 
 static void sub_8085810(void)
 {
-    if (FlagGet(FLAG_SPECIAL_FLAG_0x4001) != TRUE)
+    if (FlagGet(FLAG_DONT_TRANSITION_MUSIC) != TRUE)
     {
         u16 newMusic = GetWarpDestinationMusic();
         u16 currentMusic = GetCurrentMapMusic();
@@ -1231,7 +1232,7 @@ void TryFadeOutOldMapMusic(void)
 {
     u16 currentMusic = GetCurrentMapMusic();
     u16 warpMusic = GetWarpDestinationMusic();
-    if (FlagGet(FLAG_SPECIAL_FLAG_0x4001) != TRUE && warpMusic != GetCurrentMapMusic())
+    if (FlagGet(FLAG_DONT_TRANSITION_MUSIC) != TRUE && warpMusic != GetCurrentMapMusic())
     {
         if (currentMusic == MUS_NAMINORI
             && VarGet(VAR_SKY_PILLAR_STATE) == 2
@@ -1721,8 +1722,8 @@ void CB2_ContinueSavedGame(void)
     trainerHillMapId = GetCurrentTrainerHillMapId();
     if (gMapHeader.mapLayoutId == LAYOUT_BATTLE_FRONTIER_BATTLE_PYRAMID_EMPTY_SQUARE)
         LoadBattlePyramidFloorEventObjectScripts();
-    else if (trainerHillMapId != 0 && trainerHillMapId != 6)
-        sub_81D5F48();
+    else if (trainerHillMapId != 0 && trainerHillMapId != TRAINER_HILL_ENTRANCE)
+        LoadTrainerHillFloorEventObjectScripts();
     else
         LoadSaveblockEventObjScripts();
 
@@ -1759,7 +1760,7 @@ void CB2_ContinueSavedGame(void)
 
 static void FieldClearVBlankHBlankCallbacks(void)
 {
-    if (warp0_in_pokecenter() == TRUE)
+    if (UsedPokemonCenterWarp() == TRUE)
         CloseLink();
 
     if (gWirelessCommType != 0)
@@ -2435,7 +2436,7 @@ static void UpdateAllLinkPlayers(u16 *keys, s32 selfId)
     struct TradeRoomPlayer trainer;
     s32 i;
 
-    for (i = 0; i < 4; i++)
+    for (i = 0; i < MAX_LINK_PLAYERS; i++)
     {
         u8 key = keys[i];
         u16 setFacing = FACING_NONE;
@@ -2742,7 +2743,7 @@ static bool32 PlayerIsAtSouthExit(struct TradeRoomPlayer *player)
         return FALSE;
     else if (!MetatileBehavior_IsSouthArrowWarp(player->field_C))
         return FALSE;
-    else if (player->facing != 1)
+    else if (player->facing != DIR_SOUTH)
         return FALSE;
     else
         return TRUE;
@@ -2765,13 +2766,13 @@ static const u8 *TryInteractWithPlayer(struct TradeRoomPlayer *player)
     if (linkPlayerId != 4)
     {
         if (!player->isLocalPlayer)
-            return gEventScript_TradeRoom_TooBusyToNotice;
+            return CableClub_EventScript_TooBusyToNotice;
         else if (sPlayerTradingStates[linkPlayerId] != PLAYER_TRADING_STATE_IDLE)
-            return gEventScript_TradeRoom_TooBusyToNotice;
+            return CableClub_EventScript_TooBusyToNotice;
         else if (!GetLinkTrainerCardColor(linkPlayerId))
-            return gEventScript_TradeRoom_ReadTrainerCard_NoColor;
+            return CableClub_EventScript_ReadTrainerCard;
         else
-            return gEventScript_TradeRoom_ReadTrainerCard_Normal;
+            return CableClub_EventScript_ReadTrainerCardColored;
     }
 
     return GetInteractedLinkPlayerScript(&otherPlayerPos, player->field_C, player->facing);
@@ -2781,13 +2782,13 @@ static const u8 *TryInteractWithPlayer(struct TradeRoomPlayer *player)
 // these event scripts runs.
 static u16 GetDirectionForEventScript(const u8 *script)
 {
-    if (script == EventScript_DoubleBattleColosseum_PlayerSpot0)
+    if (script == EventScript_BattleColosseum4P_PlayerSpot0)
         return FACING_FORCED_RIGHT;
-    else if (script == EventScript_DoubleBattleColosseum_PlayerSpot1)
+    else if (script == EventScript_BattleColosseum4P_PlayerSpot1)
         return FACING_FORCED_LEFT;
-    else if (script == EventScript_DoubleBattleColosseum_PlayerSpot2)
+    else if (script == EventScript_BattleColosseum4P_PlayerSpot2)
         return FACING_FORCED_RIGHT;
-    else if (script == EventScript_DoubleBattleColosseum_PlayerSpot3)
+    else if (script == EventScript_BattleColosseum4P_PlayerSpot3)
         return FACING_FORCED_LEFT;
     else if (script == EventScript_RecordCenter_Spot0)
         return FACING_FORCED_RIGHT;
@@ -2797,9 +2798,9 @@ static u16 GetDirectionForEventScript(const u8 *script)
         return FACING_FORCED_RIGHT;
     else if (script == EventScript_RecordCenter_Spot3)
         return FACING_FORCED_LEFT;
-    else if (script == EventScript_SingleBattleColosseum_PlayerSpot0)
+    else if (script == EventScript_BattleColosseum2P_PlayerSpot0)
         return FACING_FORCED_RIGHT;
-    else if (script == EventScript_SingleBattleColosseum_PlayerSpot1)
+    else if (script == EventScript_BattleColosseum2P_PlayerSpot1)
         return FACING_FORCED_LEFT;
     else if (script == EventScript_TradeCenter_Chair0)
         return FACING_FORCED_RIGHT;
@@ -3026,7 +3027,7 @@ static s32 sub_80878E4(u8 linkPlayerId)
 static u8 GetLinkPlayerIdAt(s16 x, s16 y)
 {
     u8 i;
-    for (i = 0; i < 4; i++)
+    for (i = 0; i < MAX_LINK_PLAYERS; i++)
     {
         if (gLinkPlayerEventObjects[i].active
          && (gLinkPlayerEventObjects[i].movementMode == 0 || gLinkPlayerEventObjects[i].movementMode == 2))

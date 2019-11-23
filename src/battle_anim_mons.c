@@ -7,7 +7,7 @@
 #include "decompress.h"
 #include "dma3.h"
 #include "gpu_regs.h"
-#include "alloc.h"
+#include "malloc.h"
 #include "palette.h"
 #include "pokemon_icon.h"
 #include "sprite.h"
@@ -26,11 +26,11 @@
 
 #define IS_DOUBLE_BATTLE() ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE))
 
-extern const struct OamData gUnknown_0852497C;
+extern const struct OamData gOamData_AffineNormal_ObjNormal_64x64;
 
 static void sub_80A6FB4(struct Sprite *sprite);
 static void sub_80A7144(struct Sprite *sprite);
-static void sub_80A791C(struct Sprite *sprite);
+static void AnimThrowProjectile_Step(struct Sprite *sprite);
 static void sub_80A8DFC(struct Sprite *sprite);
 static void sub_80A8E88(struct Sprite *sprite);
 static u16 GetBattlerYDeltaFromSpriteId(u8 spriteId);
@@ -92,7 +92,7 @@ static const struct SpriteTemplate sUnknown_08525F90[] =
     {
         .tileTag = 55125,
         .paletteTag = 55125,
-        .oam = &gUnknown_0852497C,
+        .oam = &gOamData_AffineNormal_ObjNormal_64x64,
         .anims = gDummySpriteAnimTable,
         .images = NULL,
         .affineAnims = gDummySpriteAffineAnimTable,
@@ -101,7 +101,7 @@ static const struct SpriteTemplate sUnknown_08525F90[] =
     {
         .tileTag = 55126,
         .paletteTag = 55126,
-        .oam = &gUnknown_0852497C,
+        .oam = &gOamData_AffineNormal_ObjNormal_64x64,
         .anims = gDummySpriteAnimTable,
         .images = NULL,
         .affineAnims = gDummySpriteAffineAnimTable,
@@ -988,7 +988,7 @@ void sub_80A6DAC(bool8 arg0)
     }
 }
 
-void sub_80A6DEC(struct Sprite *sprite)
+void TradeMenuBouncePartySprites(struct Sprite *sprite)
 {
     sprite->data[1] = sprite->pos1.x;
     sprite->data[3] = sprite->pos1.y;
@@ -1456,7 +1456,7 @@ static u8 GetBattlerAtPosition_(u8 position)
     return GetBattlerAtPosition(position);
 }
 
-void sub_80A77C8(struct Sprite *sprite)
+void AnimSpriteOnMonPos(struct Sprite *sprite)
 {
     bool8 var;
 
@@ -1513,7 +1513,7 @@ void TranslateAnimSpriteToTargetMonLocation(struct Sprite *sprite)
     StoreSpriteCallbackInData6(sprite, DestroyAnimSprite);
 }
 
-void sub_80A78AC(struct Sprite *sprite)
+void AnimThrowProjectile(struct Sprite *sprite)
 {
     InitSpritePosToAnimAttacker(sprite, 1);
     if (GetBattlerSide(gBattleAnimAttacker))
@@ -1523,16 +1523,16 @@ void sub_80A78AC(struct Sprite *sprite)
     sprite->data[4] = GetBattlerSpriteCoord(gBattleAnimTarget, BATTLER_COORD_Y_PIC_OFFSET) + gBattleAnimArgs[3];
     sprite->data[5] = gBattleAnimArgs[5];
     InitAnimArcTranslation(sprite);
-    sprite->callback = sub_80A791C;
+    sprite->callback = AnimThrowProjectile_Step;
 }
 
-static void sub_80A791C(struct Sprite *sprite)
+static void AnimThrowProjectile_Step(struct Sprite *sprite)
 {
     if (TranslateAnimHorizontalArc(sprite))
         DestroyAnimSprite(sprite);
 }
 
-void sub_80A7938(struct Sprite *sprite)
+void AnimSnoreZ(struct Sprite *sprite)
 {
     bool8 r4;
     u8 battlerId, coordType;
@@ -2037,7 +2037,7 @@ u8 sub_80A8394(u16 species, bool8 isBackpic, u8 a3, s16 x, s16 y, u8 subpriority
         gMonSpritesGfxPtr->field_17C = AllocZeroed(0x2000);
     if (!isBackpic)
     {
-        LoadCompressedPalette(GetFrontSpritePalFromSpeciesAndPersonality(species, trainerId, personality), (palette * 0x10) + 0x100, 0x20);
+        LoadCompressedPalette(GetMonSpritePalFromSpeciesAndPersonality(species, trainerId, personality), (palette * 0x10) + 0x100, 0x20);
         if (a10 == 1 || sub_80688F8(5, battlerId) == 1 || gBattleSpritesDataPtr->battlerData[battlerId].transformSpecies != 0)
             LoadSpecialPokePic_DontHandleDeoxys(&gMonFrontPicTable[species],
                                                 gMonSpritesGfxPtr->field_17C,
@@ -2053,7 +2053,7 @@ u8 sub_80A8394(u16 species, bool8 isBackpic, u8 a3, s16 x, s16 y, u8 subpriority
     }
     else
     {
-        LoadCompressedPalette(GetFrontSpritePalFromSpeciesAndPersonality(species, trainerId, personality), (palette * 0x10) + 0x100, 0x20);
+        LoadCompressedPalette(GetMonSpritePalFromSpeciesAndPersonality(species, trainerId, personality), (palette * 0x10) + 0x100, 0x20);
         if (a10 == 1 || sub_80688F8(5, battlerId) == 1 || gBattleSpritesDataPtr->battlerData[battlerId].transformSpecies != 0)
             LoadSpecialPokePic_DontHandleDeoxys(&gMonBackPicTable[species],
                                                 gMonSpritesGfxPtr->field_17C,

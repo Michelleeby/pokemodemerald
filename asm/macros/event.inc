@@ -677,7 +677,7 @@
 	.elseif \type == TRAINER_BATTLE_SET_TRAINER_B
 		.4byte \pointer1 @ text
 		.4byte \pointer2 @ text
-	.elseif \type == TRAINER_BATTLE_12
+	.elseif \type == TRAINER_BATTLE_HILL
 		.4byte \pointer1 @ text
 		.4byte \pointer2 @ text
 	.endif
@@ -765,7 +765,8 @@
 	.2byte \y
 	.endm
 
-	.macro moveobjectoffscreen index:req
+	@ Copies a live event object's xy position to its template, so that if the sprite goes off screen, it'll still be there when it comes back on screen.
+	.macro copyobjectxytoperm index:req
 	.byte 0x64
 	.2byte \index
 	.endm
@@ -824,7 +825,7 @@
 	.byte \y
 	.endm
 
-	@ Displays a multichoice box from which the user can choose a selection, and blocks script execution until a selection is made. Lists of options are predefined (gMultichoiceLists) and the one to be used is specified with list. If b is set to a non-zero value, then the user will not be allowed to back out of the multichoice with the B button.
+	@ Displays a multichoice box from which the user can choose a selection, and blocks script execution until a selection is made. Lists of options are predefined (sMultichoiceLists) and the one to be used is specified with list. If b is set to a non-zero value, then the user will not be allowed to back out of the multichoice with the B button.
 	.macro multichoice x:req, y:req, list:req, b:req
 	.byte 0x6f
 	.byte \x
@@ -833,7 +834,7 @@
 	.byte \b
 	.endm
 
-	@ Displays a multichoice box from which the user can choose a selection, and blocks script execution until a selection is made. Lists of options are predefined (gMultichoiceLists) and the one to be used is specified with list. The default argument determines the initial position of the cursor when the box is first opened; it is zero-indexed, and if it is too large, it is treated as 0x00. If b is set to a non-zero value, then the user will not be allowed to back out of the multichoice with the B button.
+	@ Displays a multichoice box from which the user can choose a selection, and blocks script execution until a selection is made. Lists of options are predefined (sMultichoiceLists) and the one to be used is specified with list. The default argument determines the initial position of the cursor when the box is first opened; it is zero-indexed, and if it is too large, it is treated as 0x00. If b is set to a non-zero value, then the user will not be allowed to back out of the multichoice with the B button.
 	.macro multichoicedefault x:req, y:req, list:req, default:req, b:req
 	.byte 0x70
 	.byte \x
@@ -843,7 +844,7 @@
 	.byte \b
 	.endm
 
-	@ Displays a multichoice box from which the user can choose a selection, and blocks script execution until a selection is made. Lists of options are predefined (gMultichoiceLists) and the one to be used is specified with list. The per_row argument determines how many list items will be shown on a single row of the box.
+	@ Displays a multichoice box from which the user can choose a selection, and blocks script execution until a selection is made. Lists of options are predefined (sMultichoiceLists) and the one to be used is specified with list. The per_row argument determines how many list items will be shown on a single row of the box.
 	.macro multichoicegrid x:req, y:req, list:req, per_row:req, B:req
 	.byte 0x71
 	.byte \x
@@ -877,20 +878,20 @@
 	.endm
 
 	@ Displays a box containing the front sprite for the specified (species) Pokemon species.
-	.macro drawmonpic species:req, x:req, y:req
+	.macro showmonpic species:req, x:req, y:req
 	.byte 0x75
 	.2byte \species
 	.byte \x
 	.byte \y
 	.endm
 
-	@ Hides all boxes displayed with drawmonpic.
-	.macro erasemonpic
+	@ Hides all boxes displayed with showmonpic.
+	.macro hidemonpic
 	.byte 0x76
 	.endm
 
 	@ Draws an image of the winner of the contest. In FireRed, this command is a nop. (The argument is discarded.)
-	.macro drawcontestwinner a:req
+	.macro showcontestwinner a:req
 	.byte 0x77
 	.byte \a
 	.endm
@@ -901,15 +902,15 @@
 	.4byte \text
 	.endm
 
-	@ Gives the player one of the specified (species) Pokemon at level level holding item. The unknown arguments should all be zeroes.
-	.macro givemon species:req, level:req, item:req, unknown1:req, unknown2:req, unknown3:req
+	@ Gives the player one of the specified (species) Pokemon at level level holding item. The trailing 0s are unused parameters
+	.macro givemon species:req, level:req, item:req
 	.byte 0x79
 	.2byte \species
 	.byte \level
 	.2byte \item
-	.4byte \unknown1
-	.4byte \unknown2
-	.byte \unknown3
+	.4byte 0x0
+	.4byte 0x0
+	.byte 0
 	.endm
 
 	.macro giveegg species:req
@@ -1079,9 +1080,11 @@
 	.byte \check
 	.endm
 
-	@ Hides the secondary box spawned by showmoney.
+	@ Hides the secondary box spawned by showmoney. Consumption of the x and y arguments was dummied out.
 	.macro hidemoneybox
 	.byte 0x94
+	.byte 0  @ \x
+	.byte 0  @ \y
 	.endm
 
 	@ Updates the secondary box spawned by showmoney. Consumes but does not use arguments.
@@ -1089,6 +1092,7 @@
 	.byte 0x95
 	.byte \x
 	.byte \y
+	.byte 0 @ 1 = don't perform this command. Always 0 in vanilla. Why this is a thing is beyond me.
 	.endm
 
 	@ Gets the price reduction for the index given. In FireRed, this command is a nop.
@@ -1466,31 +1470,34 @@
 	.byte \location
 	.endm
 
-	.macro mossdeepgym1 unknown:req
+	@ For the rotating tile puzzles in Mossdeep Gym/Trick House Room 7. Moves the objects on the colored puzzle specified by puzzleNumber one rotation
+	.macro moverotatingtileobjects puzzleNumber:req
 	.byte 0xd3
-	.2byte \unknown
+	.2byte \puzzleNumber
 	.endm
 
-	.macro mossdeepgym2
+	@ For the rotating tile puzzles in Mossdeep Gym/Trick House Room 7. Updates the facing direction of all objects on the puzzle tiles
+	.macro turnrotatingtileobjects
 	.byte 0xd4
 	.endm
 
-	@ In FireRed, this command is a nop.
-	.macro mossdeepgym3 var:req
+	@ For the rotating tile puzzles in Mossdeep Gym/Trick House Room 7. Allocates memory for the puzzle objects. isTrickHouse is needed to determine which of the two maps the puzzle is on, in order to know where in the tileset the puzzle tiles start. In FireRed, this command is a nop.
+	.macro initrotatingtilepuzzle isTrickHouse:req
 	.byte 0xd5
-	.2byte \var
+	.2byte \isTrickHouse
 	.endm
 
-	.macro mossdeepgym4
+	@ For the rotating tile puzzles in Mossdeep Gym/Trick House Room 7. Frees the memory allocated for the puzzle objects.
+	.macro freerotatingtilepuzzle
 	.byte 0xd6
 	.endm
 
-	.macro warp7 map:req, byte:req, word1:req, word2:req
+	.macro warpmossdeepgym map:req, warpId:req, x:req, y:req
 	.byte 0xd7
 	map \map
-	.byte \byte
-	.2byte \word1
-	.2byte \word2
+	.byte \warpId
+	.2byte \x
+	.2byte \y
 	.endm
 
 	.macro cmdD8
@@ -1501,7 +1508,7 @@
 	.byte 0xd9
 	.endm
 
-	.macro hidebox2
+	.macro closebraillemessage
 	.byte 0xda
 	.endm
 
@@ -1625,6 +1632,14 @@
 	call_if 5, \dest
 	.endm
 
+	.macro vgoto_if_eq dest:req
+	vgoto_if 1, \dest
+	.endm
+
+	.macro vgoto_if_ne dest:req
+	vgoto_if 0, \dest
+	.endm
+
 	.macro switch var:req
 	copyvar VAR_0x8000, \var
 	.endm
@@ -1640,6 +1655,7 @@
 	MSGBOX_DEFAULT = 4
 	MSGBOX_YESNO = 5
 	MSGBOX_AUTOCLOSE = 6
+	MSGBOX_GETPOINTS = 9
 
 	YES = 1
 	NO  = 0
@@ -1665,4 +1681,11 @@
 	special SetMatchCallRegisteredFlag
 	setorcopyvar VAR_0x8000, \trainer
 	callstd STD_REGISTER_MATCH_CALL
+	.endm
+
+	.macro dofieldeffectsparkle x:req, y:req, priority:req
+	setfieldeffectargument 0, \x
+	setfieldeffectargument 1, \y
+	setfieldeffectargument 2, \priority
+	dofieldeffect FLDEFF_SPARKLE
 	.endm

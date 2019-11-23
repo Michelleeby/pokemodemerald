@@ -24,15 +24,17 @@
 #include "tv.h"
 #include "battle_factory.h"
 #include "constants/battle_frontier.h"
+#include "constants/battle_tower.h"
 #include "constants/items.h"
 #include "constants/trainers.h"
 #include "constants/event_objects.h"
 #include "constants/moves.h"
 #include "constants/species.h"
 #include "constants/easy_chat.h"
+#include "constants/tv.h"
 
-extern const u8 MossdeepCity_SpaceCenter_2F_EventScript_224157[];
-extern const u8 MossdeepCity_SpaceCenter_2F_EventScript_224166[];
+extern const u8 MossdeepCity_SpaceCenter_2F_EventScript_MaxieTrainer[];
+extern const u8 MossdeepCity_SpaceCenter_2F_EventScript_TabithaTrainer[];
 
 // EWRAM vars.
 EWRAM_DATA const struct BattleFrontierTrainer *gFacilityTrainers = NULL;
@@ -51,7 +53,7 @@ static void AwardBattleTowerRibbons(void);
 static void SaveBattleTowerProgress(void);
 static void sub_8163914(void);
 static void nullsub_61(void);
-static void SpriteCB_Null6(void);
+static void nullsub_116(void);
 static void sub_81642A0(void);
 static void sub_8164828(void);
 static void sub_8164B74(void);
@@ -1019,7 +1021,7 @@ struct
     u8 level;
     u8 nature;
     u8 evs[6];
-    u16 moves[4];
+    u16 moves[MAX_MON_MOVES];
 } const sStevenMons[3] =
 {
     {
@@ -1050,24 +1052,24 @@ struct
 
 #include "data/battle_frontier/battle_tent.h"
 
-static void (* const gUnknown_085DF96C[])(void) =
+static void (* const sBattleTowerFuncs[])(void) =
 {
-    sub_8161F94,
-    sub_8162054,
-    sub_81620F4,
-    ChooseNextBattleTowerTrainer,
-    sub_81621C0,
-    AwardBattleTowerRibbons,
-    SaveBattleTowerProgress,
-    sub_8163914,
-    nullsub_61,
-    SpriteCB_Null6,
-    sub_81642A0,
-    sub_8164828,
-    sub_8164B74,
-    sub_8164DCC,
-    sub_8164DE4,
-    sub_8164E04,
+    [BATTLE_TOWER_FUNC_0] = sub_8161F94,
+    [BATTLE_TOWER_FUNC_1] = sub_8162054,
+    [BATTLE_TOWER_FUNC_2] = sub_81620F4,
+    [BATTLE_TOWER_FUNC_CHOOSE_TRAINER] = ChooseNextBattleTowerTrainer,
+    [BATTLE_TOWER_FUNC_4] = sub_81621C0,
+    [BATTLE_TOWER_FUNC_GIVE_RIBBONS] = AwardBattleTowerRibbons,
+    [BATTLE_TOWER_FUNC_SAVE] = SaveBattleTowerProgress,
+    [BATTLE_TOWER_FUNC_7] = sub_8163914,
+    [BATTLE_TOWER_FUNC_NOP] = nullsub_61,
+    [BATTLE_TOWER_FUNC_NOP2] = nullsub_116,
+    [BATTLE_TOWER_FUNC_10] = sub_81642A0,
+    [BATTLE_TOWER_FUNC_11] = sub_8164828,
+    [BATTLE_TOWER_FUNC_12] = sub_8164B74,
+    [BATTLE_TOWER_FUNC_13] = sub_8164DCC,
+    [BATTLE_TOWER_FUNC_14] = sub_8164DE4,
+    [BATTLE_TOWER_FUNC_15] = sub_8164E04,
 };
 
 static const u32 gUnknown_085DF9AC[][2] =
@@ -1144,9 +1146,9 @@ static const u16 gUnknown_085DFA52[] =
 };
 
 // code
-void sub_8161F74(void)
+void CallBattleTowerFunc(void)
 {
-    gUnknown_085DF96C[gSpecialVar_0x8004]();
+    sBattleTowerFuncs[gSpecialVar_0x8004]();
 }
 
 static void sub_8161F94(void)
@@ -1561,7 +1563,7 @@ void PutNewBattleTowerRecord(struct EmeraldBattleTowerRecord *newRecordEm)
     for (i = 0; i < 5; i++)
     {
         k = 0;
-        for (j = 0; j < 4; j++)
+        for (j = 0; j < TRAINER_ID_LENGTH; j++)
         {
             if (gSaveBlock2Ptr->frontier.towerRecords[i].trainerId[j] != newRecord->trainerId[j])
                 break;
@@ -2349,9 +2351,9 @@ void DoSpecialTrainerBattle(void)
         gBattleTypeFlags = BATTLE_TYPE_TRAINER | BATTLE_TYPE_DOUBLE | BATTLE_TYPE_TWO_OPPONENTS | BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER;
         FillPartnerParty(TRAINER_STEVEN_PARTNER);
         gApproachingTrainerId = 0;
-        BattleSetup_ConfigureTrainerBattle(MossdeepCity_SpaceCenter_2F_EventScript_224157 + 1);
+        BattleSetup_ConfigureTrainerBattle(MossdeepCity_SpaceCenter_2F_EventScript_MaxieTrainer + 1);
         gApproachingTrainerId = 1;
-        BattleSetup_ConfigureTrainerBattle(MossdeepCity_SpaceCenter_2F_EventScript_224166 + 1);
+        BattleSetup_ConfigureTrainerBattle(MossdeepCity_SpaceCenter_2F_EventScript_TabithaTrainer + 1);
         gPartnerTrainerId = TRAINER_STEVEN_PARTNER;
         CreateTask(Task_StartBattleAfterTransition, 1);
         PlayMapChosenOrBattleBGM(0);
@@ -2437,7 +2439,7 @@ static void nullsub_61(void)
 
 }
 
-static void SpriteCB_Null6(void)
+static void nullsub_116(void)
 {
 
 }
@@ -3026,9 +3028,9 @@ static void AwardBattleTowerRibbons(void)
                 ribbons[i] = prevBest;
             }
         }
-        if (ribbons[0].count > 4)
+        if (ribbons[0].count > NUM_CUTIES_RIBBONS)
         {
-            sub_80EE4DC(&gSaveBlock1Ptr->playerParty[ribbons[0].partyIndex], ribbonType);
+            TryPutSpotTheCutiesOnAir(&gSaveBlock1Ptr->playerParty[ribbons[0].partyIndex], ribbonType);
         }
     }
 }
@@ -3190,8 +3192,8 @@ static void FillPartnerParty(u16 trainerId)
                       sStevenMons[i].level,
                       sStevenMons[i].fixedIV,
                       TRUE, i, // BUG: personality was stored in the 'j' variable. As a result, Steven's pokemon do not have the intended natures.
-                      TRUE, STEVEN_OTID);
-            for (j = 0; j < 6; j++)
+                      OT_ID_PRESET, STEVEN_OTID);
+            for (j = 0; j < PARTY_SIZE; j++)
                 SetMonData(&gPlayerParty[3 + i], MON_DATA_HP_EV + j, &sStevenMons[i].evs[j]);
             for (j = 0; j < MAX_MON_MOVES; j++)
                 SetMonMoveSlot(&gPlayerParty[3 + i], sStevenMons[i].moves[j], j);
@@ -3308,7 +3310,7 @@ bool32 RubyBattleTowerRecordToEmerald(struct RSBattleTowerRecord *src, struct Em
 
         for (i = 0; i < PLAYER_NAME_LENGTH + 1; i++)
             dst->name[i] = src->name[i];
-        for (i = 0; i < 4; i++)
+        for (i = 0; i < TRAINER_ID_LENGTH; i++)
             dst->trainerId[i] = src->trainerId[i];
         for (i = 0; i < 6; i++)
             dst->greeting[i] = src->greeting[i];
@@ -3357,7 +3359,7 @@ bool32 EmeraldBattleTowerRecordToRuby(struct EmeraldBattleTowerRecord *src, stru
 
         for (i = 0; i < PLAYER_NAME_LENGTH + 1; i++)
             dst->name[i] = src->name[i];
-        for (i = 0; i < 4; i++)
+        for (i = 0; i < TRAINER_ID_LENGTH; i++)
             dst->trainerId[i] = src->trainerId[i];
         for (i = 0; i < 6; i++)
             dst->greeting[i] = src->greeting[i];

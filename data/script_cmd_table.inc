@@ -100,7 +100,7 @@ gScriptCmdTable:: @ 81DB67C
 	.4byte ScrCmd_settrainerflag
 	.4byte ScrCmd_cleartrainerflag
 	.4byte ScrCmd_setobjectxyperm
-	.4byte ScrCmd_moveobjectoffscreen
+	.4byte ScrCmd_copyobjectxytoperm
 	.4byte ScrCmd_setobjectmovementtype
 	.4byte ScrCmd_waitmessage
 	.4byte ScrCmd_message
@@ -211,14 +211,14 @@ gScriptCmdTable:: @ 81DB67C
 	.4byte ScrCmd_nop1
 	.4byte ScrCmd_warpD1
 	.4byte ScrCmd_setmonmetlocation
-	.4byte ScrCmd_mossdeepgym1
-	.4byte ScrCmd_mossdeepgym2
-	.4byte ScrCmd_mossdeepgym3
-	.4byte ScrCmd_mossdeepgym4
-	.4byte ScrCmd_warpD7
+	.4byte ScrCmd_moverotatingtileobjects
+	.4byte ScrCmd_turnrotatingtileobjects
+	.4byte ScrCmd_initrotatingtilepuzzle
+	.4byte ScrCmd_freerotatingtilepuzzle
+	.4byte ScrCmd_warpmossdeepgym
 	.4byte ScrCmd_cmdD8
 	.4byte ScrCmd_cmdD9
-	.4byte ScrCmd_cmdDA
+	.4byte ScrCmd_closebraillemessage
 	.4byte ScrCmd_cmdDB
 	.4byte ScrCmd_fadescreenswapbuffers
 	.4byte ScrCmd_buffertrainerclassname

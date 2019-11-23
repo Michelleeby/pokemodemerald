@@ -3093,90 +3093,93 @@ extern const u32 gPokeblock_Gfx[];
 
 extern const u32 gItemIcon_QuestionMark[];
 extern const u32 gItemIconPalette_QuestionMark[];
-extern const u32 gUnknown_08DB7AA0[];
-extern const u32 gUnknown_08DB7B34[];
-extern const u32 gUnknown_08DB7B5C[];
-extern const u32 gUnknown_08DB7BEC[];
-extern const u32 gUnknown_08DB7C08[];
-extern const u32 gUnknown_08DB7CE8[];
-extern const u32 gUnknown_08DB7D08[];
-extern const u32 gUnknown_08DB7DCC[];
-extern const u32 gUnknown_08DB7DF4[];
-extern const u32 gUnknown_08DB7EA0[];
-extern const u32 gUnknown_08DB7EC4[];
-extern const u32 gUnknown_08DB7F60[];
-extern const u32 gUnknown_08DB7F7C[];
-extern const u32 gUnknown_08DB8070[];
-extern const u32 gUnknown_08DB808C[];
-extern const u32 gUnknown_08DB8138[];
-extern const u32 gUnknown_08DB8160[];
-extern const u32 gUnknown_08DB8218[];
-extern const u32 gUnknown_08DB823C[];
-extern const u32 gUnknown_08DB8300[];
-extern const u32 gUnknown_08DB8328[];
-extern const u32 gUnknown_08DB8430[];
-extern const u32 gUnknown_08DB8458[];
-extern const u32 gUnknown_08DB8528[];
-extern const u32 gUnknown_08DB854C[];
-extern const u32 gUnknown_08DB862C[];
-extern const u32 gUnknown_08DB8654[];
-extern const u32 gUnknown_08DB86C4[];
-extern const u32 gUnknown_08DB86E0[];
-extern const u32 gUnknown_08DB8750[];
-extern const u32 gUnknown_08DB876C[];
-extern const u32 gUnknown_08DB87DC[];
-extern const u32 gUnknown_08DB87F8[];
-extern const u32 gUnknown_08DB88D8[];
-extern const u32 gUnknown_08DB8900[];
-extern const u32 gUnknown_08DB89E0[];
-extern const u32 gUnknown_08DB8A08[];
-extern const u32 gUnknown_08DB8A68[];
-extern const u32 gUnknown_08DB8A84[];
-extern const u32 gUnknown_08DB8B40[];
-extern const u32 gUnknown_08DB8B68[];
-extern const u32 gUnknown_08DB8C40[];
-extern const u32 gUnknown_08DB8C5C[];
-extern const u32 gUnknown_08DB8CF4[];
-extern const u32 gUnknown_08DB8D18[];
-extern const u32 gUnknown_08DB8DB0[];
-extern const u32 gUnknown_08DB8DD4[];
-extern const u32 gUnknown_08DB8E80[];
-extern const u32 gUnknown_08DB8EA0[];
-extern const u32 gUnknown_08DB8F58[];
-extern const u32 gUnknown_08DB8F7C[];
-extern const u32 gUnknown_08DB9038[];
-extern const u32 gUnknown_08DB9058[];
-extern const u32 gUnknown_08DB9130[];
-extern const u32 gUnknown_08DB9154[];
-extern const u32 gUnknown_08DB9218[];
-extern const u32 gUnknown_08DB9234[];
-extern const u32 gUnknown_08DB92FC[];
-extern const u32 gUnknown_08DB931C[];
-extern const u32 gUnknown_08DB93E8[];
-extern const u32 gUnknown_08DB940C[];
-extern const u32 gUnknown_08DB94CC[];
-extern const u32 gUnknown_08DB94E8[];
-extern const u32 gUnknown_08DB95AC[];
-extern const u32 gUnknown_08DB95D0[];
-extern const u32 gUnknown_08DB96C4[];
-extern const u32 gUnknown_08DB96EC[];
-extern const u32 gUnknown_08DB97F4[];
-extern const u32 gUnknown_08DB981C[];
-extern const u32 gUnknown_08DB9908[];
-extern const u32 gUnknown_08DB9930[];
-extern const u32 gUnknown_08DB9A54[];
-extern const u32 gUnknown_08DB9A7C[];
-extern const u32 gUnknown_08DB9B7C[];
-extern const u32 gUnknown_08DB9BA4[];
-extern const u32 gUnknown_08DB9CB0[];
-extern const u32 gUnknown_08DB9CD8[];
-extern const u32 gUnknown_08DB9DAC[];
-extern const u32 gUnknown_08DB9DD4[];
-extern const u32 gUnknown_08DB9EE4[];
-extern const u32 gUnknown_08DB9F08[];
-extern const u32 gUnknown_08DB9FFC[];
-extern const u32 gUnknown_08DBA020[];
-extern const u32 gUnknown_08DBA12C[];
+
+// Decorations
+extern const u32 gDecorIcon_HeavyDesk[];
+extern const u32 gDecorIconPalette_HeavyDesk[];
+extern const u32 gDecorIcon_RaggedDesk[];
+extern const u32 gDecorIconPalette_RaggedDesk[];
+extern const u32 gDecorIcon_ComfortDesk[];
+extern const u32 gDecorIconPalette_ComfortDesk[];
+extern const u32 gDecorIcon_PrettyDesk[];
+extern const u32 gDecorIconPalette_PrettyDesk[];
+extern const u32 gDecorIcon_BrickDesk[];
+extern const u32 gDecorIconPalette_BrickDesk[];
+extern const u32 gDecorIcon_CampDesk[];
+extern const u32 gDecorIconPalette_CampDesk[];
+extern const u32 gDecorIcon_HardDesk[];
+extern const u32 gDecorIconPalette_HardDesk[];
+extern const u32 gDecorIcon_RedPlant[];
+extern const u32 gDecorIconPalette_RedPlant[];
+extern const u32 gDecorIcon_TropicalPlant[];
+extern const u32 gDecorIconPalette_TropicalPlant[];
+extern const u32 gDecorIcon_PrettyFlowers[];
+extern const u32 gDecorIconPalette_PrettyFlowers[];
+extern const u32 gDecorIcon_ColorfulPlant[];
+extern const u32 gDecorIconPalette_ColorfulPlant[];
+extern const u32 gDecorIcon_BigPlant[];
+extern const u32 gDecorIconPalette_BigPlant[];
+extern const u32 gDecorIcon_GorgeousPlant[];
+extern const u32 gDecorIconPalette_GorgeousPlant[];
+extern const u32 gDecorIcon_RedBrick[];
+extern const u32 gDecorIconPalette_RedBrick[];
+extern const u32 gDecorIcon_YellowBrick[];
+extern const u32 gDecorIconPalette_YellowBrick[];
+extern const u32 gDecorIcon_BlueBrick[];
+extern const u32 gDecorIconPalette_BlueBrick[];
+extern const u32 gDecorIcon_RedTent[];
+extern const u32 gDecorIconPalette_RedTent[];
+extern const u32 gDecorIcon_BlueTent[];
+extern const u32 gDecorIconPalette_BlueTent[];
+extern const u32 gDecorIcon_SolidBoard[];
+extern const u32 gDecorIconPalette_SolidBoard[];
+extern const u32 gDecorIcon_Slide[];
+extern const u32 gDecorIconPalette_Slide[];
+extern const u32 gDecorIcon_Tire[];
+extern const u32 gDecorIconPalette_Tire[];
+extern const u32 gDecorIcon_Stand[];
+extern const u32 gDecorIconPalette_Stand[];
+extern const u32 gDecorIcon_BreakableDoor[];
+extern const u32 gDecorIconPalette_BreakableDoor[];
+extern const u32 gDecorIcon_SandOrnament[];
+extern const u32 gDecorIconPalette_SandOrnament[];
+extern const u32 gDecorIcon_GlassOrnament[];
+extern const u32 gDecorIconPalette_GlassOrnament[];
+extern const u32 gDecorIcon_SurfMat[];
+extern const u32 gDecorIconPalette_SurfMat[];
+extern const u32 gDecorIcon_ThunderMat[];
+extern const u32 gDecorIconPalette_ThunderMat[];
+extern const u32 gDecorIcon_FireBlastMat[];
+extern const u32 gDecorIconPalette_FireBlastMat[];
+extern const u32 gDecorIcon_PowderSnowMat[];
+extern const u32 gDecorIconPalette_PowderSnowMat[];
+extern const u32 gDecorIcon_AttractMat[];
+extern const u32 gDecorIconPalette_AttractMat[];
+extern const u32 gDecorIcon_FissureMat[];
+extern const u32 gDecorIconPalette_FissureMat[];
+extern const u32 gDecorIcon_SpikesMat[];
+extern const u32 gDecorIconPalette_SpikesMat[];
+extern const u32 gDecorIcon_SnorlaxDoll[];
+extern const u32 gDecorIconPalette_SnorlaxDoll[];
+extern const u32 gDecorIcon_RhydonDoll[];
+extern const u32 gDecorIconPalette_RhydonDoll[];
+extern const u32 gDecorIcon_LaprasDoll[];
+extern const u32 gDecorIconPalette_LaprasDoll[];
+extern const u32 gDecorIcon_VenusaurDoll[];
+extern const u32 gDecorIconPalette_VenusaurDoll[];
+extern const u32 gDecorIcon_CharizardDoll[];
+extern const u32 gDecorIconPalette_CharizardDoll[];
+extern const u32 gDecorIcon_BlastoiseDoll[];
+extern const u32 gDecorIconPalette_BlastoiseDoll[];
+extern const u32 gDecorIcon_WailmerDoll[];
+extern const u32 gDecorIconPalette_WailmerDoll[];
+extern const u32 gDecorIcon_RegirockDoll[];
+extern const u32 gDecorIconPalette_RegirockDoll[];
+extern const u32 gDecorIcon_RegiceDoll[];
+extern const u32 gDecorIconPalette_RegiceDoll[];
+extern const u32 gDecorIcon_RegisteelDoll[];
+extern const u32 gDecorIconPalette_RegisteelDoll[];
+
 extern const u32 gWallclock_Gfx[];
 extern const u16 gWallclockMale_Pal[];
 extern const u16 gWallclockFemale_Pal[];
@@ -3205,7 +3208,7 @@ extern const u32 gBattleTextboxTiles[];
 extern const u32 gBattleTextboxTilemap[];
 extern const u32 gBattleTextboxPalette[];
 extern const u32 gUnknown_08D778F0[];
-extern const u32 gUnknown_08D77B0C[];
+extern const u32 gVsLettersGfx[];
 extern const u32 gUnknown_08D77AE4[];
 extern const u32 gUnknown_08D779D8[];
 extern const u32 gUnknown_08D857A8[];
@@ -3301,10 +3304,10 @@ extern const u32 gPokedexSearch1_Tilemap[];
 extern const u16 gPokedexSearchMenu_Pal[];
 
 // berry tag screen
-extern const u32 gUnknown_08D9BB44[];
-extern const u32 gUnknown_08D9BF98[];
-extern const u32 gUnknown_08D9C13C[];
-extern const u32 gUnknown_08D9BEF0[];
+extern const u32 gBerryCheck_Gfx[];
+extern const u32 gBerryCheck_Pal[];
+extern const u32 gBerryTag_Gfx[];
+extern const u32 gBerryTag_Pal[];
 
 // rayquaza scene gfx
 extern const u32 gRaySceneGroudon_Gfx[];
@@ -3859,6 +3862,7 @@ extern const u8 gFireRedMenuElements_Gfx[];
 
 // item menu graphics
 extern const u32 gBagScreen_Gfx[];
+extern const u32 gBagScreen_GfxTileMap[];
 extern const u32 gBagScreenFemale_Pal[];
 extern const u32 gBagScreenMale_Pal[];
 extern const u8 gBagMenuHMIcon_Gfx[];
@@ -3912,9 +3916,9 @@ extern const u16 gIntro2FlygonPal[];
 extern const u32 gIntro2FlygonGfx[];
 
 // party menu graphics
-extern const u32 gPartyMenuMisc_Gfx[];
-extern const u32 gPartyMenuMisc_Tilemap[];
-extern const u32 gPartyMenuMisc_Pal[];
+extern const u32 gPartyMenuBg_Gfx[];
+extern const u32 gPartyMenuBg_Tilemap[];
+extern const u32 gPartyMenuBg_Pal[];
 
 // berry pics
 extern const u32 gBerryPic_Cheri[];
@@ -4004,10 +4008,13 @@ extern const u32 gBerryPalette_Starf[];
 extern const u32 gBerryPic_Enigma[];
 extern const u32 gBerryPalette_Enigma[];
 
-//credits
-extern const u32 gCreditsCopyrightEnd_Gfx[];
-
 //pokenav
+extern const u16 gPokenavCondition_Pal[];
+extern const u32 gPokenavCondition_Gfx[];
+extern const u32 gPokenavCondition_Tilemap[];
+extern const u16 gPokenavOptions_Tilemap[];
+extern const u32 gPokenavOptions_Gfx[];
+extern const u16 gPokenavOptions_Pal[];
 extern const u8 gPokenavConditionMarker_Gfx[];
 extern const u16 gPokenavConditionMarker_Pal[];
 extern const u16 gPokenavLeftHeader_Pal[];
@@ -4026,6 +4033,9 @@ extern const u32 gPokenavLeftHeaderBeauty_Gfx[];
 extern const u32 gPokenavLeftHeaderCute_Gfx[];
 extern const u32 gPokenavLeftHeaderSmart_Gfx[];
 extern const u32 gPokenavLeftHeaderTough_Gfx[];
+extern const u16 gUnknown_08DDE010[];
+extern const u32 gUnknown_08DDE030[];
+extern const u32 gUnknown_08DDE12C[];
 
 extern const u32 gPageInfoTilemap[];
 extern const u32 gUnknown_08D98CC8[];
@@ -4079,7 +4089,7 @@ extern const u32 gContestConfetti_Pal[];
 extern const u32 gUnknown_08C093F0[];
 extern const u32 gSubstituteDollTilemap[];
 extern const u32 gSubstituteDollGfx[];
-extern const u16 gSubstituteDollPal[];
+extern const u32 gSubstituteDollPal[];
 extern const u32 gHealthboxSinglesPlayerGfx[];
 extern const u32 gHealthboxSinglesOpponentGfx[];
 extern const u32 gHealthboxDoublesPlayerGfx[];
@@ -4092,11 +4102,11 @@ extern const u16 gBattleInterface_BallDisplayPal[];
 extern const u32 gBagSwapLineGfx[];
 extern const u32 gBagSwapLinePal[];
 
-extern const u32 gUnknown_08D9ADD0[];
-extern const u32 gUnknown_08D9AE04[];
+extern const u32 gBattleFrontierGfx_PyramidBag[];
+extern const u32 gBattleFrontierGfx_PyramidBag_Pal[];
+extern const u32 gBattleFrontierGfx_PyramidBagTileMap[];
 extern const u32 gUnknown_08D9AF44[];
 extern const u16 gUnknown_0860F074[];
-extern const u32 gBattleFrontierGfx_PyramidBag[];
 
 extern const u32 gTitleScreenEmeraldVersionGfx[];
 extern const u32 gTitleScreenPressStartGfx[];
@@ -4112,7 +4122,7 @@ extern const u32 gUnknown_08D84970[];
 extern const u32 gUnknown_08D84F00[];
 extern const u32 gUnknown_08D85444[];
 extern const u32 gUnknown_08D85358[];
-extern const u32 gUnknown_08D85600[];
+extern const u32 gBattleWindowTextPalette[];
 extern const u32 gUnknown_08D854C8[];
 extern const u32 gUnknown_08D82F10[];
 extern const u32 gUnknown_08D834FC[];
@@ -4762,7 +4772,6 @@ extern const u32 gBattleStatMask6_Pal[];
 extern const u32 gBattleStatMask7_Pal[];
 extern const u32 gBattleStatMask8_Pal[];
 
-extern const u32 gUnknown_08D9A88C[];
 extern const u32 gContestMiscGfx[];
 extern const u32 gContestAudienceGfx[];
 extern const u8 gContestApplauseMeterGfx[];
@@ -4839,13 +4848,13 @@ extern const u32 gCableCarCord_Gfx[];
 extern const u16 gCableCar_Pal[];
 
 // Trade
-extern const u16 gUnknown_08DDB3E4[];
-extern const u8 gUnknown_08DDB464[];
+extern const u16 gTradeMenu_Pal[];
+extern const u8 gTradeMenu_Gfx[];
 extern const u16 gUnknown_08DDCF04[];
 extern const u16 gTradeGba2_Pal[];
 extern const u8 gTradeGba_Gfx[];
-extern const u16 gUnknown_08DDD704[];
-extern const u8 gUnknown_08DDC6E4[];
+extern const u16 gTradeMenuMonBox_Tilemap[];
+extern const u8 gTradeButtons_Gfx[];
 extern const u16 gUnknown_08DDB444[];
 
 // Party menu
@@ -4936,9 +4945,19 @@ extern const u32 gLinkMiscMenu_Tilemap[];
 // Use Pokeblock
 extern const u8 gPokenavConditionCancel_Gfx[];
 extern const u16 gPokenavConditionCancel_Pal[];
+extern const u8 gUsePokeblockUpDown_Gfx[];
+extern const u16 gUsePokeblockUpDown_Pal[];
+extern const u16 gUsePokeblockCondition_Pal[];
 
 // Berry Crush
 extern const u32 gUnknown_08DE34B8[];
 extern const u16 gUnknown_08DE3398[];
+
+// Pokenav
+extern const u32 gPokenavMessageBox_Gfx[];
+extern const u32 gPokenavMessageBox_Tilemap[];
+extern const u16 gPokenavMessageBox_Pal[];
+extern const u32 gPokenavOptions_Gfx[];
+extern const u16 gPokenavOptions_Pal[];
 
 #endif //GUARD_GRAPHICS_H

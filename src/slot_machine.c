@@ -14,7 +14,7 @@
 #include "util.h"
 #include "text.h"
 #include "menu.h"
-#include "alloc.h"
+#include "malloc.h"
 #include "bg.h"
 #include "gpu_regs.h"
 #include "coins.h"
@@ -350,7 +350,7 @@ static EWRAM_DATA struct SpriteSheet *sUnknown_0203AB30 = NULL;
 static EWRAM_DATA struct SlotMachineEwramStruct *sSlotMachine = NULL;
 
 // IWRAM bss
-static IWRAM_DATA struct SpriteFrameImage *gUnknown_03001188[26];
+static struct SpriteFrameImage *gUnknown_03001188[26];
 
 // Const rom data.
 extern const struct UnkStruct1 *const gUnknown_083ED048[];
@@ -1060,7 +1060,7 @@ static bool8 SlotAction9(struct Task *task)
     ReelTasks_SetUnkTaskData(1);
     ReelTasks_SetUnkTaskData(2);
 
-    sub_80EEC80();  // something with daily slot variable
+    IncrementDailySlotsUses();
 
     task->data[0] = 0;
     if (sSlotMachine->luckyFlags & LUCKY_BIAS_REELTIME)
