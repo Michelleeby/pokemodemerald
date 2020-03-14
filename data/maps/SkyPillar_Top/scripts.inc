@@ -76,16 +76,16 @@ SkyPillar_Top_EventScript_RanFromRayquaza:: @ 8239771
 	end
 
 SkyPillar_Top_EventScript_DefeatedRayquaza2:: @ 823977C
-	fadescreenswapbuffers 1
+	fadescreenswapbuffers FADE_TO_BLACK
 	removeobject VAR_LAST_TALKED
-	fadescreenswapbuffers 0
+	fadescreenswapbuffers FADE_FROM_BLACK
 	releaseall
 	end
 
 SkyPillar_Top_EventScript_RanFromRayquaza2:: @ 8239785
-	fadescreenswapbuffers 1
+	fadescreenswapbuffers FADE_TO_BLACK
 	removeobject VAR_LAST_TALKED
-	fadescreenswapbuffers 0
+	fadescreenswapbuffers FADE_FROM_BLACK
 	bufferspeciesname 0, VAR_0x8004
 	msgbox gText_LegendaryFlewAway, MSGBOX_DEFAULT
 	releaseall
@@ -94,10 +94,10 @@ SkyPillar_Top_EventScript_RanFromRayquaza2:: @ 8239785
 SkyPillar_Top_EventScript_AwakenRayquaza:: @ 823979A
 	lockall
 	fadeoutbgm 1
-	applymovement EVENT_OBJ_ID_PLAYER, Common_Movement_FaceUp
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_FaceUp
 	waitmovement 0
 	special SpawnCameraObject
-	applymovement EVENT_OBJ_ID_CAMERA, SkyPillar_Top_Movement_CameraPanUp
+	applymovement OBJ_EVENT_ID_CAMERA, SkyPillar_Top_Movement_CameraPanUp
 	waitmovement 0
 	special RemoveCameraObject
 	applymovement 1, SkyPillar_Top_Movement_RayquazaStir
@@ -127,7 +127,7 @@ SkyPillar_Top_EventScript_AwakenRayquaza:: @ 823979A
 	delay 20
 	fadeinbgm 1
 	special SpawnCameraObject
-	applymovement EVENT_OBJ_ID_CAMERA, SkyPillar_Top_Movement_CameraPanDown
+	applymovement OBJ_EVENT_ID_CAMERA, SkyPillar_Top_Movement_CameraPanDown
 	waitmovement 0
 	special RemoveCameraObject
 	setvar VAR_SOOTOPOLIS_CITY_STATE, 5

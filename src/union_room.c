@@ -10,7 +10,7 @@
 #include "dynamic_placeholder_text_util.h"
 #include "easy_chat.h"
 #include "event_data.h"
-#include "event_obj_lock.h"
+#include "event_object_lock.h"
 #include "field_control_avatar.h"
 #include "field_player_avatar.h"
 #include "field_screen_effect.h"
@@ -59,7 +59,7 @@ EWRAM_DATA u8 gUnknown_02022C2C = 0;
 EWRAM_DATA u8 gUnknown_02022C2D = 0;
 EWRAM_DATA union UnkUnion_Main gUnknown_02022C30 = {};
 EWRAM_DATA u32 gFiller_02022C34 = 0;
-EWRAM_DATA struct UnkLinkRfuStruct_02022B14Substruct gUnknown_02022C38 = {};
+EWRAM_DATA struct GFtgtGnameSub gUnknown_02022C38 = {};
 EWRAM_DATA u16 gUnionRoomOfferedSpecies = 0;
 EWRAM_DATA u8 gUnionRoomRequestedMonType = 0;
 static EWRAM_DATA struct UnionRoomTrade sUnionRoomTrade = {};
@@ -106,7 +106,7 @@ void sub_801AC54(void);
 void sub_80149D8(void);
 void MG_DrawTextBorder(u8 windowId);
 s8 mevent_message_print_and_prompt_yes_no(u8 *textState, u8 *arg1, u8 arg2, const u8 *str);
-bool32 sub_8016F1C(struct UnkLinkRfuStruct_02022B14 *arg0, s16 arg1);
+bool32 sub_8016F1C(struct GFtgtGname *arg0, s16 arg1);
 u8 sub_8016DF0(struct UnkStruct_Main4 *arg0, struct UnkStruct_Main4 *arg1, u32 arg2);
 void sub_8019F2C(void);
 static bool32 RegisterTradeMonAndGetIsEgg(u32 monId, struct UnionRoomTrade *trade);
@@ -147,30 +147,25 @@ void nullsub_14(u8 windowId, s32 itemId, u8 y);
 #include "data/union_room.h"
 
 // code
-void nullsub_89(u8 taskId)
-{
-
-}
-
 void sub_80124EC(u8 windowId, u8 arg1, u8 stringId)
 {
     FillWindowPixelBuffer(windowId, PIXEL_FILL(1));
     switch (arg1 << 8)
     {
     case 0x200:
-        sub_80173E0(windowId, 1, gUnknown_082EDB60[0][stringId - 1], 0, 1, 0);
+        sub_80173E0(windowId, 1, sPlayersNeededOrModeTexts[0][stringId - 1], 0, 1, 0);
         break;
     case 0x400:
-        sub_80173E0(windowId, 1, gUnknown_082EDB60[1][stringId - 1], 0, 1, 0);
+        sub_80173E0(windowId, 1, sPlayersNeededOrModeTexts[1][stringId - 1], 0, 1, 0);
         break;
     case 0x2500:
-        sub_80173E0(windowId, 1, gUnknown_082EDB60[2][stringId - 1], 0, 1, 0);
+        sub_80173E0(windowId, 1, sPlayersNeededOrModeTexts[2][stringId - 1], 0, 1, 0);
         break;
     case 0x3500:
-        sub_80173E0(windowId, 1, gUnknown_082EDB60[3][stringId - 1], 0, 1, 0);
+        sub_80173E0(windowId, 1, sPlayersNeededOrModeTexts[3][stringId - 1], 0, 1, 0);
         break;
     case 0x2400:
-        sub_80173E0(windowId, 1, gUnknown_082EDB60[4][stringId - 1], 0, 1, 0);
+        sub_80173E0(windowId, 1, sPlayersNeededOrModeTexts[4][stringId - 1], 0, 1, 0);
         break;
     }
 
@@ -183,7 +178,7 @@ void sub_80125BC(u8 windowId)
     u8 *txtPtr;
 
     sub_80173E0(windowId, 1, gSaveBlock2Ptr->playerName, 0, 1, 0);
-    txtPtr = StringCopy(text, gText_UnkCtrlCodeF907);
+    txtPtr = StringCopy(text, sText_ID);
     ConvertIntToDecimalStringN(txtPtr, ReadAsU16(gSaveBlock2Ptr->playerTrainerId), STR_CONV_MODE_LEADING_ZEROS, 5);
     sub_80173E0(windowId, 1, text, 0, 0x11, 0);
 }
@@ -197,7 +192,7 @@ void sub_801262C(u8 *dst, u8 caseId)
     case 14 ... 16:
     case 21 ... 28:
         // UB: argument *dst isn't used, instead it always prints to gStringVar4
-        StringExpandPlaceholders(gStringVar4, gText_AwaitingCommunication);
+        StringExpandPlaceholders(gStringVar4, sText_AwaitingCommunication);
         break;
     }
 }
@@ -274,7 +269,7 @@ void sub_8012780(u8 taskId)
         data->field_11 = AddWindow(&gUnknown_082F012C);
 
         FillWindowPixelBuffer(data->field_10, PIXEL_FILL(2));
-        sub_80173E0(data->field_10, 0, gUnknown_082EDBC4, 8, 1, 4);
+        sub_80173E0(data->field_10, 0, sText_BButtonCancel, 8, 1, 4);
         PutWindowTilemap(data->field_10);
         CopyWindowToVram(data->field_10, 2);
 
@@ -292,13 +287,13 @@ void sub_8012780(u8 taskId)
         data->state = 4;
         break;
     case 4:
-        StringCopy(gStringVar1, gUnknown_082F0048[gUnknown_02022C2C]);
+        StringCopy(gStringVar1, sLinkGroupActivityTexts[gUnknown_02022C2C]);
         if ((gUnknown_02022C2D >> 4) != 0)
         {
             if (data->field_13 > (gUnknown_02022C2D >> 4) - 1 && (gUnknown_02022C2D & 0xF) != 0)
-                StringExpandPlaceholders(gStringVar4, gText_AwaitingLink);
+                StringExpandPlaceholders(gStringVar4, sText_AwaitingLinkPressStart);
             else
-                StringExpandPlaceholders(gStringVar4, gText_AwaitingCommunication);
+                StringExpandPlaceholders(gStringVar4, sText_AwaitingCommunication);
         }
         else
         {
@@ -346,7 +341,7 @@ void sub_8012780(u8 taskId)
         break;
     case 10:
         id = ((gUnknown_02022C2C & 0xF) == 2) ? 1 : 0;
-        if (PrintOnTextbox(&data->textState, gUnknown_082EDDC4[id]))
+        if (PrintOnTextbox(&data->textState, sPlayerUnavailableTexts[id]))
         {
             data->field_13 = sub_8013398(data->field_0);
             RedrawListMenu(data->listTaskId);
@@ -355,7 +350,7 @@ void sub_8012780(u8 taskId)
         break;
     case 29:
         id = ((gUnknown_02022C2D & 0xF) == 2) ? 0 : 1;
-        if (PrintOnTextbox(&data->textState, gUnknown_082EDDC4[id]))
+        if (PrintOnTextbox(&data->textState, sPlayerUnavailableTexts[id]))
         {
             data->state = 21;
         }
@@ -405,7 +400,7 @@ void sub_8012780(u8 taskId)
                     else
                     {
                         sub_8018404(gStringVar1, &data->field_0->arr[data->field_13 - 1]);
-                        StringExpandPlaceholders(gStringVar4, gUnknown_082EDC9C);
+                        StringExpandPlaceholders(gStringVar4, sText_AnOKWasSentToPlayer);
                         data->state = 13;
                     }
 
@@ -443,7 +438,7 @@ void sub_8012780(u8 taskId)
             data->state = 17;
         break;
     case 15:
-        if (PrintOnTextbox(&data->textState, gUnknown_082EDC5C))
+        if (PrintOnTextbox(&data->textState, sText_AreTheseMembersOK))
             data->state = 16;
         break;
     case 16:
@@ -462,7 +457,7 @@ void sub_8012780(u8 taskId)
         }
         break;
     case 19:
-        if (PrintOnTextbox(&data->textState, gUnknown_082EDC78))
+        if (PrintOnTextbox(&data->textState, sText_CancelModeWithTheseMembers))
             data->state = 20;
         break;
     case 20:
@@ -509,7 +504,7 @@ void sub_8012780(u8 taskId)
         }
         break;
     case 30:
-        if (PrintOnTextbox(&data->textState, gUnknown_082EDD58))
+        if (PrintOnTextbox(&data->textState, sText_ModeWithTheseMembersWillBeCanceled))
             data->state = 23;
         break;
     case 21:
@@ -577,11 +572,11 @@ void sub_8012FC4(u8 *dst, u8 caseId)
     case 4:
     case 14:
     case 28:
-        StringExpandPlaceholders(dst, gUnknown_082EDBE8);
+        StringExpandPlaceholders(dst, sText_PlayerContactedYouForXAccept);
         break;
     case 21:
     case 22:
-        StringExpandPlaceholders(dst, gUnknown_082EDC0C);
+        StringExpandPlaceholders(dst, sText_PlayerContactedYouShareX);
         break;
     case 3:
     case 9:
@@ -594,7 +589,7 @@ void sub_8012FC4(u8 *dst, u8 caseId)
     case 25:
     case 26:
     case 27:
-        StringExpandPlaceholders(dst, gUnknown_082EDC34);
+        StringExpandPlaceholders(dst, sText_PlayerContactedYouAddToMembers);
         break;
     }
 }
@@ -625,7 +620,7 @@ void sub_80130B4(u8 *dst, u8 caseId)
     case 21:
     case 22:
     case 28:
-        StringExpandPlaceholders(dst, gUnknown_082EFC3C);
+        StringExpandPlaceholders(dst, sText_AwaitingPlayersResponse);
         break;
     case 3:
     case 9:
@@ -638,7 +633,7 @@ void sub_80130B4(u8 *dst, u8 caseId)
     case 25:
     case 26:
     case 27:
-        StringExpandPlaceholders(dst, gUnknown_082EFC54);
+        StringExpandPlaceholders(dst, sText_PlayerHasBeenAskedToRegisterYouPleaseWait);
         break;
     }
 }
@@ -654,7 +649,7 @@ void sub_8013160(u8 *dst, u8 caseId)
     case 21:
     case 22:
     case 28:
-        StringExpandPlaceholders(dst, gUnknown_082EDDF4);
+        StringExpandPlaceholders(dst, sText_PlayerSentBackOK);
         break;
     case 3:
     case 9:
@@ -667,7 +662,7 @@ void sub_8013160(u8 *dst, u8 caseId)
     case 25:
     case 26:
     case 27:
-        StringExpandPlaceholders(dst, gUnknown_082EDE0C);
+        StringExpandPlaceholders(dst, sText_PlayerOKdRegistration);
         break;
     }
 }
@@ -875,9 +870,9 @@ void sub_80134E8(u8 taskId)
             {
                 // this unused variable along with the assignment is needed to match
                 u32 unusedVar;
-                unusedVar  = data->field_0->arr[id].unk.field_0.unk_0a_0;
+                unusedVar  = data->field_0->arr[id].unk.field_0.activity;
 
-                if (data->field_0->arr[id].field_1A_0 == 1 && !data->field_0->arr[id].unk.field_0.unk_0a_7)
+                if (data->field_0->arr[id].field_1A_0 == 1 && !data->field_0->arr[id].unk.field_0.started)
                 {
                     u32 var = sub_8013B8C(data, id);
                     if (var == 0)
@@ -888,7 +883,7 @@ void sub_80134E8(u8 taskId)
                     }
                     else
                     {
-                        StringCopy(gStringVar4, gUnknown_082EDD50[var - 1]);
+                        StringCopy(gStringVar4, sCantTransmitToTrainerTexts[var - 1]);
                         data->state = 18;
                         PlaySE(SE_PN_ON);
                     }
@@ -919,7 +914,7 @@ void sub_80134E8(u8 taskId)
     case 6:
         if (gReceivedRemoteLinkPlayers != 0)
         {
-            gUnknown_02022C2C = data->field_0->arr[data->field_F].unk.field_0.unk_0a_0;
+            gUnknown_02022C2C = data->field_0->arr[data->field_F].unk.field_0.activity;
             sub_8011A64(0, 0);
             switch (gUnknown_02022C2C)
             {
@@ -953,8 +948,8 @@ void sub_80134E8(u8 taskId)
                 else
                 {
                     sub_8011A64(7, 0);
-                    StringCopy(gStringVar1, gUnknown_082F0048[gUnknown_02022C2C]);
-                    StringExpandPlaceholders(gStringVar4, gUnknown_082EDE48);
+                    StringCopy(gStringVar1, sLinkGroupActivityTexts[gUnknown_02022C2C]);
+                    StringExpandPlaceholders(gStringVar4, sText_AwaitingOtherMembers);
                 }
             }
             break;
@@ -989,7 +984,7 @@ void sub_80134E8(u8 taskId)
             data->state = 7;
         break;
     case 7:
-        if (PrintOnTextbox(&data->textState, gUnknown_082EDE64))
+        if (PrintOnTextbox(&data->textState, sText_QuitBeingMember))
             data->state = 8;
         break;
     case 8:
@@ -1036,7 +1031,7 @@ void sub_80134E8(u8 taskId)
         break;
     case 13:
         DestroyWirelessStatusIndicatorSprite();
-        if (PrintOnTextbox(&data->textState, gUnknown_082EDE9C[sub_8011A74()]))
+        if (PrintOnTextbox(&data->textState, sPlayerDisconnectedTexts[sub_8011A74()]))
         {
             gSpecialVar_Result = 6;
             data->state = 23;
@@ -1049,7 +1044,7 @@ void sub_80134E8(u8 taskId)
         break;
     case 15:
         DestroyWirelessStatusIndicatorSprite();
-        if (PrintOnTextbox(&data->textState, gUnknown_082EDE9C[sub_8011A74()]))
+        if (PrintOnTextbox(&data->textState, sPlayerDisconnectedTexts[sub_8011A74()]))
         {
             gSpecialVar_Result = 8;
             data->state = 23;
@@ -1078,7 +1073,7 @@ u32 sub_8013B8C(struct UnkStruct_Group *arg0, s32 id)
 {
     struct UnkStruct_x20 *structPtr = &arg0->field_0->arr[id];
 
-    if (gUnknown_02022C2C == 4 && structPtr->unk.field_0.unk_00.unk_01_2 != 3)
+    if (gUnknown_02022C2C == 4 && structPtr->unk.field_0.unk_00.version != VERSION_EMERALD)
     {
         if (!(gSaveBlock2Ptr->specialSaveWarpFlags & CHAMPION_SAVEWARP))
             return 1;
@@ -1187,7 +1182,7 @@ u8 sub_8013DBC(struct UnkStruct_Group *data, u32 id)
 {
     if (data->field_0->arr[id].field_1A_0 == 1)
     {
-        if (data->field_0->arr[id].unk.field_0.unk_0a_7)
+        if (data->field_0->arr[id].unk.field_0.started)
             return 3;
         else if (data->field_0->arr[id].field_1A_1 != 0)
             return 1;
@@ -1424,7 +1419,7 @@ void sub_8014384(void)
         break;
     case 1:
         if (!FuncIsActiveTask(sub_80140E0))
-            SetMainCallback2(sub_8086074);
+            SetMainCallback2(CB2_ReturnToFieldCableClub);
         break;
     }
 
@@ -1583,7 +1578,7 @@ void sub_8014790(u8 taskId)
     case 1:
         if (!ScriptContext1_IsScriptSetUp())
         {
-            FadeScreen(1, 0);
+            FadeScreen(FADE_TO_BLACK, 0);
             data[0] = 2;
         }
         break;
@@ -1717,7 +1712,7 @@ void sub_8014A40(u8 taskId)
         data->state = 2;
         break;
     case 2:
-        StringCopy(gStringVar1, gUnknown_082F0048[gUnknown_02022C2C]);
+        StringCopy(gStringVar1, sLinkGroupActivityTexts[gUnknown_02022C2C]);
         sub_801262C(gStringVar4, gUnknown_02022C2C);
         data->state = 3;
         break;
@@ -1734,7 +1729,7 @@ void sub_8014A40(u8 taskId)
         }
         break;
     case 6:
-        if (MG_PrintTextOnWindow1AndWaitButton(&data->textState, gUnknown_082EDF40))
+        if (MG_PrintTextOnWindow1AndWaitButton(&data->textState, sText_LinkWithFriendDropped))
         {
             data->field_13 = sub_8013398(data->field_0);
             RedrawListMenu(data->listTaskId);
@@ -1774,7 +1769,7 @@ void sub_8014A40(u8 taskId)
                 RedrawListMenu(data->listTaskId);
                 data->field_13++;
                 sub_8018404(gStringVar1, &data->field_0->arr[data->field_13 - 1]);
-                StringExpandPlaceholders(gStringVar4, gUnknown_082EDC9C);
+                StringExpandPlaceholders(gStringVar4, sText_AnOKWasSentToPlayer);
                 data->state = 9;
                 sub_800EF38();
             }
@@ -1831,7 +1826,7 @@ void sub_8014A40(u8 taskId)
         data->state++;
         break;
     case 14:
-        if (MG_PrintTextOnWindow1AndWaitButton(&data->textState, gText_PleaseStartOver))
+        if (MG_PrintTextOnWindow1AndWaitButton(&data->textState, sText_PleaseStartOver))
         {
             DestroyTask(taskId);
             gSpecialVar_Result = 5;
@@ -1946,9 +1941,9 @@ void sub_8014F48(u8 taskId)
             {
                 // this unused variable along with the assignment is needed to match
                 u32 unusedVar;
-                unusedVar  = data->field_0->arr[id].unk.field_0.unk_0a_0;
+                unusedVar  = data->field_0->arr[id].unk.field_0.activity;
 
-                if (data->field_0->arr[id].field_1A_0 == 1 && !data->field_0->arr[id].unk.field_0.unk_0a_7)
+                if (data->field_0->arr[id].field_1A_0 == 1 && !data->field_0->arr[id].unk.field_0.started)
                 {
                     data->field_F = id;
                     LoadWirelessStatusIndicatorSpriteGfx();
@@ -1972,14 +1967,14 @@ void sub_8014F48(u8 taskId)
         }
         break;
     case 4:
-        AddTextPrinterToWindow1(gUnknown_082EFC3C);
+        AddTextPrinterToWindow1(sText_AwaitingPlayersResponse);
         sub_8018404(gStringVar1, &data->field_0->arr[data->field_F]);
         data->state = 5;
         break;
     case 5:
         if (gReceivedRemoteLinkPlayers != 0)
         {
-            gUnknown_02022C2C = data->field_0->arr[data->field_F].unk.field_0.unk_0a_0;
+            gUnknown_02022C2C = data->field_0->arr[data->field_F].unk.field_0.activity;
             data->state = 10;
         }
 
@@ -1991,7 +1986,7 @@ void sub_8014F48(u8 taskId)
             data->state = 8;
             break;
         case 5:
-            AddTextPrinterToWindow1(gUnknown_082EDDF4);
+            AddTextPrinterToWindow1(sText_PlayerSentBackOK);
             sub_8011A64(0, 0);
             break;
         }
@@ -2009,7 +2004,7 @@ void sub_8014F48(u8 taskId)
         data->state++;
         break;
     case 9:
-        if (MG_PrintTextOnWindow1AndWaitButton(&data->textState, gUnknown_082EDF80[sub_8011A74()]))
+        if (MG_PrintTextOnWindow1AndWaitButton(&data->textState, sLinkDroppedTexts[sub_8011A74()]))
         {
             DestroyWirelessStatusIndicatorSprite();
             DestroyTask(taskId);
@@ -2019,7 +2014,7 @@ void sub_8014F48(u8 taskId)
         break;
     case 7:
         DestroyWirelessStatusIndicatorSprite();
-        AddTextPrinterToWindow1(gText_PleaseStartOver);
+        AddTextPrinterToWindow1(sText_PleaseStartOver);
         DestroyTask(taskId);
         sub_800EDD4();
         gSpecialVar_Result = 5;
@@ -2068,7 +2063,7 @@ void sub_80152F4(u8 taskId)
         data->state = 1;
         break;
     case 1:
-        AddTextPrinterToWindow1(gUnknown_082EFBC8);
+        AddTextPrinterToWindow1(sText_SearchingForWirelessSystemWait);
         data->state = 2;
         break;
     case 2:
@@ -2108,7 +2103,7 @@ void sub_80152F4(u8 taskId)
                 id = ListMenu_ProcessInput(data->listTaskId);
             if (data->field_14 > 120)
             {
-                if (data->field_0->arr[0].field_1A_0 == 1 && !data->field_0->arr[0].unk.field_0.unk_0a_7)
+                if (data->field_0->arr[0].field_1A_0 == 1 && !data->field_0->arr[0].unk.field_0.started)
                 {
                     if (sub_8016F1C(&data->field_0->arr[0].unk.field_0, data->field_12 + 7))
                     {
@@ -2137,14 +2132,14 @@ void sub_80152F4(u8 taskId)
         }
         break;
     case 4:
-        AddTextPrinterToWindow1(gUnknown_082EFC90);
+        AddTextPrinterToWindow1(sText_AwaitingResponseFromWirelessSystem);
         sub_8018404(gStringVar1, &data->field_0->arr[data->field_F]);
         data->state = 5;
         break;
     case 5:
         if (gReceivedRemoteLinkPlayers != 0)
         {
-            gUnknown_02022C2C = data->field_0->arr[data->field_F].unk.field_0.unk_0a_0;
+            gUnknown_02022C2C = data->field_0->arr[data->field_F].unk.field_0.activity;
             data->state = 12;
         }
 
@@ -2156,7 +2151,7 @@ void sub_80152F4(u8 taskId)
             data->state = 8;
             break;
         case 5:
-            AddTextPrinterToWindow1(gUnknown_082EDEC4);
+            AddTextPrinterToWindow1(sText_WirelessLinkEstablished);
             sub_8011A64(0, 0);
             break;
         }
@@ -2177,7 +2172,7 @@ void sub_80152F4(u8 taskId)
         data->state++;
         break;
     case 9:
-        if (MG_PrintTextOnWindow1AndWaitButton(&data->textState, gUnknown_082EDF04))
+        if (MG_PrintTextOnWindow1AndWaitButton(&data->textState, sText_WirelessLinkDropped))
         {
             DestroyWirelessStatusIndicatorSprite();
             DestroyTask(taskId);
@@ -2186,7 +2181,7 @@ void sub_80152F4(u8 taskId)
         }
         break;
     case 7:
-        if (MG_PrintTextOnWindow1AndWaitButton(&data->textState, gText_WirelessSearchCanceled))
+        if (MG_PrintTextOnWindow1AndWaitButton(&data->textState, sText_WirelessSearchCanceled))
         {
             DestroyWirelessStatusIndicatorSprite();
             DestroyTask(taskId);
@@ -2195,7 +2190,7 @@ void sub_80152F4(u8 taskId)
         }
         break;
     case 11:
-        if (MG_PrintTextOnWindow1AndWaitButton(&data->textState, gUnknown_082EFD58[data->field_12]))
+        if (MG_PrintTextOnWindow1AndWaitButton(&data->textState, sNoWonderSharedTexts[data->field_12]))
         {
             DestroyWirelessStatusIndicatorSprite();
             DestroyTask(taskId);
@@ -2423,7 +2418,7 @@ void sub_80156E0(u8 taskId)
         }
         break;
     case 23:
-        if (!FuncIsActiveTask(sub_809FA34))
+        if (!FuncIsActiveTask(Task_ShowStartMenu))
         {
             sub_8011090(0x40, 0, 0);
             data->state = 4;
@@ -2478,7 +2473,7 @@ void sub_80156E0(u8 taskId)
         if (!FuncIsActiveTask(sub_80140E0))
         {
             if (gUnknown_02022C2C == 0x44)
-                sub_8015664(31, gUnknown_082EE004);
+                sub_8015664(31, sText_AwaitingPlayersResponseAboutTrade);
             else
                 data->state = 5;
         }
@@ -2494,7 +2489,7 @@ void sub_80156E0(u8 taskId)
     case 5:
         id = sub_80179AC(&data->field_0->arr[taskData[1]]);
         playerGender = sub_8017CF8(taskData[1], data->field_0);
-        sub_8015664(6, gUnknown_082EE24C[id][playerGender]);
+        sub_8015664(6, sHiDoSomethingTexts[id][playerGender]);
         break;
     case 6:
         var5 = sub_8017178(&data->textState, &data->field_1B, &data->field_1C, &gUnknown_082F021C, &gUnknown_082F0244);
@@ -2512,7 +2507,7 @@ void sub_80156E0(u8 taskId)
                 {
                     data->field_4C[0] = 0x40;
                     sub_800FE50(data->field_4C);
-                    StringCopy(gStringVar4, gUnknown_082EEB80[gLinkPlayers[0].gender]);
+                    StringCopy(gStringVar4, sIfYouWantToDoSomethingTexts[gLinkPlayers[0].gender]);
                     data->state = 32;
                 }
                 else
@@ -2541,7 +2536,7 @@ void sub_80156E0(u8 taskId)
         sub_8017FD8(data);
         playerGender = sub_8017CF8(taskData[1], data->field_0);
         id = sub_8017984(data->field_4C[0] & 0x3F);
-        if (PrintOnTextbox(&data->textState, gUnknown_082EE82C[playerGender][id]))
+        if (PrintOnTextbox(&data->textState, sText_WaitOrShowCardTexts[playerGender][id]))
         {
             taskData[3] = 0;
             data->state = 29;
@@ -2591,7 +2586,7 @@ void sub_80156E0(u8 taskId)
     case 7:
         id = sub_80179AC(&data->field_0->arr[taskData[1]]);
         playerGender = sub_8017CF8(taskData[1], data->field_0);
-        sub_8015664(6, gUnknown_082EE24C[id][playerGender]);
+        sub_8015664(6, sHiDoSomethingTexts[id][playerGender]);
         break;
     case 40:
         if (PrintOnTextbox(&data->textState, gStringVar4))
@@ -2609,7 +2604,7 @@ void sub_80156E0(u8 taskId)
             {
                 StringCopy(gStringVar1, gLinkPlayers[GetMultiplayerId() ^ 1].name);
                 id = sub_800E540(gLinkPlayers[1].trainerId, gLinkPlayers[1].name);
-                StringExpandPlaceholders(gStringVar4, sUnionRoomTexts_AwaitingResponse[id]);
+                StringExpandPlaceholders(gStringVar4, sAwaitingResponseTexts[id]);
                 data->state = 33;
             }
             else
@@ -2633,7 +2628,7 @@ void sub_80156E0(u8 taskId)
         case 1:
         case -1:
             playerGender = sub_8017CF8(taskData[1], data->field_0);
-            sub_801568C(sUnionRoomTexts_DeclineBattle[playerGender]);
+            sub_801568C(sDeclineBattleTexts[playerGender]);
             break;
         }
         break;
@@ -2656,9 +2651,9 @@ void sub_80156E0(u8 taskId)
             playerGender = sub_8017CF8(taskData[1], data->field_0);
             sub_8011090(0x54, 0, 1);
             if (sub_8011B90() == TRUE)
-                sub_801568C(gUnknown_082EED3C[playerGender]);
+                sub_801568C(sChatDeclinedTexts[playerGender]);
             else
-                sub_8015664(30, gUnknown_082EED3C[playerGender]);
+                sub_8015664(30, sChatDeclinedTexts[playerGender]);
             break;
         case 3:
             data->state = 22;
@@ -2672,9 +2667,9 @@ void sub_80156E0(u8 taskId)
             playerGender = sub_8017CF8(taskData[1], data->field_0);
             sub_8011090(0x54, 0, 1);
             if (sub_8011B90() == TRUE)
-                sub_801568C(gUnknown_082EED3C[playerGender]);
+                sub_801568C(sChatDeclinedTexts[playerGender]);
             else
-                sub_8015664(30, gUnknown_082EED3C[playerGender]);
+                sub_8015664(30, sChatDeclinedTexts[playerGender]);
         }
         if (gReceivedRemoteLinkPlayers != 0)
             data->state = 16;
@@ -2705,7 +2700,7 @@ void sub_80156E0(u8 taskId)
             data->state = 33;
             StringCopy(gStringVar1, gLinkPlayers[1].name);
             id = sub_800E540(gLinkPlayers[1].trainerId, gLinkPlayers[1].name);
-            StringExpandPlaceholders(gStringVar4, gUnknown_082EE324[id]);
+            StringExpandPlaceholders(gStringVar4, sPlayerContactedYouTexts[id]);
         }
         break;
     case 33:
@@ -2880,7 +2875,7 @@ void sub_80156E0(u8 taskId)
         if (!gPaletteFade.active)
         {
             sUnionRoomTrade.field_0 = 1;
-            gFieldCallback = sub_80AF128;
+            gFieldCallback = FieldCB_ContinueScriptUnionRoom;
             ChooseMonForTradingBoard(PARTY_MENU_TYPE_UNION_ROOM_REGISTER, CB2_ReturnToField);
         }
         break;
@@ -2992,7 +2987,7 @@ void sub_80156E0(u8 taskId)
             memcpy(&gUnknown_02022C38, &data->field_0->arr[taskData[1]].unk.field_0.unk_00, sizeof(gUnknown_02022C38));
             gUnionRoomRequestedMonType = data->field_0->arr[taskData[1]].unk.field_0.type;
             gUnionRoomOfferedSpecies = data->field_0->arr[taskData[1]].unk.field_0.species;
-            gFieldCallback = sub_80AF128;
+            gFieldCallback = FieldCB_ContinueScriptUnionRoom;
             ChooseMonForTradingBoard(PARTY_MENU_TYPE_UNION_ROOM_TRADE, CB2_ReturnToField);
             sub_80156B0(data);
             sUnionRoomTrade.field_8 = taskData[1];
@@ -3002,7 +2997,7 @@ void sub_80156E0(u8 taskId)
         gUnknown_02022C2C = 0x44;
         sub_8012188(data->field_0->arr[taskData[1]].unk.playerName, &data->field_0->arr[taskData[1]].unk.field_0, 0x44);
         sub_8018404(gStringVar1, &data->field_0->arr[taskData[1]]);
-        sub_8017020(gUnknown_082EE17C[2]);
+        sub_8017020(sCommunicatingWaitTexts[2]);
         data->state = 25;
         break;
     case 26:
@@ -3250,11 +3245,11 @@ void sub_8016CA0(u8 taskId)
     for (i = 0; i < 4; i++)
     {
         r4 = sub_800DE7C(&sp0.field_0, sp0.playerName, i);
-        if (!sub_8013D88(sp0.field_0.unk_0a_0, gTasks[taskId].data[4]))
+        if (!sub_8013D88(sp0.field_0.activity, gTasks[taskId].data[4]))
         {
             sp0 = gUnknown_082F045C;
         }
-        if (sp0.field_0.unk_00.unk_00_0 == 1)
+        if (sp0.field_0.unk_00.language == 1)
         {
             sp0 = gUnknown_082F045C;
         }
@@ -3296,7 +3291,7 @@ void sub_8016E24(u8 taskId)
     for (i = 0; i < 4; i++)
     {
         sub_800DE7C(&ptr[0]->arr[i].unk0.field_0, ptr[0]->arr[i].unk0.playerName, i);
-        if (!sub_8013D88(ptr[0]->arr[i].unk0.field_0.unk_0a_0, gTasks[taskId].data[2]))
+        if (!sub_8013D88(ptr[0]->arr[i].unk0.field_0.activity, gTasks[taskId].data[2]))
         {
             ptr[0]->arr[i].unk0 = gUnknown_082F045C;
         }
@@ -3311,11 +3306,11 @@ void sub_8016E24(u8 taskId)
     }
 }
 
-bool32 sub_8016F1C(struct UnkLinkRfuStruct_02022B14 *arg0, s16 arg1)
+bool32 sub_8016F1C(struct GFtgtGname *arg0, s16 arg1)
 {
     if (arg1 == 7)
     {
-        if (!arg0->unk_00.unk_00_5)
+        if (!arg0->unk_00.hasCard)
         {
             return FALSE;
         }
@@ -3326,7 +3321,7 @@ bool32 sub_8016F1C(struct UnkLinkRfuStruct_02022B14 *arg0, s16 arg1)
     }
     else if (arg1 == 8)
     {
-        if (!arg0->unk_00.unk_00_4)
+        if (!arg0->unk_00.hasNews)
         {
             return FALSE;
         }
@@ -3376,7 +3371,7 @@ u8 sub_8016FF0(struct UnkStruct_Main4 * a0, u32 a1)
 
 bool32 sub_8017020(const u8 *src)
 {
-    sub_81973A4();
+    LoadMessageBoxAndBorderGfx();
     DrawDialogueFrame(0, 1);
     StringExpandPlaceholders(gStringVar4, src);
     AddTextPrinterWithCustomSpeedForMessage(FALSE, 1);
@@ -3400,7 +3395,7 @@ bool8 PrintOnTextbox(u8 *textState, const u8 *str)
     switch (*textState)
     {
     case 0:
-        sub_81973A4();
+        LoadMessageBoxAndBorderGfx();
         DrawDialogueFrame(0, 1);
         StringExpandPlaceholders(gStringVar4, str);
         AddTextPrinterForMessage_2(TRUE);
@@ -3454,7 +3449,7 @@ u8 sub_8017118(const struct WindowTemplate * template)
     u8 windowId = AddWindow(template);
     DrawStdWindowFrame(windowId, FALSE);
     FillWindowPixelBuffer(windowId, 0xFF);
-    sub_80173E0(windowId, 1, gUnknown_082EFD94, 8, 1, 6);
+    sub_80173E0(windowId, 1, sText_NameWantedOfferLv, 8, 1, 6);
     CopyWindowToVram(windowId, 2);
     PutWindowTilemap(windowId);
     return windowId;
@@ -3703,19 +3698,19 @@ bool32 sub_8017678(struct UnkStruct_Shared *arg0, struct UnkStruct_Shared *arg1)
 {
     s32 i;
 
-    if (arg0->field_0.unk_0a_0 != arg1->field_0.unk_0a_0)
+    if (arg0->field_0.activity != arg1->field_0.activity)
     {
         return TRUE;
     }
 
-    if (arg0->field_0.unk_0a_7 != arg1->field_0.unk_0a_7)
+    if (arg0->field_0.started != arg1->field_0.started)
     {
         return TRUE;
     }
 
     for (i = 0; i < 4; i++)
     {
-        if (arg0->field_0.unk_04[i] != arg1->field_0.unk_04[i])
+        if (arg0->field_0.child_sprite_gender[i] != arg1->field_0.child_sprite_gender[i])
         {
             return TRUE;
         }
@@ -3780,16 +3775,16 @@ void sub_80177B8(u8 arg0, u8 arg1, u8 arg2, struct UnkStruct_x20 *arg3, u8 arg4,
     u8 sp0[6];
 
     ConvertIntToDecimalStringN(gStringVar4, id + 1, STR_CONV_MODE_LEADING_ZEROS, 2);
-    StringAppend(gStringVar4, gText_Colon);
+    StringAppend(gStringVar4, sText_Colon);
     sub_80173E0(arg0, 1, gStringVar4, arg1, arg2, 0);
     arg1 += 18;
-    r2 = arg3->unk.field_0.unk_0a_0;
+    r2 = arg3->unk.field_0.activity;
     if (arg3->field_1A_0 == 1 && !(r2 & 0x40))
     {
         sub_8018404(gStringVar4, arg3);
         sub_80173E0(arg0, 1, gStringVar4, arg1, arg2, arg4);
         ConvertIntToDecimalStringN(sp0, arg3->unk.field_0.unk_00.playerTrainerId[0] | (arg3->unk.field_0.unk_00.playerTrainerId[1] << 8), STR_CONV_MODE_LEADING_ZEROS, 5);
-        StringCopy(gStringVar4, gText_UnkCtrlCodeF907);
+        StringCopy(gStringVar4, sText_ID);
         StringAppend(gStringVar4, sp0);
         sub_80173E0(arg0, 1, gStringVar4, GetStringRightAlignXOffset(1, gStringVar4, 0x88), arg2, arg4);
     }
@@ -3804,7 +3799,7 @@ void sub_80178A0(u8 arg0, u8 arg1, u8 arg2, struct UnkStruct_x20 *arg3, u8 arg4,
         sub_8018404(gStringVar4, arg3);
         sub_80173E0(arg0, 1, gStringVar4, arg1, arg2, arg4);
         ConvertIntToDecimalStringN(sp0, arg3->unk.field_0.unk_00.playerTrainerId[0] | (arg3->unk.field_0.unk_00.playerTrainerId[1] << 8), STR_CONV_MODE_LEADING_ZEROS, 5);
-        StringCopy(gStringVar4, gText_UnkCtrlCodeF907);
+        StringCopy(gStringVar4, sText_ID);
         StringAppend(gStringVar4, sp0);
         sub_80173E0(arg0, 1, gStringVar4, GetStringRightAlignXOffset(1, gStringVar4, 0x68), arg2, arg4);
     }
@@ -3859,18 +3854,18 @@ s32 sub_80179D4(struct UnkStruct_Main0 *arg0, u8 arg1, u8 arg2, u32 playerGender
 
     struct UnkStruct_x20 * r5 = &arg0->arr[arg2];
 
-    if (!r5->unk.field_0.unk_0a_7 && arg1 == 0)
+    if (!r5->unk.field_0.started && arg1 == 0)
     {
         sub_8018404(gStringVar1, r5);
         r2 = sub_800E540(ReadAsU16(r5->unk.field_0.unk_00.playerTrainerId), gStringVar1);
-        if (r5->unk.field_0.unk_0a_0 == 0x45)
+        if (r5->unk.field_0.activity == 0x45)
         {
-            StringExpandPlaceholders(gStringVar4, sUnionRoomTexts_JoinChat[r2][playerGender]);
+            StringExpandPlaceholders(gStringVar4, sJoinChatTexts[r2][playerGender]);
             return 2;
         }
         else
         {
-            sub_8017020(gUnknown_082EE17C[r2]);
+            sub_8017020(sCommunicatingWaitTexts[r2]);
             return 1;
         }
     }
@@ -3881,19 +3876,19 @@ s32 sub_80179D4(struct UnkStruct_Main0 *arg0, u8 arg1, u8 arg2, u32 playerGender
         {
             playerGender = (r5->unk.field_0.unk_00.playerTrainerId[arg1 + 1] >> 3) & 1;
         }
-        switch (r5->unk.field_0.unk_0a_0 & 0x3F)
+        switch (r5->unk.field_0.activity & 0x3F)
         {
         case 1:
-            StringExpandPlaceholders(gStringVar4, gUnknown_082EEEAC[playerGender][Random() % 4]);
+            StringExpandPlaceholders(gStringVar4, sBattleReactionTexts[playerGender][Random() % 4]);
             break;
         case 4:
-            StringExpandPlaceholders(gStringVar4, sUnionRoomTexts_Traded[playerGender][Random() % 2]);
+            StringExpandPlaceholders(gStringVar4, sTradeReactionTexts[playerGender][Random() % 2]);
             break;
         case 5:
-            StringExpandPlaceholders(gStringVar4, gUnknown_082EF010[playerGender][Random() % 4]);
+            StringExpandPlaceholders(gStringVar4, sChatReactionTexts[playerGender][Random() % 4]);
             break;
         case 8:
-            StringExpandPlaceholders(gStringVar4, gUnknown_082EF100[playerGender][Random() % 2]);
+            StringExpandPlaceholders(gStringVar4, sTrainerCardReactionTexts[playerGender][Random() % 2]);
             break;
         default:
             StringExpandPlaceholders(gStringVar4, sText_TrainerAppearsBusy);
@@ -3908,7 +3903,7 @@ void nullsub_14(u8 windowId, s32 itemId, u8 y)
 
 }
 
-void sub_8017B3C(u8 arg0, u8 arg1, struct UnkLinkRfuStruct_02022B14 * arg2, const u8 * str, u8 arg4)
+void sub_8017B3C(u8 arg0, u8 arg1, struct GFtgtGname * arg2, const u8 * str, u8 arg4)
 {
     u8 sp8[4];
     u16 r8 = arg2->species;
@@ -3932,7 +3927,7 @@ void sub_8017B3C(u8 arg0, u8 arg1, struct UnkLinkRfuStruct_02022B14 * arg2, cons
 void sub_8017BE8(u8 windowId, s32 itemId, u8 y)
 {
     struct UnkStruct_Leader *leader = gUnknown_02022C30.leader;
-    struct UnkLinkRfuStruct_02022B14 *rfu;
+    struct GFtgtGname *rfu;
     s32 i, j;
     u8 sp4[11];
 
@@ -4023,16 +4018,16 @@ void sub_8017D9C(u8 *dst, s32 arg1, u32 playerGender)
     switch (arg1)
     {
     case 0x41:
-        StringExpandPlaceholders(dst, gUnknown_082EEA68[playerGender]);
+        StringExpandPlaceholders(dst, sBattleDeclinedTexts[playerGender]);
         break;
     case 0x45:
-        StringExpandPlaceholders(dst, gUnknown_082EED3C[playerGender]);
+        StringExpandPlaceholders(dst, sChatDeclinedTexts[playerGender]);
         break;
     case 0x44:
         StringExpandPlaceholders(dst, sText_TradeOfferRejected);
         break;
     case 0x48:
-        StringExpandPlaceholders(dst, gUnknown_082EEB08[playerGender]);
+        StringExpandPlaceholders(dst, sShowTrainerCardDeclinedTexts[playerGender]);
         break;
     }
 }
@@ -4045,13 +4040,13 @@ void sub_8017E00(u8 *dst, u8 arg1)
     switch (arg1)
     {
     case 0x41:
-        StringCopy(dst, gUnknown_082EE984[mpId][gender][0]);
+        StringCopy(dst, sStartActivityTexts[mpId][gender][0]);
         break;
     case 0x44:
-        StringCopy(dst, gUnknown_082EE984[mpId][gender][2]);
+        StringCopy(dst, sStartActivityTexts[mpId][gender][2]);
         break;
     case 0x45:
-        StringCopy(dst, gUnknown_082EE984[mpId][gender][1]);
+        StringCopy(dst, sStartActivityTexts[mpId][gender][1]);
         break;
     }
 }
@@ -4077,7 +4072,7 @@ s32 sub_8017EA0(u8 *dst, u32 gender, u16 *arg2, struct UnkStruct_URoom *arg3)
         StringCopy(arg3->field_58 + 0x10, gSpeciesNames[sUnionRoomTrade.playerSpecies]);
         for (i = 0; i < 4; i++)
         {
-            if (gUnknown_03007890->unk_14[i].unk_04 == 2)
+            if (gRfuLinkStatus->partner[i].serialNo == 2)
             {
                 ConvertIntToDecimalStringN(arg3->field_58 + 0x20, arg2[2], STR_CONV_MODE_LEFT_ALIGN, 3);
                 StringCopy(arg3->field_58 + 0x30, gSpeciesNames[arg2[1]]);
@@ -4249,7 +4244,7 @@ void sub_801818C(bool32 arg0)
 void sub_80181CC(void)
 {
     ScriptContext2_Enable();
-    ScriptFreezeEventObjects();
+    ScriptFreezeObjectEvents();
 }
 
 u8 sub_80181DC(struct UnkStruct_URoom *arg0)
@@ -4294,7 +4289,7 @@ void sub_8018220(u8 *unused, struct UnkStruct_URoom *arg1, bool8 arg2)
     DynamicPlaceholderTextUtil_SetPlaceholderPtr(4, arg1->field_C0[3]);
     DynamicPlaceholderTextUtil_SetPlaceholderPtr(5, arg1->field_C0[4]);
 
-    DynamicPlaceholderTextUtil_ExpandPlaceholders(arg1->field_1A4, gUnknown_082EFF64);
+    DynamicPlaceholderTextUtil_ExpandPlaceholders(arg1->field_1A4, sText_TrainerCardInfoPage1);
     StringCopy(gStringVar4, arg1->field_1A4);
 
     n = trainerCard->linkBattleWins;
@@ -4316,23 +4311,23 @@ void sub_8018220(u8 *unused, struct UnkStruct_URoom *arg1, bool8 arg2)
     ConvertIntToDecimalStringN(arg1->field_C0[2], trainerCard->pokemonTrades, STR_CONV_MODE_LEFT_ALIGN, 5);
     DynamicPlaceholderTextUtil_SetPlaceholderPtr(3, arg1->field_C0[2]);
 
-    for (i = 0; i < 4; i++)
+    for (i = 0; i < TRAINER_CARD_PROFILE_LENGTH; i++)
     {
-        CopyEasyChatWord(arg1->field_C0[i + 3], trainerCard->var_28[i]);
+        CopyEasyChatWord(arg1->field_C0[i + 3], trainerCard->easyChatProfile[i]);
         DynamicPlaceholderTextUtil_SetPlaceholderPtr(i + 4, arg1->field_C0[i + 3]);
     }
 
-    DynamicPlaceholderTextUtil_ExpandPlaceholders(arg1->field_1A4, gUnknown_082EFFA4);
+    DynamicPlaceholderTextUtil_ExpandPlaceholders(arg1->field_1A4, sText_TrainerCardInfoPage2);
     StringAppend(gStringVar4, arg1->field_1A4);
 
     if (arg2 == TRUE)
     {
-        DynamicPlaceholderTextUtil_ExpandPlaceholders(arg1->field_1A4, gUnknown_082F0020);
+        DynamicPlaceholderTextUtil_ExpandPlaceholders(arg1->field_1A4, sText_FinishedCheckingPlayersTrainerCard);
         StringAppend(gStringVar4, arg1->field_1A4);
     }
     else if (arg2 == FALSE)
     {
-        DynamicPlaceholderTextUtil_ExpandPlaceholders(arg1->field_1A4, gUnknown_082F0018[trainerCard->gender]);
+        DynamicPlaceholderTextUtil_ExpandPlaceholders(arg1->field_1A4, sGladToMeetYouTexts[trainerCard->gender]);
         StringAppend(gStringVar4, arg1->field_1A4);
     }
 }
@@ -4340,5 +4335,5 @@ void sub_8018220(u8 *unused, struct UnkStruct_URoom *arg1, bool8 arg2)
 void sub_8018404(u8 *dest, struct UnkStruct_x20 *arg1)
 {
     StringCopy7(dest, arg1->unk.playerName);
-    ConvertInternationalString(dest, arg1->unk.field_0.unk_00.unk_00_0);
+    ConvertInternationalString(dest, arg1->unk.field_0.unk_00.language);
 }

@@ -1674,8 +1674,7 @@ static void sub_802BF7C(void)
 
 static int sub_802C098(void)
 {
-    // The number 1103515245 comes from the example implementation of rand and srand
-    gUnknown_02022CFC->unk24 = gUnknown_02022CFC->unk24 * 1103515245 + 24691;
+    gUnknown_02022CFC->unk24 = ISO_RANDOMIZE1(gUnknown_02022CFC->unk24);
     return gUnknown_02022CFC->unk24 >> 16;
 }
 
@@ -2040,7 +2039,7 @@ static int sub_802C6B0(void)
 
 static bool32 sub_802C70C(void)
 {
-    return !gUnknown_03005000.unk_124.unk_8c2 && !gUnknown_03005000.unk_9e8.unk_232;
+    return !Rfu.unk_124.unk_8c2 && !Rfu.unk_9e8.unk_232;
 }
 
 static int sub_802C73C(u8 *arg0)
@@ -2120,61 +2119,23 @@ static u16 sub_802C818(void)
     return gUnknown_082FB704[index];
 }
 
-#ifdef NONMATCHING
-// Impossible to match.
 static u16 sub_802C838(void)
 {
     u32 val, i;
 
     val = 0;
-    for (i = 0; i < 5; val = gUnknown_082FB714[i][1], i++)
+    for (i = 0; i < 5; i++)
     {
         if (gUnknown_02022CFC->unk70.unk8 < gUnknown_082FB714[i][0])
+            break;
+        else if (1)
+            val = gUnknown_082FB714[i][1];
+        else
             break;
     }
 
     return val;
 }
-#else
-NAKED
-static u16 sub_802C838(void)
-{
-    asm_unified("\n\
-    push {r4-r6,lr}\n\
-    movs r5, 0\n\
-    movs r4, 0\n\
-    ldr r3, =gUnknown_02022CFC\n\
-    ldr r0, [r3]\n\
-    ldr r2, =gUnknown_082FB714\n\
-    ldr r1, [r0, 0x78]\n\
-    ldr r0, [r2]\n\
-    cmp r1, r0\n\
-    bcc _0802C874\n\
-    ldr r5, [r2, 0x4]\n\
-    adds r6, r3, 0\n\
-    adds r3, r2, 0x4\n\
-_0802C852:\n\
-    adds r3, 0x8\n\
-    adds r2, 0x8\n\
-    adds r4, 0x1\n\
-    cmp r4, 0x4\n\
-    bhi _0802C874\n\
-    ldr r0, [r6]\n\
-    ldr r1, [r0, 0x78]\n\
-    ldr r0, [r2]\n\
-    cmp r1, r0\n\
-    bcc _0802C874\n\
-    ldr r5, [r3]\n\
-    b _0802C852\n\
-    .pool\n\
-_0802C874:\n\
-    lsls r0, r5, 16\n\
-    lsrs r0, 16\n\
-    pop {r4-r6}\n\
-    pop {r1}\n\
-    bx r1");
-}
-#endif
 
 static u16 sub_802C880(u16 item, u16 quantity)
 {
@@ -2294,14 +2255,14 @@ static const struct SpriteTemplate *const gUnknown_082FBEB8[] =
 static const struct OamData sOamData_82FBEC8 =
 {
     .y = 0,
-    .affineMode = 0,
-    .objMode = 0,
+    .affineMode = ST_OAM_AFFINE_OFF,
+    .objMode = ST_OAM_OBJ_NORMAL,
     .mosaic = 0,
-    .bpp = 0,
-    .shape = 0,
+    .bpp = ST_OAM_4BPP,
+    .shape = SPRITE_SHAPE(64x64),
     .x = 0,
     .matrixNum = 0,
-    .size = 3,
+    .size = SPRITE_SIZE(64x64),
     .tileNum = 0,
     .priority = 2,
     .paletteNum = 0,
@@ -2311,14 +2272,14 @@ static const struct OamData sOamData_82FBEC8 =
 static const struct OamData sOamData_82FBED0 =
 {
     .y = 0,
-    .affineMode = 0,
-    .objMode = 0,
+    .affineMode = ST_OAM_AFFINE_OFF,
+    .objMode = ST_OAM_OBJ_NORMAL,
     .mosaic = 0,
-    .bpp = 0,
-    .shape = 2,
+    .bpp = ST_OAM_4BPP,
+    .shape = SPRITE_SHAPE(16x32),
     .x = 0,
     .matrixNum = 0,
-    .size = 2,
+    .size = SPRITE_SIZE(16x32),
     .tileNum = 0,
     .priority = 2,
     .paletteNum = 0,
@@ -2328,14 +2289,14 @@ static const struct OamData sOamData_82FBED0 =
 static const struct OamData sOamData_82FBED8 =
 {
     .y = 0,
-    .affineMode = 0,
-    .objMode = 0,
+    .affineMode = ST_OAM_AFFINE_OFF,
+    .objMode = ST_OAM_OBJ_NORMAL,
     .mosaic = 0,
-    .bpp = 0,
-    .shape = 0,
+    .bpp = ST_OAM_4BPP,
+    .shape = SPRITE_SHAPE(32x32),
     .x = 0,
     .matrixNum = 0,
-    .size = 2,
+    .size = SPRITE_SIZE(32x32),
     .tileNum = 0,
     .priority = 2,
     .paletteNum = 0,
@@ -2345,14 +2306,14 @@ static const struct OamData sOamData_82FBED8 =
 static const struct OamData sOamData_82FBEE0 =
 {
     .y = 0,
-    .affineMode = 0,
-    .objMode = 0,
+    .affineMode = ST_OAM_AFFINE_OFF,
+    .objMode = ST_OAM_OBJ_NORMAL,
     .mosaic = 0,
-    .bpp = 0,
-    .shape = 1,
+    .bpp = ST_OAM_4BPP,
+    .shape = SPRITE_SHAPE(32x16),
     .x = 0,
     .matrixNum = 0,
-    .size = 2,
+    .size = SPRITE_SIZE(32x16),
     .tileNum = 0,
     .priority = 2,
     .paletteNum = 0,
@@ -2498,14 +2459,14 @@ static const struct SpriteTemplate gUnknown_082FBFC0 =
 static const struct OamData sOamData_82FBFD8 =
 {
     .y = 0,
-    .affineMode = 0,
-    .objMode = 0,
+    .affineMode = ST_OAM_AFFINE_OFF,
+    .objMode = ST_OAM_OBJ_NORMAL,
     .mosaic = 0,
-    .bpp = 0,
-    .shape = 0,
+    .bpp = ST_OAM_4BPP,
+    .shape = SPRITE_SHAPE(16x16),
     .x = 0,
     .matrixNum = 0,
-    .size = 1,
+    .size = SPRITE_SIZE(16x16),
     .tileNum = 0,
     .priority = 1,
     .paletteNum = 0,
@@ -3466,7 +3427,7 @@ static void sub_802DB18(u16 left, u16 top, u8 cursorPos)
 
 static void sub_802DB8C(void)
 {
-    u8 color[] = {0, 2, 3};
+    u8 color[] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_DARK_GREY, TEXT_COLOR_LIGHT_GREY};
 
     PutWindowTilemap(0);
     PutWindowTilemap(1);
@@ -3557,8 +3518,8 @@ static void sub_802DD08(void)
     struct UnkStruct3 unkStruct;
     struct UnkStruct3 *ptr = &unkStruct; // This temp variable is needed to match, don't ask me why.
 
-    ptr->shape = 0;
-    ptr->size = 0;
+    ptr->shape = SPRITE_SHAPE(8x8);
+    ptr->size = SPRITE_SIZE(8x8);
     ptr->field_0_0 = 0;
     ptr->priority = 1;
     ptr->field_1 = 5;
@@ -3666,7 +3627,7 @@ static void sub_802DF70(bool32 arg0)
     if (!arg0)
     {
         for (i = 0; i < playersCount; i++)
-            sub_802DED8(i, 0, 2, 3);
+            sub_802DED8(i, TEXT_COLOR_TRANSPARENT, TEXT_COLOR_DARK_GREY, TEXT_COLOR_LIGHT_GREY);
     }
     else
     {
@@ -3674,9 +3635,9 @@ static void sub_802DF70(bool32 arg0)
         for (i = 0; i < playersCount; i++)
         {
             if (var != i)
-                sub_802DED8(i, 0, 2, 3);
+                sub_802DED8(i, TEXT_COLOR_TRANSPARENT, TEXT_COLOR_DARK_GREY, TEXT_COLOR_LIGHT_GREY);
             else
-                sub_802DED8(i, 0, 4, 5);
+                sub_802DED8(i, TEXT_COLOR_TRANSPARENT, TEXT_COLOR_RED, TEXT_COLOR_LIGHT_RED);
         }
     }
 }
@@ -4483,14 +4444,14 @@ static void sub_802EF50(u16 tileTag, u16 palTag)
 static const struct OamData sOamData_82FEBDC =
 {
     .y = 0,
-    .affineMode = 3,
-    .objMode = 0,
+    .affineMode = ST_OAM_AFFINE_DOUBLE,
+    .objMode = ST_OAM_OBJ_NORMAL,
     .mosaic = 0,
-    .bpp = 0,
-    .shape = 0,
+    .bpp = ST_OAM_4BPP,
+    .shape = SPRITE_SHAPE(32x32),
     .x = 0,
     .matrixNum = 0,
-    .size = 2,
+    .size = SPRITE_SIZE(32x32),
     .tileNum = 0,
     .priority = 0,
     .paletteNum = 0,
@@ -4500,14 +4461,14 @@ static const struct OamData sOamData_82FEBDC =
 static const struct OamData sOamData_82FEBE4 =
 {
     .y = 0,
-    .affineMode = 0,
-    .objMode = 0,
+    .affineMode = ST_OAM_AFFINE_OFF,
+    .objMode = ST_OAM_OBJ_NORMAL,
     .mosaic = 0,
-    .bpp = 0,
-    .shape = 1,
+    .bpp = ST_OAM_4BPP,
+    .shape = SPRITE_SHAPE(64x32),
     .x = 0,
     .matrixNum = 0,
-    .size = 3,
+    .size = SPRITE_SIZE(64x32),
     .tileNum = 0,
     .priority = 0,
     .paletteNum = 0,

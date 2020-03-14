@@ -32,16 +32,16 @@ MossdeepCity_SpaceCenter_2F_OnFrame: @ 8223DB5
 
 MossdeepCity_SpaceCenter_2F_EventScript_ThreeMagmaGrunts:: @ 8223DBF
 	playse SE_PIN
-	applymovement EVENT_OBJ_ID_PLAYER, Common_Movement_ExclamationMark
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_ExclamationMark
 	waitmovement 0
-	applymovement EVENT_OBJ_ID_PLAYER, Common_Movement_Delay48
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_Delay48
 	waitmovement 0
 	msgbox MossdeepCity_SpaceCenter_2F_Text_YoureOutnumberedTakeUsOn, MSGBOX_YESNO
 	compare VAR_RESULT, YES
 	goto_if_eq MossdeepCity_SpaceCenter_2F_EventScript_BattleThreeMagmaGrunts
 	msgbox MossdeepCity_SpaceCenter_2F_Text_GoodAnswer, MSGBOX_DEFAULT
 	closemessage
-	applymovement EVENT_OBJ_ID_PLAYER, MossdeepCity_SpaceCenter_2F_Movement_PlayerExit
+	applymovement OBJ_EVENT_ID_PLAYER, MossdeepCity_SpaceCenter_2F_Movement_PlayerExit
 	waitmovement 0
 	warp MAP_MOSSDEEP_CITY_SPACE_CENTER_1F, 255, 13, 1
 	waitstate
@@ -57,13 +57,13 @@ MossdeepCity_SpaceCenter_2F_EventScript_BattleThreeMagmaGrunts:: @ 8223E09
 	trainerbattle_no_intro TRAINER_GRUNT_SPACE_CENTER_5, MossdeepCity_SpaceCenter_2F_Text_Grunt5Defeat
 	applymovement 6, MossdeepCity_SpaceCenter_2F_Movement_Grunt5Defeated
 	waitmovement 0
-	applymovement EVENT_OBJ_ID_PLAYER, Common_Movement_WalkInPlaceFastestLeft
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFastestLeft
 	waitmovement 0
 	msgbox MossdeepCity_SpaceCenter_2F_Text_Grunt6Intro, MSGBOX_DEFAULT
 	trainerbattle_no_intro TRAINER_GRUNT_SPACE_CENTER_6, MossdeepCity_SpaceCenter_2F_Text_Grunt6Defeat
 	applymovement 5, MossdeepCity_SpaceCenter_2F_Movement_Grunt6Defeated
 	waitmovement 0
-	applymovement EVENT_OBJ_ID_PLAYER, Common_Movement_WalkInPlaceFastestRight
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFastestRight
 	waitmovement 0
 	msgbox MossdeepCity_SpaceCenter_2F_Text_Grunt7Intro, MSGBOX_DEFAULT
 	trainerbattle_no_intro TRAINER_GRUNT_SPACE_CENTER_7, MossdeepCity_SpaceCenter_2F_Text_Grunt7Defeat
@@ -248,7 +248,7 @@ MossdeepCity_SpaceCenter_2F_EventScript_ChoosePartyForMultiBattle:: @ 822400C
 	applymovement VAR_LAST_TALKED, Common_Movement_WalkInPlaceFastestDown
 	waitmovement 0
 	special SavePlayerParty
-	fadescreen 1
+	fadescreen FADE_TO_BLACK
 	special ChooseHalfPartyForBattle
 	waitstate
 	compare VAR_RESULT, 0
@@ -258,19 +258,16 @@ MossdeepCity_SpaceCenter_2F_EventScript_ChoosePartyForMultiBattle:: @ 822400C
 
 MossdeepCity_SpaceCenter_2F_EventScript_DoStevenMultiBattle:: @ 8224032
 	special ReducePlayerPartyToSelectedMons
-	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_2
-	setvar VAR_0x8005, 4
-	special CallFrontierUtilFunc
+	frontier_set FRONTIER_DATA_SELECTED_MON_ORDER
 	setvar VAR_0x8004, SPECIAL_BATTLE_STEVEN
 	setvar VAR_0x8005, 0
 	special DoSpecialTrainerBattle
 	waitstate
-	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_6
-	special CallFrontierUtilFunc
+	frontier_saveparty
 	special LoadPlayerParty
 	switch VAR_RESULT
 	case 1, MossdeepCity_SpaceCenter_2F_EventScript_DefeatedMaxieTabitha
-	fadescreen 1
+	fadescreen FADE_TO_BLACK
 	special SetCB2WhiteOut
 	waitstate
 
@@ -290,7 +287,7 @@ MossdeepCity_SpaceCenter_2F_EventScript_DefeatedMaxieTabitha:: @ 8224071
 	closemessage
 	setvar VAR_MOSSDEEP_CITY_STATE, 3
 	fadedefaultbgm
-	fadescreen 1
+	fadescreen FADE_TO_BLACK
 	setvar VAR_MOSSDEEP_SPACE_CENTER_STATE, 3
 	setflag FLAG_HIDE_MOSSDEEP_CITY_SPACE_CENTER_1F_TEAM_MAGMA
 	setflag FLAG_HIDE_MOSSDEEP_CITY_SPACE_CENTER_2F_TEAM_MAGMA
@@ -307,10 +304,10 @@ MossdeepCity_SpaceCenter_2F_EventScript_DefeatedMaxieTabitha:: @ 8224071
 	setobjectxy 1, 6, 2
 	turnobject 1, DIR_NORTH
 	call MossdeepCity_SpaceCenter_2F_EventScript_StevenFacePlayer
-	fadescreen 0
+	fadescreen FADE_FROM_BLACK
 	msgbox MossdeepCity_SpaceCenter_2F_Text_StevenThankYouComeSeeMeAtHome, MSGBOX_DEFAULT
 	closemessage
-	fadescreen 1
+	fadescreen FADE_TO_BLACK
 	setflag FLAG_DEFEATED_MAGMA_SPACE_CENTER
 	setflag FLAG_HIDE_MOSSDEEP_CITY_STEVENS_HOUSE_STEVEN
 	removeobject 4
@@ -322,7 +319,7 @@ MossdeepCity_SpaceCenter_2F_EventScript_DefeatedMaxieTabitha:: @ 8224071
 	setobjectxyperm 3, 5, 6
 	setobjectmovementtype 3, MOVEMENT_TYPE_WANDER_AROUND
 	addobject 3
-	fadescreen 0
+	fadescreen FADE_FROM_BLACK
 	end
 
 MossdeepCity_SpaceCenter_2F_EventScript_StevenFacePlayer:: @ 8224131
@@ -340,11 +337,11 @@ MossdeepCity_SpaceCenter_2F_EventScript_StevenFacePlayerWest:: @ 8224152
 	return
 
 MossdeepCity_SpaceCenter_2F_EventScript_MaxieTrainer:: @ 8224157
-	trainerbattle TRAINER_BATTLE_SET_TRAINER_A, TRAINER_MAXIE_3, 0, MossdeepCity_SpaceCenter_2F_Text_JustWantToExpandLand, MossdeepCity_SpaceCenter_2F_Text_JustWantToExpandLand
+	trainerbattle TRAINER_BATTLE_SET_TRAINER_A, TRAINER_MAXIE_MOSSDEEP, 0, MossdeepCity_SpaceCenter_2F_Text_JustWantToExpandLand, MossdeepCity_SpaceCenter_2F_Text_JustWantToExpandLand
 	end
 
 MossdeepCity_SpaceCenter_2F_EventScript_TabithaTrainer:: @ 8224166
-	trainerbattle TRAINER_BATTLE_SET_TRAINER_B, TRAINER_TABITHA_1, 0, MossdeepCity_SpaceCenter_Text_TabithaDefeat, MossdeepCity_SpaceCenter_Text_TabithaDefeat
+	trainerbattle TRAINER_BATTLE_SET_TRAINER_B, TRAINER_TABITHA_MOSSDEEP, 0, MossdeepCity_SpaceCenter_Text_TabithaDefeat, MossdeepCity_SpaceCenter_Text_TabithaDefeat
 	end
 
 MossdeepCity_SpaceCenter_2F_EventScript_RivalRayquazaCall:: @ 8224175
@@ -360,12 +357,12 @@ MossdeepCity_SpaceCenter_2F_EventScript_RivalRayquazaCall:: @ 8224175
 	end
 
 MossdeepCity_SpaceCenter_2F_EventScript_MayRayquazaCall:: @ 8224193
-	pokenavcall MossdeepCity_SpaceCenter_2F_Text_MayRayquazaCall
+	pokenavcall MatchCall_Text_MayRayquazaCall
 	waitmessage
 	return
 
 MossdeepCity_SpaceCenter_2F_EventScript_BrendanRayquazaCall:: @ 822419A
-	pokenavcall MossdeepCity_SpaceCenter_2F_Text_BrendanRayquazaCall
+	pokenavcall MatchCall_Text_BrendanRayquazaCall
 	waitmessage
 	return
 

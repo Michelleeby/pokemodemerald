@@ -6,23 +6,23 @@ Route118_MapScripts:: @ 81F3DBC
 
 Route118_OnTransition: @ 81F3DCC
 	call GabbyAndTy_EventScript_UpdateLocation
-	compare VAR_SHOULD_END_UNUSUAL_WEATHER, 1
-	call_if_eq UnusualWeather_EventScript_HideMapNamePopup
-	compare VAR_UNUSUAL_WEATHER_LOCATION, UNUSUAL_WEATHER_ROUTE_118_EAST
-	call_if_eq UnusualWeather_StartGroudonWeather
-	compare VAR_UNUSUAL_WEATHER_LOCATION, UNUSUAL_WEATHER_ROUTE_118_WEST
-	call_if_eq UnusualWeather_StartGroudonWeather
+	compare VAR_SHOULD_END_ABNORMAL_WEATHER, 1
+	call_if_eq AbnormalWeather_EventScript_HideMapNamePopup
+	compare VAR_ABNORMAL_WEATHER_LOCATION, ABNORMAL_WEATHER_ROUTE_118_EAST
+	call_if_eq AbnormalWeather_StartGroudonWeather
+	compare VAR_ABNORMAL_WEATHER_LOCATION, ABNORMAL_WEATHER_ROUTE_118_WEST
+	call_if_eq AbnormalWeather_StartGroudonWeather
 	end
 
 Route118_OnLoad: @ 81F3DF3
-	compare VAR_UNUSUAL_WEATHER_LOCATION, UNUSUAL_WEATHER_ROUTE_118_EAST
-	call_if_eq UnusualWeather_EventScript_PlaceTilesRoute118East
-	compare VAR_UNUSUAL_WEATHER_LOCATION, UNUSUAL_WEATHER_ROUTE_118_WEST
-	call_if_eq UnusualWeather_EventScript_PlaceTilesRoute118West
+	compare VAR_ABNORMAL_WEATHER_LOCATION, ABNORMAL_WEATHER_ROUTE_118_EAST
+	call_if_eq AbnormalWeather_EventScript_PlaceTilesRoute118East
+	compare VAR_ABNORMAL_WEATHER_LOCATION, ABNORMAL_WEATHER_ROUTE_118_WEST
+	call_if_eq AbnormalWeather_EventScript_PlaceTilesRoute118West
 	end
 
 Route118_OnFrame: @ 81F3E0A
-	map_script_2 VAR_SHOULD_END_UNUSUAL_WEATHER, 1, UnusualWeather_EventScript_EndEventAndCleanup_1
+	map_script_2 VAR_SHOULD_END_ABNORMAL_WEATHER, 1, AbnormalWeather_EventScript_EndEventAndCleanup_1
 	.2byte 0
 
 Route118_EventScript_GoodRodFisherman:: @ 81F3E14
@@ -38,7 +38,7 @@ Route118_EventScript_GoodRodFisherman:: @ 81F3E14
 
 Route118_EventScript_ReceiveGoodRod:: @ 81F3E3E
 	msgbox Route118_Text_IdenticalMindsTakeThis, MSGBOX_DEFAULT
-	giveitem_std ITEM_GOOD_ROD
+	giveitem ITEM_GOOD_ROD
 	setflag FLAG_RECEIVED_GOOD_ROD
 	msgbox Route118_Text_TryYourLuckFishing, MSGBOX_DEFAULT
 	release
@@ -69,7 +69,7 @@ Route118_EventScript_RouteSign119:: @ 81F3E85
 Route118_EventScript_StevenTrigger0:: @ 81F3E8E
 	lockall
 	setvar VAR_0x8008, 0
-	applymovement EVENT_OBJ_ID_PLAYER, Common_Movement_FaceUp
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_FaceUp
 	waitmovement 0
 	applymovement 19, Route118_Movement_StevenApproachLedge0
 	waitmovement 0
@@ -79,7 +79,7 @@ Route118_EventScript_StevenTrigger0:: @ 81F3E8E
 Route118_EventScript_StevenTrigger1:: @ 81F3EAE
 	lockall
 	setvar VAR_0x8008, 1
-	applymovement EVENT_OBJ_ID_PLAYER, Common_Movement_FaceUp
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_FaceUp
 	waitmovement 0
 	goto Route118_EventScript_StevenTrigger
 	end
@@ -87,7 +87,7 @@ Route118_EventScript_StevenTrigger1:: @ 81F3EAE
 Route118_EventScript_StevenTrigger2:: @ 81F3EC4
 	lockall
 	setvar VAR_0x8008, 2
-	applymovement EVENT_OBJ_ID_PLAYER, Common_Movement_FaceUp
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_FaceUp
 	waitmovement 0
 	applymovement 19, Route118_Movement_StevenApproachLedge2
 	waitmovement 0
@@ -113,19 +113,19 @@ Route118_EventScript_StevenTrigger:: @ 81F3EE4
 	end
 
 Route118_EventScript_StevenExit0:: @ 81F3F28
-	applymovement EVENT_OBJ_ID_PLAYER, Route118_Movement_PlayerWatchStevenExit
+	applymovement OBJ_EVENT_ID_PLAYER, Route118_Movement_PlayerWatchStevenExit
 	applymovement 19, Route118_Movement_StevenExit0
 	waitmovement 0
 	return
 
 Route118_EventScript_StevenExit1:: @ 81F3F3A
-	applymovement EVENT_OBJ_ID_PLAYER, Route118_Movement_PlayerWatchStevenExit
+	applymovement OBJ_EVENT_ID_PLAYER, Route118_Movement_PlayerWatchStevenExit
 	applymovement 19, Route118_Movement_StevenExit1
 	waitmovement 0
 	return
 
 Route118_EventScript_StevenExit2:: @ 81F3F4C
-	applymovement EVENT_OBJ_ID_PLAYER, Route118_Movement_PlayerWatchStevenExit
+	applymovement OBJ_EVENT_ID_PLAYER, Route118_Movement_PlayerWatchStevenExit
 	applymovement 19, Route118_Movement_StevenExit2
 	waitmovement 0
 	return

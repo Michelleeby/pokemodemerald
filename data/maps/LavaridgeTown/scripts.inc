@@ -70,7 +70,7 @@ LavaridgeTown_EventScript_RivalGiveGoGoggles:: @ 81EA551
 
 LavaridgeTown_EventScript_MayGiveGoGoggles:: @ 81EA5B5
 	msgbox LavaridgeTown_Text_MayNiceBadgesTakeThis, MSGBOX_DEFAULT
-	giveitem_std ITEM_GO_GOGGLES
+	giveitem ITEM_GO_GOGGLES
 	setflag FLAG_RECEIVED_GO_GOGGLES
 	msgbox LavaridgeTown_Text_MayExplainGoGogglesChallengeDad, MSGBOX_DEFAULT
 	goto LavaridgeTown_EventScript_RivalExit
@@ -78,7 +78,7 @@ LavaridgeTown_EventScript_MayGiveGoGoggles:: @ 81EA5B5
 
 LavaridgeTown_EventScript_BrendanGiveGoGoggles:: @ 81EA5DA
 	msgbox LavaridgeTown_Text_BrendanNiceBadgesTakeThis, MSGBOX_DEFAULT
-	giveitem_std ITEM_GO_GOGGLES
+	giveitem ITEM_GO_GOGGLES
 	setflag FLAG_RECEIVED_GO_GOGGLES
 	msgbox LavaridgeTown_Text_BrendanExplainGoGogglesChallengeDad, MSGBOX_DEFAULT
 	goto LavaridgeTown_EventScript_RivalExit
@@ -134,7 +134,7 @@ LavaridgeTown_EventScript_RivalExitHerbShop:: @ 81EA65C
 	waitmovement 0
 	applymovement 8, Common_Movement_Delay48
 	waitmovement 0
-	applymovement EVENT_OBJ_ID_PLAYER, Common_Movement_WalkInPlaceFastestRight
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFastestRight
 	waitmovement 0
 	return
 
@@ -149,7 +149,7 @@ LavaridgeTown_EventScript_RivalApproachPlayer2:: @ 81EA6AC
 	return
 
 LavaridgeTown_EventScript_RivalExit1:: @ 81EA6B7
-	applymovement EVENT_OBJ_ID_PLAYER, LavaridgeTown_Movement_PlayerWatchRivalExit
+	applymovement OBJ_EVENT_ID_PLAYER, LavaridgeTown_Movement_PlayerWatchRivalExit
 	applymovement 7, LavaridgeTown_Movement_RivalExit1
 	waitmovement 0
 	return

@@ -9,7 +9,7 @@ GraniteCave_StevensRoom_EventScript_Steven:: @ 822DC7B
 	call Common_EventScript_PlayerHandedOverTheItem
 	setflag FLAG_DELIVERED_STEVEN_LETTER
 	msgbox GraniteCave_StevensRoom_Text_ThankYouTakeThis, MSGBOX_DEFAULT
-	giveitem_std ITEM_TM47
+	giveitem ITEM_TM47
 	compare VAR_RESULT, FALSE
 	call_if_eq GraniteCave_StevensRoom_EventScript_BagFull
 	msgbox GraniteCave_StevensRoom_Text_CouldBecomeChampionLetsRegister, MSGBOX_DEFAULT
@@ -42,13 +42,13 @@ GraniteCave_StevensRoom_EventScript_StevenExitNorth:: @ 822DD0D
 	return
 
 GraniteCave_StevensRoom_EventScript_StevenExitWestEast:: @ 822DD18
-	applymovement EVENT_OBJ_ID_PLAYER, GraniteCave_StevensRoom_Movement_PlayerTurnTowardExit
+	applymovement OBJ_EVENT_ID_PLAYER, GraniteCave_StevensRoom_Movement_PlayerTurnTowardExit
 	applymovement 1, GraniteCave_StevensRoom_Movement_StevenExit
 	waitmovement 0
 	return
 
 GraniteCave_StevensRoom_EventScript_StevenExitSouth:: @ 822DD2A
-	applymovement EVENT_OBJ_ID_PLAYER, GraniteCave_StevensRoom_Movement_PlayerTurnTowardExit
+	applymovement OBJ_EVENT_ID_PLAYER, GraniteCave_StevensRoom_Movement_PlayerTurnTowardExit
 	applymovement 1, GraniteCave_StevensRoom_Movement_StevenExitSouth
 	waitmovement 0
 	return

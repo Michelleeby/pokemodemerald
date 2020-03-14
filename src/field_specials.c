@@ -46,9 +46,10 @@
 #include "wallclock.h"
 #include "window.h"
 #include "constants/battle_frontier.h"
+#include "constants/battle_tower.h"
 #include "constants/decorations.h"
 #include "constants/event_objects.h"
-#include "constants/event_object_movement_constants.h"
+#include "constants/event_object_movement.h"
 #include "constants/field_effects.h"
 #include "constants/field_specials.h"
 #include "constants/items.h"
@@ -83,21 +84,21 @@ static EWRAM_DATA u8 sScrollableMultichoice_ItemSpriteId = 0;
 static EWRAM_DATA u8 sBattlePointsWindowId = 0;
 static EWRAM_DATA u8 sFrontierExchangeCorner_ItemIconWindowId = 0;
 static EWRAM_DATA u8 sPCBoxToSendMon = 0;
-static EWRAM_DATA u32 sUnknown_0203AB70 = 0;
+static EWRAM_DATA u32 sBattleTowerMultiBattleTypeFlags = 0;
 
 struct ListMenuTemplate gScrollableMultichoice_ListMenuTemplate;
 
-extern const u16 gEventObjectPalette8[];
-extern const u16 gEventObjectPalette17[];
-extern const u16 gEventObjectPalette33[];
-extern const u16 gEventObjectPalette34[];
+extern const u16 gObjectEventPalette8[];
+extern const u16 gObjectEventPalette17[];
+extern const u16 gObjectEventPalette33[];
+extern const u16 gObjectEventPalette34[];
 
 void TryLoseFansFromPlayTime(void);
 void SetPlayerGotFirstFans(void);
 u16 GetNumFansOfPlayerInTrainerFanClub(void);
 
 static void RecordCyclingRoadResults(u32, u8);
-static void LoadLinkPartnerEventObjectSpritePalette(u8 graphicsId, u8 localEventId, u8 paletteNum);
+static void LoadLinkPartnerObjectEventSpritePalette(u8 graphicsId, u8 localEventId, u8 paletteNum);
 static void Task_PetalburgGymSlideOpenRoomDoors(u8 taskId);
 static void PetalburgGymSetDoorMetatiles(u8 roomNumber, u16 metatileId);
 static void Task_PCTurnOnEffect(u8);
@@ -128,7 +129,7 @@ static void ShowFrontierExchangeCornerItemIcon(u16 item);
 static void Task_DeoxysRockInteraction(u8 taskId);
 static void ChangeDeoxysRockLevel(u8 a0);
 static void WaitForDeoxysRockMovement(u8 taskId);
-static void sub_813B57C(u8 taskId);
+static void Task_LinkRetireStatusWithBattleTowerPartner(u8 taskId);
 static void Task_LoopWingFlapSE(u8 taskId);
 static void Task_CloseBattlePikeCurtain(u8 taskId);
 static u8 DidPlayerGetFirstFans(void);
@@ -366,7 +367,7 @@ u8 GetSSTidalLocation(s8 *mapGroup, s8 *mapNum, s16 *x, s16 *y)
     }
     *mapGroup = MAP_GROUP(ROUTE132);
     *y = 20;
-    return SS_TIDAL_LOCATION_OTHER;
+    return SS_TIDAL_LOCATION_CURRENTS;
 }
 
 bool32 ShouldDoWallyCall(void)
@@ -521,7 +522,7 @@ u8 GetLinkPartnerNames(void)
     return nLinkPlayers;
 }
 
-void SpawnLinkPartnerEventObject(void)
+void SpawnLinkPartnerObjectEvent(void)
 {
     u8 j = 0;
     s16 x = 0;
@@ -575,25 +576,25 @@ void SpawnLinkPartnerEventObject(void)
                 case VERSION_RUBY:
                 case VERSION_SAPPHIRE:
                     if (gLinkPlayers[i].gender == 0)
-                        linkSpriteId = EVENT_OBJ_GFX_LINK_RS_BRENDAN;
+                        linkSpriteId = OBJ_EVENT_GFX_LINK_RS_BRENDAN;
                     else
-                        linkSpriteId = EVENT_OBJ_GFX_LINK_RS_MAY;
+                        linkSpriteId = OBJ_EVENT_GFX_LINK_RS_MAY;
                     break;
                 case VERSION_EMERALD:
                     if (gLinkPlayers[i].gender == 0)
-                        linkSpriteId = EVENT_OBJ_GFX_RIVAL_BRENDAN_NORMAL;
+                        linkSpriteId = OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL;
                     else
-                        linkSpriteId = EVENT_OBJ_GFX_RIVAL_MAY_NORMAL;
+                        linkSpriteId = OBJ_EVENT_GFX_RIVAL_MAY_NORMAL;
                     break;
                 default:
                     if (gLinkPlayers[i].gender == 0)
-                        linkSpriteId = EVENT_OBJ_GFX_RIVAL_BRENDAN_NORMAL;
+                        linkSpriteId = OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL;
                     else
-                        linkSpriteId = EVENT_OBJ_GFX_RIVAL_MAY_NORMAL;
+                        linkSpriteId = OBJ_EVENT_GFX_RIVAL_MAY_NORMAL;
                     break;
             }
-            SpawnSpecialEventObjectParameterized(linkSpriteId, movementTypes[j], 240 - i, coordOffsets[j][0] + x + 7, coordOffsets[j][1] + y + 7, 0);
-            LoadLinkPartnerEventObjectSpritePalette(linkSpriteId, 240 - i, i);
+            SpawnSpecialObjectEventParameterized(linkSpriteId, movementTypes[j], 240 - i, coordOffsets[j][0] + x + 7, coordOffsets[j][1] + y + 7, 0);
+            LoadLinkPartnerObjectEventSpritePalette(linkSpriteId, 240 - i, i);
             j++;
             if (j == MAX_LINK_PLAYERS)
             {
@@ -603,36 +604,36 @@ void SpawnLinkPartnerEventObject(void)
     }
 }
 
-static void LoadLinkPartnerEventObjectSpritePalette(u8 graphicsId, u8 localEventId, u8 paletteNum)
+static void LoadLinkPartnerObjectEventSpritePalette(u8 graphicsId, u8 localEventId, u8 paletteNum)
 {
     u8 adjustedPaletteNum;
     // Note: This temp var is necessary; paletteNum += 6 doesn't match.
     adjustedPaletteNum = paletteNum + 6;
-    if (graphicsId == EVENT_OBJ_GFX_LINK_RS_BRENDAN ||
-        graphicsId == EVENT_OBJ_GFX_LINK_RS_MAY ||
-        graphicsId == EVENT_OBJ_GFX_RIVAL_BRENDAN_NORMAL ||
-        graphicsId == EVENT_OBJ_GFX_RIVAL_MAY_NORMAL)
+    if (graphicsId == OBJ_EVENT_GFX_LINK_RS_BRENDAN ||
+        graphicsId == OBJ_EVENT_GFX_LINK_RS_MAY ||
+        graphicsId == OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL ||
+        graphicsId == OBJ_EVENT_GFX_RIVAL_MAY_NORMAL)
     {
-        u8 obj = GetEventObjectIdByLocalIdAndMap(localEventId, gSaveBlock1Ptr->location.mapNum, gSaveBlock1Ptr->location.mapGroup);
-        if (obj != EVENT_OBJECTS_COUNT)
+        u8 obj = GetObjectEventIdByLocalIdAndMap(localEventId, gSaveBlock1Ptr->location.mapNum, gSaveBlock1Ptr->location.mapGroup);
+        if (obj != OBJECT_EVENTS_COUNT)
         {
-            u8 spriteId = gEventObjects[obj].spriteId;
+            u8 spriteId = gObjectEvents[obj].spriteId;
             struct Sprite *sprite = &gSprites[spriteId];
             sprite->oam.paletteNum = adjustedPaletteNum;
 
             switch (graphicsId)
             {
-                case EVENT_OBJ_GFX_LINK_RS_BRENDAN:
-                    LoadPalette(gEventObjectPalette33, 0x100 + (adjustedPaletteNum << 4), 0x20);
+                case OBJ_EVENT_GFX_LINK_RS_BRENDAN:
+                    LoadPalette(gObjectEventPalette33, 0x100 + (adjustedPaletteNum << 4), 0x20);
                     break;
-                case EVENT_OBJ_GFX_LINK_RS_MAY:
-                    LoadPalette(gEventObjectPalette34, 0x100 + (adjustedPaletteNum << 4), 0x20);
+                case OBJ_EVENT_GFX_LINK_RS_MAY:
+                    LoadPalette(gObjectEventPalette34, 0x100 + (adjustedPaletteNum << 4), 0x20);
                     break;
-                case EVENT_OBJ_GFX_RIVAL_BRENDAN_NORMAL:
-                    LoadPalette(gEventObjectPalette8, 0x100 + (adjustedPaletteNum << 4), 0x20);
+                case OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL:
+                    LoadPalette(gObjectEventPalette8, 0x100 + (adjustedPaletteNum << 4), 0x20);
                     break;
-                case EVENT_OBJ_GFX_RIVAL_MAY_NORMAL:
-                    LoadPalette(gEventObjectPalette17, 0x100 + (adjustedPaletteNum << 4), 0x20);
+                case OBJ_EVENT_GFX_RIVAL_MAY_NORMAL:
+                    LoadPalette(gObjectEventPalette17, 0x100 + (adjustedPaletteNum << 4), 0x20);
                     break;
             }
         }
@@ -994,7 +995,7 @@ u16 GetWeekCount(void)
 u8 GetLeadMonFriendshipScore(void)
 {
     struct Pokemon *pokemon = &gPlayerParty[GetLeadMonIndex()];
-    if (GetMonData(pokemon, MON_DATA_FRIENDSHIP) == 255)
+    if (GetMonData(pokemon, MON_DATA_FRIENDSHIP) == MAX_FRIENDSHIP)
     {
         return 6;
     }
@@ -1220,18 +1221,18 @@ void EndLotteryCornerComputerEffect(void)
     DrawWholeMapView();
 }
 
-void SetTrickHouseEndRoomFlag(void)
+void SetTrickHouseNuggetFlag(void)
 {
     u16 *specVar = &gSpecialVar_0x8004;
-    u16 flag = FLAG_TRICK_HOUSE_END_ROOM;
+    u16 flag = FLAG_HIDDEN_ITEM_TRICK_HOUSE_NUGGET;
     *specVar = flag;
     FlagSet(flag);
 }
 
-void ResetTrickHouseEndRoomFlag(void)
+void ResetTrickHouseNuggetFlag(void)
 {
     u16 *specVar = &gSpecialVar_0x8004;
-    u16 flag = FLAG_TRICK_HOUSE_END_ROOM;
+    u16 flag = FLAG_HIDDEN_ITEM_TRICK_HOUSE_NUGGET;
     *specVar = flag;
     FlagClear(flag);
 }
@@ -1304,15 +1305,15 @@ void IsGrassTypeInParty(void)
 
 void SpawnCameraObject(void)
 {
-    u8 obj = SpawnSpecialEventObjectParameterized(EVENT_OBJ_GFX_BOY_1, MOVEMENT_TYPE_FACE_DOWN, EVENT_OBJ_ID_CAMERA, gSaveBlock1Ptr->pos.x + 7, gSaveBlock1Ptr->pos.y + 7, 3);
-    gEventObjects[obj].invisible = TRUE;
-    CameraObjectSetFollowedObjectId(gEventObjects[obj].spriteId);
+    u8 obj = SpawnSpecialObjectEventParameterized(OBJ_EVENT_GFX_BOY_1, MOVEMENT_TYPE_FACE_DOWN, OBJ_EVENT_ID_CAMERA, gSaveBlock1Ptr->pos.x + 7, gSaveBlock1Ptr->pos.y + 7, 3);
+    gObjectEvents[obj].invisible = TRUE;
+    CameraObjectSetFollowedObjectId(gObjectEvents[obj].spriteId);
 }
 
 void RemoveCameraObject(void)
 {
     CameraObjectSetFollowedObjectId(GetPlayerAvatarObjectId());
-    RemoveEventObjectByLocalIdAndMap(EVENT_OBJ_ID_CAMERA, gSaveBlock1Ptr->location.mapNum, gSaveBlock1Ptr->location.mapGroup);
+    RemoveObjectEventByLocalIdAndMap(OBJ_EVENT_ID_CAMERA, gSaveBlock1Ptr->location.mapNum, gSaveBlock1Ptr->location.mapGroup);
 }
 
 u8 GetPokeblockNameByMonNature(void)
@@ -1585,9 +1586,9 @@ u16 ScriptGetPartyMonSpecies(void)
 }
 
 // Removed for Emerald
-void TryInitBattleTowerAwardManEventObject(void)
+void TryInitBattleTowerAwardManObjectEvent(void)
 {
-    //TryInitLocalEventObject(6);
+    //TryInitLocalObjectEvent(6);
 }
 
 u16 GetDaysUntilPacifidlogTMAvailable(void)
@@ -1701,10 +1702,10 @@ bool8 IsBadEggInParty(void)
     return FALSE;
 }
 
-bool8 InMultiBattleRoom(void)
+bool8 InMultiPartnerRoom(void)
 {
-    if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(BATTLE_FRONTIER_BATTLE_TOWER_MULTI_BATTLE_ROOM)
-        && gSaveBlock1Ptr->location.mapNum == MAP_NUM(BATTLE_FRONTIER_BATTLE_TOWER_MULTI_BATTLE_ROOM) &&
+    if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(BATTLE_FRONTIER_BATTLE_TOWER_MULTI_PARTNER_ROOM)
+        && gSaveBlock1Ptr->location.mapNum == MAP_NUM(BATTLE_FRONTIER_BATTLE_TOWER_MULTI_PARTNER_ROOM) &&
         VarGet(VAR_FRONTIER_BATTLE_MODE) == FRONTIER_MODE_MULTIS)
         return TRUE;
     return FALSE;
@@ -2843,11 +2844,11 @@ void SetBattleTowerLinkPlayerGfx(void)
     {
         if (gLinkPlayers[i].gender == MALE)
         {
-            VarSet(VAR_OBJ_GFX_ID_F - i, EVENT_OBJ_GFX_BRENDAN_NORMAL);
+            VarSet(VAR_OBJ_GFX_ID_F - i, OBJ_EVENT_GFX_BRENDAN_NORMAL);
         }
         else
         {
-            VarSet(VAR_OBJ_GFX_ID_F - i, EVENT_OBJ_GFX_RIVAL_MAY_NORMAL);
+            VarSet(VAR_OBJ_GFX_ID_F - i, OBJ_EVENT_GFX_RIVAL_MAY_NORMAL);
         }
     }
 }
@@ -3433,9 +3434,9 @@ static void Task_DeoxysRockInteraction(u8 taskId)
 
 static void ChangeDeoxysRockLevel(u8 rockLevel)
 {
-    u8 eventObjectId;
+    u8 objectEventId;
     LoadPalette(&sDeoxysRockPalettes[rockLevel], 0x1A0, 8);
-    TryGetEventObjectIdByLocalIdAndMap(1, gSaveBlock1Ptr->location.mapNum, gSaveBlock1Ptr->location.mapGroup, &eventObjectId);
+    TryGetObjectEventIdByLocalIdAndMap(1, gSaveBlock1Ptr->location.mapNum, gSaveBlock1Ptr->location.mapGroup, &objectEventId);
 
     if (rockLevel == 0)
         PlaySE(SE_W109);
@@ -3455,7 +3456,7 @@ static void ChangeDeoxysRockLevel(u8 rockLevel)
         gFieldEffectArguments[5] = 5;
 
     FieldEffectStart(FLDEFF_MOVE_DEOXYS_ROCK);
-    Overworld_SetEventObjTemplateCoords(1, sDeoxysRockCoords[rockLevel][0], sDeoxysRockCoords[rockLevel][1]);
+    Overworld_SetObjEventTemplateCoords(1, sDeoxysRockCoords[rockLevel][0], sDeoxysRockCoords[rockLevel][1]);
 }
 
 static void WaitForDeoxysRockMovement(u8 taskId)
@@ -3542,36 +3543,36 @@ bool8 IsDestinationBoxFull(void)
     return FALSE;
 }
 
-void CreateUnusualWeatherEvent(void)
+void CreateAbnormalWeatherEvent(void)
 {
     u16 randomValue = Random();
-    VarSet(VAR_UNUSUAL_WEATHER_STEP_COUNTER, 0);
+    VarSet(VAR_ABNORMAL_WEATHER_STEP_COUNTER, 0);
 
     if (FlagGet(FLAG_DEFEATED_KYOGRE) == TRUE)
     {
-        VarSet(VAR_UNUSUAL_WEATHER_LOCATION, (randomValue % UNUSUAL_WEATHER_COUNT_PER_LEGENDARY) + UNUSUAL_WEATHER_GROUDON_LOCATIONS_START);
+        VarSet(VAR_ABNORMAL_WEATHER_LOCATION, (randomValue % ABNORMAL_WEATHER_COUNT_PER_LEGENDARY) + ABNORMAL_WEATHER_GROUDON_LOCATIONS_START);
     }
     else if (FlagGet(FLAG_DEFEATED_GROUDON) == TRUE)
     {
-        VarSet(VAR_UNUSUAL_WEATHER_LOCATION, (randomValue % UNUSUAL_WEATHER_COUNT_PER_LEGENDARY) + UNUSUAL_WEATHER_KYOGRE_LOCATIONS_START);
+        VarSet(VAR_ABNORMAL_WEATHER_LOCATION, (randomValue % ABNORMAL_WEATHER_COUNT_PER_LEGENDARY) + ABNORMAL_WEATHER_KYOGRE_LOCATIONS_START);
     }
     else if ((randomValue & 1) == 0)
     {
         randomValue = Random();
-        VarSet(VAR_UNUSUAL_WEATHER_LOCATION, (randomValue % UNUSUAL_WEATHER_COUNT_PER_LEGENDARY) + UNUSUAL_WEATHER_GROUDON_LOCATIONS_START);
+        VarSet(VAR_ABNORMAL_WEATHER_LOCATION, (randomValue % ABNORMAL_WEATHER_COUNT_PER_LEGENDARY) + ABNORMAL_WEATHER_GROUDON_LOCATIONS_START);
     }
     else
     {
         randomValue = Random();
-        VarSet(VAR_UNUSUAL_WEATHER_LOCATION, (randomValue % UNUSUAL_WEATHER_COUNT_PER_LEGENDARY) + UNUSUAL_WEATHER_KYOGRE_LOCATIONS_START);
+        VarSet(VAR_ABNORMAL_WEATHER_LOCATION, (randomValue % ABNORMAL_WEATHER_COUNT_PER_LEGENDARY) + ABNORMAL_WEATHER_KYOGRE_LOCATIONS_START);
     }
 }
 
-// Saves the map name for the current unusual weather location in gStringVar1, then
+// Saves the map name for the current abnormal weather location in gStringVar1, then
 // returns TRUE if the weather is for Kyogre, and FALSE if it's for Groudon.
-bool32 GetUnusualWeatherMapNameAndType(void)
+bool32 GetAbnormalWeatherMapNameAndType(void)
 {
-    static const u8 sUnusualWeatherMapNumbers[] = {
+    static const u8 sAbnormalWeatherMapNumbers[] = {
         MAP_NUM(ROUTE114),
         MAP_NUM(ROUTE114),
         MAP_NUM(ROUTE115),
@@ -3590,11 +3591,11 @@ bool32 GetUnusualWeatherMapNameAndType(void)
         MAP_NUM(ROUTE129)
     };
 
-    u16 unusualWeather = VarGet(VAR_UNUSUAL_WEATHER_LOCATION);
+    u16 abnormalWeather = VarGet(VAR_ABNORMAL_WEATHER_LOCATION);
 
-    GetMapName(gStringVar1, sUnusualWeatherMapNumbers[unusualWeather - 1], 0);
+    GetMapName(gStringVar1, sAbnormalWeatherMapNumbers[abnormalWeather - 1], 0);
 
-    if (unusualWeather < UNUSUAL_WEATHER_KYOGRE_LOCATIONS_START)
+    if (abnormalWeather < ABNORMAL_WEATHER_KYOGRE_LOCATIONS_START)
     {
         return FALSE;
     }
@@ -3604,10 +3605,10 @@ bool32 GetUnusualWeatherMapNameAndType(void)
     }
 }
 
-bool8 UnusualWeatherHasExpired(void)
+bool8 AbnormalWeatherHasExpired(void)
 {
     // Duplicate array.
-    static const u8 sUnusualWeatherMapNumbers_2[] = {
+    static const u8 sAbnormalWeatherMapNumbers[] = {
         MAP_NUM(ROUTE114),
         MAP_NUM(ROUTE114),
         MAP_NUM(ROUTE115),
@@ -3626,17 +3627,17 @@ bool8 UnusualWeatherHasExpired(void)
         MAP_NUM(ROUTE129)
     };
 
-    u16 steps = VarGet(VAR_UNUSUAL_WEATHER_STEP_COUNTER);
-    u16 unusualWeather = VarGet(VAR_UNUSUAL_WEATHER_LOCATION);
+    u16 steps = VarGet(VAR_ABNORMAL_WEATHER_STEP_COUNTER);
+    u16 abnormalWeather = VarGet(VAR_ABNORMAL_WEATHER_LOCATION);
 
-    if (unusualWeather == UNUSUAL_WEATHER_NONE)
+    if (abnormalWeather == ABNORMAL_WEATHER_NONE)
     {
         return FALSE;
     }
 
     if (++steps > 999)
     {
-        VarSet(VAR_UNUSUAL_WEATHER_STEP_COUNTER, 0);
+        VarSet(VAR_ABNORMAL_WEATHER_STEP_COUNTER, 0);
         if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(UNDERWATER_MARINE_CAVE))
         {
             switch (gSaveBlock1Ptr->location.mapNum)
@@ -3646,7 +3647,7 @@ bool8 UnusualWeatherHasExpired(void)
                 case MAP_NUM(MARINE_CAVE_END):
                 case MAP_NUM(TERRA_CAVE_ENTRANCE):
                 case MAP_NUM(TERRA_CAVE_END):
-                    VarSet(VAR_SHOULD_END_UNUSUAL_WEATHER, 1);
+                    VarSet(VAR_SHOULD_END_ABNORMAL_WEATHER, 1);
                     return FALSE;
                 default:
                     break;
@@ -3661,27 +3662,27 @@ bool8 UnusualWeatherHasExpired(void)
                 case MAP_NUM(UNDERWATER5):
                 case MAP_NUM(UNDERWATER6):
                 case MAP_NUM(UNDERWATER7):
-                    VarSet(VAR_SHOULD_END_UNUSUAL_WEATHER, 1);
+                    VarSet(VAR_SHOULD_END_ABNORMAL_WEATHER, 1);
                     return FALSE;
                 default:
                     break;
             }
         }
 
-        if (gSaveBlock1Ptr->location.mapNum == sUnusualWeatherMapNumbers_2[unusualWeather - 1] &&
+        if (gSaveBlock1Ptr->location.mapNum == sAbnormalWeatherMapNumbers[abnormalWeather - 1] &&
             gSaveBlock1Ptr->location.mapGroup == 0)
         {
             return TRUE;
         }
         else
         {
-            VarSet(VAR_UNUSUAL_WEATHER_LOCATION, UNUSUAL_WEATHER_NONE);
+            VarSet(VAR_ABNORMAL_WEATHER_LOCATION, ABNORMAL_WEATHER_NONE);
             return FALSE;
         }
     }
     else
     {
-        VarSet(VAR_UNUSUAL_WEATHER_STEP_COUNTER, steps);
+        VarSet(VAR_ABNORMAL_WEATHER_STEP_COUNTER, steps);
         return FALSE;
     }
 }
@@ -3746,7 +3747,7 @@ bool32 ShouldDistributeEonTicket(void)
 
 void sub_813B534(void)
 {
-    sUnknown_0203AB70 = gBattleTypeFlags;
+    sBattleTowerMultiBattleTypeFlags = gBattleTypeFlags;
     gBattleTypeFlags = 0;
     if (!gReceivedRemoteLinkPlayers)
     {
@@ -3754,12 +3755,12 @@ void sub_813B534(void)
     }
 }
 
-void sub_813B568(void)
+void LinkRetireStatusWithBattleTowerPartner(void)
 {
-    CreateTask(sub_813B57C, 5);
+    CreateTask(Task_LinkRetireStatusWithBattleTowerPartner, 5);
 }
 
-static void sub_813B57C(u8 taskId)
+static void Task_LinkRetireStatusWithBattleTowerPartner(u8 taskId)
 {
     switch (gTasks[taskId].data[0])
     {
@@ -3790,21 +3791,24 @@ static void sub_813B57C(u8 taskId)
                 {
                     gSpecialVar_0x8005 = gBlockRecvBuffer[1][0];
                     ResetBlockReceivedFlag(1);
-                    if (gSpecialVar_0x8004 == 1 && gSpecialVar_0x8005 == 1)
+                    if (gSpecialVar_0x8004 == BATTLE_TOWER_LINK_RETIRE 
+                     && gSpecialVar_0x8005 == BATTLE_TOWER_LINK_RETIRE)
                     {
-                        gSpecialVar_Result = 1;
+                        gSpecialVar_Result = BATTLE_TOWER_LINKSTAT_BOTH_RETIRE;
                     }
-                    else if (gSpecialVar_0x8004 == 0 && gSpecialVar_0x8005 == 1)
+                    else if (gSpecialVar_0x8004 == BATTLE_TOWER_LINK_CONTINUE 
+                          && gSpecialVar_0x8005 == BATTLE_TOWER_LINK_RETIRE)
                     {
-                        gSpecialVar_Result = 2;
+                        gSpecialVar_Result = BATTLE_TOWER_LINKSTAT_PARTNER_RETIRE;
                     }
-                    else if (gSpecialVar_0x8004 == 1 && gSpecialVar_0x8005 == 0)
+                    else if (gSpecialVar_0x8004 == BATTLE_TOWER_LINK_RETIRE 
+                          && gSpecialVar_0x8005 == BATTLE_TOWER_LINK_CONTINUE)
                     {
-                        gSpecialVar_Result = 3;
+                        gSpecialVar_Result = BATTLE_TOWER_LINKSTAT_PLAYER_RETIRE;
                     }
                     else
                     {
-                        gSpecialVar_Result = 0;
+                        gSpecialVar_Result = BATTLE_TOWER_LINKSTAT_CONTINUE;
                     }
                 }
                 gTasks[taskId].data[0]++;
@@ -3842,14 +3846,14 @@ static void sub_813B57C(u8 taskId)
         case 5:
             if (GetMultiplayerId() == 0)
             {
-                if (gSpecialVar_Result == 2)
+                if (gSpecialVar_Result == BATTLE_TOWER_LINKSTAT_PARTNER_RETIRE)
                 {
                     ShowFieldAutoScrollMessage(gText_YourPartnerHasRetired);
                 }
             }
             else
             {
-                if (gSpecialVar_Result == 3)
+                if (gSpecialVar_Result == BATTLE_TOWER_LINKSTAT_PLAYER_RETIRE)
                 {
                     ShowFieldAutoScrollMessage(gText_YourPartnerHasRetired);
                 }
@@ -3880,7 +3884,7 @@ static void sub_813B57C(u8 taskId)
             {
                 sub_800AC34();
             }
-            gBattleTypeFlags = sUnknown_0203AB70;
+            gBattleTypeFlags = sBattleTowerMultiBattleTypeFlags;
             EnableBothScriptContexts();
             DestroyTask(taskId);
             break;

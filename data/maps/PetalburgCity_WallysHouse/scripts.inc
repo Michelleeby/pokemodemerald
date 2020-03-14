@@ -1,25 +1,25 @@
 PetalburgCity_WallysHouse_MapScripts:: @ 8204229
-	map_script MAP_SCRIPT_ON_FRAME_TABLE, PetalburgCity_WallysHouse_MapScript2_OnFrame
-	map_script MAP_SCRIPT_ON_WARP_INTO_MAP_TABLE, PetalburgCity_WallysHouse_MapScript2_OnWarp
+	map_script MAP_SCRIPT_ON_FRAME_TABLE, PetalburgCity_WallysHouse_OnFrame
+	map_script MAP_SCRIPT_ON_WARP_INTO_MAP_TABLE, PetalburgCity_WallysHouse_OnWarp
 	.byte 0
 
-PetalburgCity_WallysHouse_MapScript2_OnWarp: @ 8204234
+PetalburgCity_WallysHouse_OnWarp: @ 8204234
 	map_script_2 VAR_PETALBURG_CITY_STATE, 4, PetalburgCity_WallysHouse_EventScript_PlayerUncleFaceEachOther
 	.2byte 0
 
 PetalburgCity_WallysHouse_EventScript_PlayerUncleFaceEachOther:: @ 820423E
-	turnobject EVENT_OBJ_ID_PLAYER, DIR_EAST
+	turnobject OBJ_EVENT_ID_PLAYER, DIR_EAST
 	turnobject 1, DIR_WEST
 	end
 
-PetalburgCity_WallysHouse_MapScript2_OnFrame: @ 8204247
+PetalburgCity_WallysHouse_OnFrame: @ 8204247
 	map_script_2 VAR_PETALBURG_CITY_STATE, 4, PetalburgCity_WallysHouse_EventScript_GiveHM03Surf
 	.2byte 0
 
 PetalburgCity_WallysHouse_EventScript_GiveHM03Surf:: @ 8204251
 	lockall
 	msgbox PetalburgCity_WallysHouse_Text_PleaseExcuseUs, MSGBOX_DEFAULT
-	giveitem_std ITEM_HM03
+	giveitem ITEM_HM03
 	setflag FLAG_RECEIVED_HM03
 	msgbox PetalburgCity_WallysHouse_Text_SurfGoAllSortsOfPlaces, MSGBOX_DEFAULT
 	setvar VAR_PETALBURG_CITY_STATE, 5

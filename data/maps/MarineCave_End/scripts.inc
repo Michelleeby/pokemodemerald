@@ -25,7 +25,7 @@ MarineCave_End_EventScript_ShowKyogre:: @ 823B012
 
 MarineCave_End_EventScript_Kyogre:: @ 823B01B
 	lockall
-	applymovement EVENT_OBJ_ID_PLAYER, Common_Movement_FaceUp
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_FaceUp
 	waitmovement 0
 	applymovement 1, MarineCave_End_Movement_KyogreApproach
 	waitmovement 0
@@ -47,13 +47,13 @@ MarineCave_End_EventScript_Kyogre:: @ 823B01B
 	goto_if_eq MarineCave_End_EventScript_RanFromKyogre
 	compare VAR_RESULT, B_OUTCOME_PLAYER_TELEPORTED
 	goto_if_eq MarineCave_End_EventScript_RanFromKyogre
-	setvar VAR_SHOULD_END_UNUSUAL_WEATHER, 1
+	setvar VAR_SHOULD_END_ABNORMAL_WEATHER, 1
 	setflag FLAG_DEFEATED_KYOGRE
 	releaseall
 	end
 
 MarineCave_End_EventScript_DefeatedKyogre:: @ 823B084
-	setvar VAR_SHOULD_END_UNUSUAL_WEATHER, 1
+	setvar VAR_SHOULD_END_ABNORMAL_WEATHER, 1
 	setflag FLAG_DEFEATED_KYOGRE
 	goto Common_EventScript_RemoveStaticPokemon
 	end

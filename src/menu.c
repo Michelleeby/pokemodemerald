@@ -62,7 +62,13 @@ static EWRAM_DATA u16 gUnknown_0203CDA8 = 0;
 static EWRAM_DATA void *gUnknown_0203CDAC[0x20] = {NULL};
 
 const u16 gUnknown_0860F074[] = INCBIN_U16("graphics/interface/860F074.gbapal");
-static const u8 gUnknown_0860F094[] = { 8, 4, 1 };
+
+static const u8 sTextSpeedFrameDelays[] = 
+{ 
+    [OPTIONS_TEXT_SPEED_SLOW] = 8, 
+    [OPTIONS_TEXT_SPEED_MID]  = 4, 
+    [OPTIONS_TEXT_SPEED_FAST] = 1 
+};
 
 static const struct WindowTemplate sStandardTextBox_WindowTemplates[] =
 {
@@ -90,7 +96,7 @@ static const struct WindowTemplate sYesNo_WindowTemplates =
 };
 
 const u16 gUnknown_0860F0B0[] = INCBIN_U16("graphics/interface/860F0B0.gbapal");
-const u8 gUnknown_0860F0D0[] = { 15, 1, 2 };
+const u8 sTextColors[] = { TEXT_DYNAMIC_COLOR_6, TEXT_COLOR_WHITE, TEXT_COLOR_DARK_GREY };
 
 // Table of move info icon offsets in graphics/interface_fr/menu.png
 const struct MoveMenuInfoIcon gMoveMenuInfoIcons[] =
@@ -153,7 +159,7 @@ void sub_8197200(void)
     ChangeBgX(0, 0, 0);
     ChangeBgY(0, 0, 0);
     DeactivateAllTextPrinters();
-    sub_81973A4();
+    LoadMessageBoxAndBorderGfx();
 }
 
 u16 RunTextPrintersAndIsPrinter0Active(void)
@@ -203,7 +209,7 @@ void AddTextPrinterWithCustomSpeedForMessage(bool8 allowSkippingDelayWithButtonP
     AddTextPrinterParameterized2(0, 1, gStringVar4, speed, NULL, 2, 1, 3);
 }
 
-void sub_81973A4(void)
+void LoadMessageBoxAndBorderGfx(void)
 {
     LoadMessageBoxGfx(0, DLG_WINDOW_BASE_TILE_NUM, DLG_WINDOW_PALETTE_NUM * 0x10);
     LoadUserWindowBorderGfx(0, STD_WINDOW_BASE_TILE_NUM, STD_WINDOW_PALETTE_NUM * 0x10);
@@ -452,7 +458,7 @@ u16 sub_81978D0(u8 colorNum)
 
 void DisplayItemMessageOnField(u8 taskId, const u8 *string, TaskFunc callback)
 {
-    sub_81973A4();
+    LoadMessageBoxAndBorderGfx();
     DisplayMessageAndContinueTask(taskId, 0, DLG_WINDOW_BASE_TILE_NUM, DLG_WINDOW_PALETTE_NUM, 1, GetPlayerTextSpeedDelay(), string, callback);
     CopyWindowToVram(0, 3);
 }
@@ -480,7 +486,7 @@ u8 GetPlayerTextSpeedDelay(void)
     if (gSaveBlock2Ptr->optionsTextSpeed > OPTIONS_TEXT_SPEED_FAST)
         gSaveBlock2Ptr->optionsTextSpeed = OPTIONS_TEXT_SPEED_MID;
     speed = GetPlayerTextSpeed();
-    return gUnknown_0860F094[speed];
+    return sTextSpeedFrameDelays[speed];
 }
 
 u8 sub_81979C4(u8 a1)
@@ -819,7 +825,7 @@ void sub_8198180(const u8 *string, u8 a2, bool8 copyToVram)
                   0,
                   0xEC - (GetWindowAttribute(sWindowId, WINDOW_TILEMAP_LEFT) * 8) - a2 - width,
                   1,
-                  gUnknown_0860F0D0,
+                  sTextColors,
                   0,
                   string);
         if (copyToVram)
@@ -836,15 +842,15 @@ void sub_8198204(const u8 *string, const u8 *string2, u8 a3, u8 a4, bool8 copyTo
     {
         if (a3 != 0)
         {
-            color[0] = 0;
-            color[1] = 1;
-            color[2] = 2;
+            color[0] = TEXT_COLOR_TRANSPARENT;
+            color[1] = TEXT_COLOR_WHITE;
+            color[2] = TEXT_COLOR_DARK_GREY;
         }
         else
         {
-            color[0] = 15;
-            color[1] = 1;
-            color[2] = 2;
+            color[0] = TEXT_DYNAMIC_COLOR_6;
+            color[1] = TEXT_COLOR_WHITE;
+            color[2] = TEXT_COLOR_DARK_GREY;
         }
         PutWindowTilemap(sWindowId);
         FillWindowPixelBuffer(sWindowId, PIXEL_FILL(15));
@@ -2127,7 +2133,7 @@ void blit_move_info_icon(u8 windowId, u8 iconId, u16 x, u16 y)
     BlitBitmapRectToWindow(windowId, gFireRedMenuElements_Gfx + gMoveMenuInfoIcons[iconId].offset * 32, 0, 0, 128, 128, x, y, gMoveMenuInfoIcons[iconId].width, gMoveMenuInfoIcons[iconId].height);
 }
 
-void sub_819A344(u8 a0, u8 *dest, u8 color)
+void BufferSaveMenuText(u8 textId, u8 *dest, u8 color)
 {
     s32 curFlag;
     s32 flagCount;
@@ -2141,28 +2147,28 @@ void sub_819A344(u8 a0, u8 *dest, u8 color)
     *(string++) = EXT_CTRL_CODE_SHADOW;
     *(string++) = color + 1;
 
-    switch (a0)
+    switch (textId)
     {
-        case 0:
+        case SAVE_MENU_NAME:
             StringCopy(string, gSaveBlock2Ptr->playerName);
             break;
-        case 1:
+        case SAVE_MENU_CAUGHT:
             if (IsNationalPokedexEnabled())
                 string = ConvertIntToDecimalStringN(string, GetNationalPokedexCount(FLAG_GET_CAUGHT), STR_CONV_MODE_LEFT_ALIGN, 3);
             else
                 string = ConvertIntToDecimalStringN(string, GetHoennPokedexCount(FLAG_GET_CAUGHT), STR_CONV_MODE_LEFT_ALIGN, 3);
             *string = EOS;
             break;
-        case 2:
+        case SAVE_MENU_PLAY_TIME:
             string = ConvertIntToDecimalStringN(string, gSaveBlock2Ptr->playTimeHours, STR_CONV_MODE_LEFT_ALIGN, 3);
             *(string++) = CHAR_COLON;
             ConvertIntToDecimalStringN(string, gSaveBlock2Ptr->playTimeMinutes, STR_CONV_MODE_LEADING_ZEROS, 2);
             break;
-        case 3:
+        case SAVE_MENU_LOCATION:
             GetMapNameGeneric(string, gMapHeader.regionMapSectionId);
             break;
-        case 4:
-            for (curFlag = FLAG_BADGE01_GET, flagCount = 0, endOfString = string + 1; curFlag <= FLAG_BADGE08_GET; curFlag++)
+        case SAVE_MENU_BADGES:
+            for (curFlag = FLAG_BADGE01_GET, flagCount = 0, endOfString = string + 1; curFlag < FLAG_BADGE01_GET + NUM_BADGES; curFlag++)
             {
                 if (FlagGet(curFlag))
                     flagCount++;

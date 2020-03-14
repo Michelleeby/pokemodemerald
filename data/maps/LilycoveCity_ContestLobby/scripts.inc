@@ -38,11 +38,11 @@ LilycoveCity_ContestLobby_EventScript_ContestArtist:: @ 821A264
 	addobject 4
 	applymovement 4, LilycoveCity_ContestLobby_Movement_ArtistApproachPlayer
 	waitmovement 4
-	applymovement EVENT_OBJ_ID_PLAYER, LilycoveCity_ContestLobby_Movement_PlayerFaceArtist
+	applymovement OBJ_EVENT_ID_PLAYER, LilycoveCity_ContestLobby_Movement_PlayerFaceArtist
 	waitmovement 0
 	msgbox LilycoveCity_ContestLobby_Text_YourPokemonSpurredMeToPaint, MSGBOX_DEFAULT
 	lockall
-	fadescreen 1
+	fadescreen FADE_TO_BLACK
 	showcontestwinner 0
 	lockall
 	msgbox LilycoveCity_ContestLobby_Text_ShouldITakePaintingToMuseum, MSGBOX_YESNO
@@ -212,11 +212,11 @@ LilycoveCity_ContestLobby_EventScript_LinkContestArtist:: @ 821A436
 	addobject 11
 	applymovement 11, LilycoveCity_ContestLobby_Movement_LinkArtistApproachPlayer
 	waitmovement 11
-	applymovement EVENT_OBJ_ID_PLAYER, LilycoveCity_ContestLobby_Movement_PlayerFaceLinkArtist
+	applymovement OBJ_EVENT_ID_PLAYER, LilycoveCity_ContestLobby_Movement_PlayerFaceLinkArtist
 	waitmovement 0
 	msgbox LilycoveCity_ContestLobby_Text_YourPokemonSpurredMeToPaint, MSGBOX_DEFAULT
 	lockall
-	fadescreen 1
+	fadescreen FADE_TO_BLACK
 	showcontestwinner 0
 	msgbox LilycoveCity_ContestLobby_Text_ShouldITakePaintingToMuseum, MSGBOX_YESNO
 	compare VAR_RESULT, YES
@@ -360,7 +360,7 @@ LilycoveCity_ContestLobby_EventScript_SetMasterContestType:: @ 821A5C9
 LilycoveCity_ContestLobby_EventScript_SetDebug:: @ 821A5CF
 	setflag FLAG_HIDE_LILYCOVE_MUSEUM_CURATOR
 	copyvar VAR_LILYCOVE_MUSEUM_2F_STATE, 1
-	giveitem ITEM_CONTEST_PASS, 1
+	additem ITEM_CONTEST_PASS
 	setvar VAR_0x800B, 8
 	setvar VAR_CONTEST_RANK, CONTEST_RANK_MASTER
 	setvar VAR_LILYCOVE_CONTEST_LOBBY_STATE, 1
@@ -424,12 +424,12 @@ LilycoveCity_ContestLobby_EventScript_LeadToContestHall:: @ 821A670
 	delay 20
 	applymovement 1, LilycoveCity_ContestLobby_Movement_ReceptionistFacePlayer
 	waitmovement 0
-	applymovement EVENT_OBJ_ID_PLAYER, LilycoveCity_ContestLobby_Movement_PlayerApproachReceptionist
+	applymovement OBJ_EVENT_ID_PLAYER, LilycoveCity_ContestLobby_Movement_PlayerApproachReceptionist
 	waitmovement 0
 	msgbox LilycoveCity_ContestLobby_Text_ComeThroughHere, MSGBOX_DEFAULT
 	closemessage
 	applymovement 1, LilycoveCity_ContestLobby_Movement_ReceptionistWalkToContestHall
-	applymovement EVENT_OBJ_ID_PLAYER, LilycoveCity_ContestLobby_Movement_PlayerWalkToContestHall
+	applymovement OBJ_EVENT_ID_PLAYER, LilycoveCity_ContestLobby_Movement_PlayerWalkToContestHall
 	waitmovement 0
 	releaseall
 	return
@@ -504,42 +504,42 @@ LilycoveCity_ContestLobby_EventScript_NinjaBoy:: @ 821A735
 
 LilycoveCity_ContestLobby_EventScript_ContestWinner1:: @ 821A73E
 	lockall
-	fadescreen 1
+	fadescreen FADE_TO_BLACK
 	showcontestwinner 1
 	releaseall
 	end
 
 LilycoveCity_ContestLobby_EventScript_ContestWinner2:: @ 821A745
 	lockall
-	fadescreen 1
+	fadescreen FADE_TO_BLACK
 	showcontestwinner 2
 	releaseall
 	end
 
 LilycoveCity_ContestLobby_EventScript_ContestWinner3:: @ 821A74C
 	lockall
-	fadescreen 1
+	fadescreen FADE_TO_BLACK
 	showcontestwinner 3
 	releaseall
 	end
 
 LilycoveCity_ContestLobby_EventScript_ContestWinner4:: @ 821A753
 	lockall
-	fadescreen 1
+	fadescreen FADE_TO_BLACK
 	showcontestwinner 4
 	releaseall
 	end
 
 LilycoveCity_ContestLobby_EventScript_ContestWinner5:: @ 821A75A
 	lockall
-	fadescreen 1
+	fadescreen FADE_TO_BLACK
 	showcontestwinner 5
 	releaseall
 	end
 
 LilycoveCity_ContestLobby_EventScript_ContestWinner6:: @ 821A761
 	lockall
-	fadescreen 1
+	fadescreen FADE_TO_BLACK
 	showcontestwinner 6
 	releaseall
 	end
@@ -562,9 +562,7 @@ LilycoveCity_ContestLobby_EventScript_BerryBlenderSpeedRecords:: @ 821A77A
 
 LilycoveCity_ContestLobby_EventScript_LinkContestResults:: @ 821A784
 	lockall
-	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_RESULTS_WINDOW
-	setvar VAR_0x8005, 7
-	special CallFrontierUtilFunc
+	frontier_results FACILITY_LINK_CONTEST
 	waitbuttonpress
 	special RemoveRecordsWindow
 	releaseall
@@ -947,7 +945,7 @@ LilycoveCity_ContestLobby_EventScript_LeadToLinkContestHall:: @ 821AC49
 	delay 20
 	applymovement 2, LilycoveCity_ContestLobby_Movement_LinkReceptionistFacePlayer
 	waitmovement 0
-	applymovement EVENT_OBJ_ID_PLAYER, LilycoveCity_ContestLobby_Movement_PlayerApproachLinkReceptionist
+	applymovement OBJ_EVENT_ID_PLAYER, LilycoveCity_ContestLobby_Movement_PlayerApproachLinkReceptionist
 	waitmovement 0
 	messageautoscroll LilycoveCity_ContestLobby_Text_ComeThroughHere
 	waitmessage
@@ -955,7 +953,7 @@ LilycoveCity_ContestLobby_EventScript_LeadToLinkContestHall:: @ 821AC49
 	closemessage
 	call LilycoveCity_ContestLobby_EventScript_DelayIfContestWithRSPlayer
 	applymovement 2, LilycoveCity_ContestLobby_Movement_LinkReceptionistWalkToContestHall
-	applymovement EVENT_OBJ_ID_PLAYER, LilycoveCity_ContestLobby_Movement_PlayerWalkToLinkContestHall
+	applymovement OBJ_EVENT_ID_PLAYER, LilycoveCity_ContestLobby_Movement_PlayerWalkToLinkContestHall
 	waitmovement 0
 	release
 	return

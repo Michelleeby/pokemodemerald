@@ -36,6 +36,7 @@
 #include "trig.h"
 #include "walda_phrase.h"
 #include "window.h"
+#include "constants/items.h"
 #include "constants/maps.h"
 #include "constants/moves.h"
 #include "constants/rgb.h"
@@ -231,7 +232,7 @@ struct PokemonStorageSystemData
     struct Sprite *field_D94;
     struct Sprite *field_D98[2];
     u16 *field_DA0;
-    struct PokemonMarkMenu field_DA4;
+    struct PokemonMarkMenu markMenu;
     struct UnkPSSStruct_2002370 field_1E5C;
     struct Pokemon movingMon;
     struct Pokemon field_2108;
@@ -367,7 +368,7 @@ enum
 {
     MODE_PARTY,
     MODE_BOX,
-    MODE_2,
+    MODE_MOVE,
 };
 
 enum
@@ -454,7 +455,7 @@ EWRAM_DATA static u8 sCurrentBoxOption = 0;
 EWRAM_DATA static u8 gUnknown_02039D0E = 0;
 EWRAM_DATA static u8 sWhichToReshow = 0;
 EWRAM_DATA static u8 sLastUsedBox = 0;
-EWRAM_DATA static u16 gUnknown_02039D12 = 0;
+EWRAM_DATA static u16 sMovingItemId = 0;
 EWRAM_DATA static struct Pokemon gUnknown_02039D14 = {0};
 EWRAM_DATA static s8 sBoxCursorArea = 0;
 EWRAM_DATA static s8 sBoxCursorPosition = 0;
@@ -778,8 +779,8 @@ static const union AffineAnimCmd *const sSpriteAffineAnimTable_8571730[] =
     sSpriteAffineAnim_8571720
 };
 
-static const u8 gUnknown_08571734[] = {4, 0xF, 0xE};
-static const u8 gUnknown_08571737[] = _("/30");
+static const u8 sBoxInfoTextColors[] = {TEXT_COLOR_RED, TEXT_DYNAMIC_COLOR_6, TEXT_DYNAMIC_COLOR_5};
+static const u8 sText_OutOf30[] = _("/30");
 
 static const u16 gBoxSelectionPopupPalette[] = INCBIN_U16("graphics/unknown/unknown_57173C.gbapal");
 static const u8 gBoxSelectionPopupCenterTiles[] = INCBIN_U8("graphics/pokemon_storage/box_selection_popup_center.4bpp");
@@ -963,10 +964,10 @@ static const struct WindowTemplate sYesNoWindowTemplate =
 static const struct OamData sOamData_857286C =
 {
     .y = 0,
-    .affineMode = 0,
-    .objMode = 0,
+    .affineMode = ST_OAM_AFFINE_OFF,
+    .objMode = ST_OAM_OBJ_NORMAL,
     .mosaic = 0,
-    .bpp = 0,
+    .bpp = ST_OAM_4BPP,
     .shape = SPRITE_SHAPE(64x64),
     .x = 0,
     .matrixNum = 0,
@@ -980,10 +981,10 @@ static const struct OamData sOamData_857286C =
 static const struct OamData sOamData_8572874 =
 {
     .y = 0,
-    .affineMode = 0,
-    .objMode = 0,
+    .affineMode = ST_OAM_AFFINE_OFF,
+    .objMode = ST_OAM_OBJ_NORMAL,
     .mosaic = 0,
-    .bpp = 0,
+    .bpp = ST_OAM_4BPP,
     .shape = SPRITE_SHAPE(16x8),
     .x = 0,
     .matrixNum = 0,
@@ -1056,10 +1057,10 @@ static const struct SpriteTemplate gUnknown_085728D4 =
 static const struct OamData sOamData_85728EC =
 {
     .y = 0,
-    .affineMode = 0,
-    .objMode = 0,
+    .affineMode = ST_OAM_AFFINE_OFF,
+    .objMode = ST_OAM_OBJ_NORMAL,
     .mosaic = 0,
-    .bpp = 0,
+    .bpp = ST_OAM_4BPP,
     .shape = SPRITE_SHAPE(32x32),
     .x = 0,
     .matrixNum = 0,
@@ -1735,7 +1736,7 @@ static void Task_PokemonStorageSystemPC(u8 taskId)
     {
     case 0:
         CreatePCMenu(task->data[1], &task->data[15]);
-        sub_81973A4();
+        LoadMessageBoxAndBorderGfx();
         DrawDialogueFrame(0, 0);
         FillWindowPixelBuffer(0, PIXEL_FILL(1));
         AddTextPrinterParameterized2(0, 1, gUnknown_085716C0[task->data[1]].desc, TEXT_SPEED_FF, NULL, 2, 1, 3);
@@ -1790,7 +1791,7 @@ static void Task_PokemonStorageSystemPC(u8 taskId)
             }
             else
             {
-                FadeScreen(1, 0);
+                FadeScreen(FADE_TO_BLACK, 0);
                 task->data[0] = 4;
             }
             break;
@@ -1855,7 +1856,7 @@ static void FieldCb_ReturnToPcMenu(void)
     gTasks[taskId].data[1] = sPreviousBoxOption;
     Task_PokemonStorageSystemPC(taskId);
     SetVBlankCallback(vblankCb);
-    pal_fill_black();
+    FadeInFromBlack();
 }
 
 static void CreatePCMenu(u8 whichMenu, s16 *windowIdPtr)
@@ -2090,7 +2091,7 @@ static void sub_80C7BB4(void)
 
 static void sub_80C7BE4(void)
 {
-    u8 text[16];
+    u8 numBoxMonsText[16];
     struct WindowTemplate winTemplate;
     u8 windowId;
     u8 *boxName = GetBoxNamePtr(gUnknown_02039D04->curBox);
@@ -2106,12 +2107,12 @@ static void sub_80C7BE4(void)
     FillWindowPixelBuffer(windowId, PIXEL_FILL(4));
 
     center = GetStringCenterAlignXOffset(1, boxName, 64);
-    AddTextPrinterParameterized3(windowId, 1, center, 1, gUnknown_08571734, TEXT_SPEED_FF, boxName);
+    AddTextPrinterParameterized3(windowId, 1, center, 1, sBoxInfoTextColors, TEXT_SPEED_FF, boxName);
 
-    ConvertIntToDecimalStringN(text, nPokemonInBox, STR_CONV_MODE_RIGHT_ALIGN, 2);
-    StringAppend(text, gUnknown_08571737);
-    center = GetStringCenterAlignXOffset(1, text, 64);
-    AddTextPrinterParameterized3(windowId, 1, center, 17, gUnknown_08571734, TEXT_SPEED_FF, text);
+    ConvertIntToDecimalStringN(numBoxMonsText, nPokemonInBox, STR_CONV_MODE_RIGHT_ALIGN, 2);
+    StringAppend(numBoxMonsText, sText_OutOf30);
+    center = GetStringCenterAlignXOffset(1, numBoxMonsText, 64);
+    AddTextPrinterParameterized3(windowId, 1, center, 17, sBoxInfoTextColors, TEXT_SPEED_FF, numBoxMonsText);
 
     winTileData = GetWindowAttribute(windowId, WINDOW_TILE_DATA);
     CpuCopy32((void *)winTileData, (void *)OBJ_VRAM0 + 0x100 + (GetSpriteTileStartByTag(gUnknown_02039D04->unk_0240) * 32), 0x400);
@@ -2165,7 +2166,7 @@ static void Cb2_EnterPSS(u8 boxOption)
     {
         sPSSData->boxOption = boxOption;
         sPSSData->isReshowingPSS = FALSE;
-        gUnknown_02039D12 = 0;
+        sMovingItemId = ITEM_NONE;
         sPSSData->state = 0;
         sPSSData->taskId = CreateTask(Cb_InitPSS, 3);
         sLastUsedBox = StorageGetCurrentBox();
@@ -2227,7 +2228,7 @@ static void sub_80C7F1C(void)
     gUnknown_02039D0E = 0;
 }
 
-static void sub_80C7F4C(void)
+static void SetMonIconTransparency(void)
 {
     if (sPSSData->boxOption == BOX_OPTION_MOVE_ITEMS)
     {
@@ -2321,9 +2322,9 @@ static void Cb_InitPSS(u8 taskId)
 
         if (sPSSData->boxOption != BOX_OPTION_MOVE_ITEMS)
         {
-            sPSSData->field_DA4.baseTileTag = TAG_TILE_D;
-            sPSSData->field_DA4.basePaletteTag = TAG_PAL_DACE;
-            sub_811F90C(&sPSSData->field_DA4);
+            sPSSData->markMenu.baseTileTag = TAG_TILE_D;
+            sPSSData->markMenu.basePaletteTag = TAG_PAL_DACE;
+            sub_811F90C(&sPSSData->markMenu);
             sub_811FA90();
         }
         else
@@ -2333,7 +2334,7 @@ static void Cb_InitPSS(u8 taskId)
         }
         break;
     case 10:
-        sub_80C7F4C();
+        SetMonIconTransparency();
         if (!sPSSData->isReshowingPSS)
         {
             BlendPalettes(0xFFFFFFFF, 0x10, RGB_BLACK);
@@ -3178,7 +3179,7 @@ static void Cb_ShowMarkMenu(u8 taskId)
     {
     case 0:
         PrintStorageActionText(PC_TEXT_MARK_POKE);
-        sPSSData->field_DA4.markings = sPSSData->cursorMonMarkings;
+        sPSSData->markMenu.markings = sPSSData->cursorMonMarkings;
         sub_811FAA4(sPSSData->cursorMonMarkings, 0xb0, 0x10);
         sPSSData->state++;
         break;
@@ -3187,7 +3188,7 @@ static void Cb_ShowMarkMenu(u8 taskId)
         {
             sub_811FAF8();
             ClearBottomWindow();
-            SetMonMarkings(sPSSData->field_DA4.markings);
+            SetMonMarkings(sPSSData->markMenu.markings);
             RefreshCursorMonData();
             SetPSSCallback(Cb_MainPSS);
         }
@@ -3863,9 +3864,9 @@ static void Cb_ChangeScreen(u8 taskId)
     u8 screenChangeType = sPSSData->screenChangeType;
 
     if (sPSSData->boxOption == BOX_OPTION_MOVE_ITEMS && IsActiveItemMoving() == TRUE)
-        gUnknown_02039D12 = GetMovingItem();
+        sMovingItemId = GetMovingItem();
     else
-        gUnknown_02039D12 = 0;
+        sMovingItemId = ITEM_NONE;
 
     switch (screenChangeType)
     {
@@ -4496,9 +4497,9 @@ static void sub_80CAEAC(void)
             sub_80D0D8C(CURSOR_AREA_IN_BOX, GetBoxCursorPosition());
     }
 
-    if (gUnknown_02039D12 != 0)
+    if (sMovingItemId != ITEM_NONE)
     {
-        sub_80D0F38(gUnknown_02039D12);
+        sub_80D0F38(sMovingItemId);
         sub_80CFE54(3);
     }
 }
@@ -4569,7 +4570,7 @@ static void sub_80CB028(u8 boxId)
         for (boxPosition = 0; boxPosition < IN_BOX_COUNT; boxPosition++)
         {
             if (GetBoxMonDataAt(boxId, boxPosition, MON_DATA_HELD_ITEM) == 0)
-                sPSSData->boxMonsSprites[boxPosition]->oam.objMode = 1;
+                sPSSData->boxMonsSprites[boxPosition]->oam.objMode = ST_OAM_OBJ_BLEND;
         }
     }
 }
@@ -4586,7 +4587,7 @@ static void sub_80CB140(u8 boxPosition)
 
         sPSSData->boxMonsSprites[boxPosition] = CreateMonIconSprite(species, personality, x, y, 2, 19 - (boxPosition % IN_BOX_ROWS));
         if (sPSSData->boxOption == BOX_OPTION_MOVE_ITEMS)
-            sPSSData->boxMonsSprites[boxPosition]->oam.objMode = 1;
+            sPSSData->boxMonsSprites[boxPosition]->oam.objMode = ST_OAM_OBJ_BLEND;
     }
 }
 
@@ -4699,7 +4700,7 @@ static u8 sub_80CB2F8(u8 row, u16 times, s16 xDelta)
                     sPSSData->boxMonsSprites[boxPosition]->data[3] = xDest;
                     sPSSData->boxMonsSprites[boxPosition]->callback = sub_80CB234;
                     if (GetBoxMonDataAt(sPSSData->field_C5C, boxPosition, MON_DATA_HELD_ITEM) == 0)
-                        sPSSData->boxMonsSprites[boxPosition]->oam.objMode = 1;
+                        sPSSData->boxMonsSprites[boxPosition]->oam.objMode = ST_OAM_OBJ_BLEND;
                     count++;
                 }
             }
@@ -4846,7 +4847,7 @@ static void CreatePartyMonsSprites(bool8 arg0)
         for (i = 0; i < PARTY_SIZE; i++)
         {
             if (sPSSData->partySprites[i] != NULL && GetMonData(&gPlayerParty[i], MON_DATA_HELD_ITEM) == 0)
-                sPSSData->partySprites[i]->oam.objMode = 1;
+                sPSSData->partySprites[i]->oam.objMode = ST_OAM_OBJ_BLEND;
         }
     }
 }
@@ -5077,7 +5078,7 @@ static void sub_80CBF14(u8 mode, u8 position)
     case MODE_BOX:
         sPSSData->field_B04 = &sPSSData->boxMonsSprites[position];
         break;
-    case MODE_2:
+    case MODE_MOVE:
         sPSSData->field_B04 = &sPSSData->movingMonSprite;
         break;
     default:
@@ -5087,7 +5088,7 @@ static void sub_80CBF14(u8 mode, u8 position)
     if (*sPSSData->field_B04 != NULL)
     {
         InitSpriteAffineAnim(*sPSSData->field_B04);
-        (*sPSSData->field_B04)->oam.affineMode = 1;
+        (*sPSSData->field_B04)->oam.affineMode = ST_OAM_AFFINE_NORMAL;
         (*sPSSData->field_B04)->affineAnims = gSpriteAffineAnimTable_857291C;
         StartSpriteAffineAnim(*sPSSData->field_B04, 0);
     }
@@ -6388,7 +6389,7 @@ static void sub_80CE250(void)
     u8 mode;
 
     if (sIsMonBeingMoved)
-        mode = MODE_2;
+        mode = MODE_MOVE;
     else if (sBoxCursorArea == CURSOR_AREA_IN_PARTY)
         mode = MODE_PARTY;
     else
@@ -6756,7 +6757,7 @@ static void sub_80CEB40(void)
             // fallthrough
         case CURSOR_AREA_BUTTONS:
         case CURSOR_AREA_BOX:
-            SetCursorMonData(NULL, MODE_2);
+            SetCursorMonData(NULL, MODE_MOVE);
             break;
         case CURSOR_AREA_IN_BOX:
             SetCursorMonData(GetBoxedMonPtr(StorageGetCurrentBox(), sBoxCursorPosition), MODE_BOX);
@@ -6898,7 +6899,7 @@ static void SetCursorMonData(void *pokemon, u8 mode)
         *(txtPtr++) = 3;
         *(txtPtr++) = 0;
         *(txtPtr++) = CHAR_SPECIAL_F9;
-        *(txtPtr++) = 5;
+        *(txtPtr++) = CHAR_LV_2;
 
         txtPtr = ConvertIntToDecimalStringN(txtPtr, sPSSData->cursorMonLevel, STR_CONV_MODE_LEFT_ALIGN, 3);
         txtPtr[0] = CHAR_SPACE;
@@ -9358,10 +9359,10 @@ static const u32 gUnknown_0857BB24[] = INCBIN_U32("graphics/pokemon_storage/unkn
 static const struct OamData sOamData_857BBA4 =
 {
     .y = 0,
-    .affineMode = 1,
-    .objMode = 0,
+    .affineMode = ST_OAM_AFFINE_NORMAL,
+    .objMode = ST_OAM_OBJ_NORMAL,
     .mosaic = 0,
-    .bpp = 0,
+    .bpp = ST_OAM_4BPP,
     .shape = SPRITE_SHAPE(32x32),
     .x = 0,
     .matrixNum = 0,

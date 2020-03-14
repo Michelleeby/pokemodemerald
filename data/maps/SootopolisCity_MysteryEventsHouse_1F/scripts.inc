@@ -4,8 +4,7 @@ SootopolisCity_MysteryEventsHouse_1F_MapScripts:: @ 8227953
 	.byte 0
 
 SootopolisCity_MysteryEventsHouse_1F_OnTransition: @ 822795E
-	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_CHECK_VISIT_TRAINER
-	special CallFrontierUtilFunc
+	frontier_checkvisittrainer
 	compare VAR_RESULT, 0
 	call_if_eq SootopolisCity_MysteryEventsHouse_1F_EventScript_SetTrainerVisitingLayout
 	compare VAR_SOOTOPOLIS_MYSTERY_EVENTS_STATE, 0
@@ -32,12 +31,12 @@ SootopolisCity_MysteryEventsHouse_1F_OnFrame: @ 822799D
 
 SootopolisCity_MysteryEventsHouse_1F_EventScript_OldManCommentOnBattle:: @ 82279B7
 	lockall
-	applymovement EVENT_OBJ_ID_PLAYER, SootopolisCity_MysteryEventsHouse_1F_Movement_PlayerExitStairs
+	applymovement OBJ_EVENT_ID_PLAYER, SootopolisCity_MysteryEventsHouse_1F_Movement_PlayerExitStairs
 	waitmovement 0
 	applymovement 1, SootopolisCity_MysteryEventsHouse_1F_Movement_OldManWalkBehindPlayer
 	waitmovement 0
 	copyobjectxytoperm 1
-	applymovement EVENT_OBJ_ID_PLAYER, Common_Movement_WalkInPlaceFastestUp
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFastestUp
 	waitmovement 0
 	compare VAR_SOOTOPOLIS_MYSTERY_EVENTS_STATE, 1
 	call_if_eq SootopolisCity_MysteryEventsHouse_1F_EventScript_BattleWonComment
@@ -74,8 +73,7 @@ SootopolisCity_MysteryEventsHouse_1F_Movement_OldManWalkBehindPlayer: @ 8227A21
 SootopolisCity_MysteryEventsHouse_1F_EventScript_OldMan:: @ 8227A24
 	lock
 	faceplayer
-	setvar VAR_0x8004, FRONTIER_UTIL_FUNC_CHECK_VISIT_TRAINER
-	special CallFrontierUtilFunc
+	frontier_checkvisittrainer
 	compare VAR_RESULT, 1
 	goto_if_eq SootopolisCity_MysteryEventsHouse_1F_EventScript_InvalidVisitingTrainer
 	compare VAR_TEMP_1, 1
@@ -128,26 +126,26 @@ SootopolisCity_MysteryEventsHouse_1F_EventScript_DeclineBattle:: @ 8227AE2
 
 SootopolisCity_MysteryEventsHouse_1F_EventScript_ChooseParty:: @ 8227AEF
 	msgbox SootopolisCity_MysteryEventsHouse_1F_Text_KeepItTo3On3, MSGBOX_DEFAULT
-	fadescreen 1
+	fadescreen FADE_TO_BLACK
 	special ChooseHalfPartyForBattle
 	waitstate
 	return
 
 SootopolisCity_MysteryEventsHouse_1F_EventScript_EnterBasementNorth:: @ 8227AFE
 	applymovement VAR_LAST_TALKED, SootopolisCity_MysteryEventsHouse_1F_Movement_OldManMoveAsideLeft
-	applymovement EVENT_OBJ_ID_PLAYER, SootopolisCity_MysteryEventsHouse_1F_Movement_PlayerEnterBasementNorth
+	applymovement OBJ_EVENT_ID_PLAYER, SootopolisCity_MysteryEventsHouse_1F_Movement_PlayerEnterBasementNorth
 	waitmovement 0
 	return
 
 SootopolisCity_MysteryEventsHouse_1F_EventScript_EnterBasementEast:: @ 8227B10
 	applymovement VAR_LAST_TALKED, SootopolisCity_MysteryEventsHouse_1F_Movement_OldManMoveAsideRight
-	applymovement EVENT_OBJ_ID_PLAYER, SootopolisCity_MysteryEventsHouse_1F_Movement_PlayerEnterBasementEast
+	applymovement OBJ_EVENT_ID_PLAYER, SootopolisCity_MysteryEventsHouse_1F_Movement_PlayerEnterBasementEast
 	waitmovement 0
 	return
 
 SootopolisCity_MysteryEventsHouse_1F_EventScript_EnterBasementWest:: @ 8227B22
 	applymovement VAR_LAST_TALKED, SootopolisCity_MysteryEventsHouse_1F_Movement_OldManMoveAsideLeft
-	applymovement EVENT_OBJ_ID_PLAYER, SootopolisCity_MysteryEventsHouse_1F_Movement_PlayerEnterBasementWest
+	applymovement OBJ_EVENT_ID_PLAYER, SootopolisCity_MysteryEventsHouse_1F_Movement_PlayerEnterBasementWest
 	waitmovement 0
 	return
 

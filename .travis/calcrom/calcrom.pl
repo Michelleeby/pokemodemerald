@@ -64,7 +64,7 @@ my $undoc_cmd = "grep '[Uu]nknown_[0-9a-fA-F]*\\|sub_[0-9a-fA-F]*'";
 # This looks for every symbol with an address at the end of it. Some things are
 # given a name based on their type / location, but still have an unknown purpose.
 # For example, FooMap_EventScript_FFFFFFF.
-my $partial_doc_cmd = "grep '[0-9a-fA-F]\\{6,7\\}'";
+my $partial_doc_cmd = "grep '_[0-28][0-9a-fA-F]\\{5,6\\}'";
 
 my $count_cmd = "wc -l";
 
@@ -125,19 +125,42 @@ my $docPct = sprintf("%.4f", 100 * $documented / $total_syms);
 my $partialPct = sprintf("%.4f", 100 * $partial_documented / $total_syms);
 my $undocPct = sprintf("%.4f", 100 * $undocumented / $total_syms);
 
-print "$total total bytes of code\n";
-print "$src bytes of code in src ($srcPct%)\n";
-print "$asm bytes of code in asm ($asmPct%)\n";
+if ($asm == 0)
+{
+    print "Code decompilation is 100% complete\n"
+}
+else
+{
+    print "$total total bytes of code\n";
+    print "$src bytes of code in src ($srcPct%)\n";
+    print "$asm bytes of code in asm ($asmPct%)\n";
+}
 print "\n";
-print "$total_syms total symbols\n";
-print "$documented symbols documented ($docPct%)\n";
-print "$partial_documented symbols partially documented ($partialPct%)\n";
-print "$undocumented symbols undocumented ($undocPct%)\n";
+
+if ($partial_documented == 0 && $undocumented == 0)
+{
+    print "Documentation is 100% complete\n"
+}
+else
+{
+    print "$total_syms total symbols\n";
+    print "$documented symbols documented ($docPct%)\n";
+    print "$partial_documented symbols partially documented ($partialPct%)\n";
+    print "$undocumented symbols undocumented ($undocPct%)\n";
+}
 
 print "\n";
 my $dataTotal = $srcdata + $data;
 my $srcDataPct = sprintf("%.4f", 100 * $srcdata / $dataTotal);
 my $dataPct = sprintf("%.4f", 100 * $data / $dataTotal);
-print "$dataTotal total bytes of data\n";
-print "$srcdata bytes of data in src ($srcDataPct%)\n";
-print "$data bytes of data in data ($dataPct%)\n";
+
+if ($data == 0)
+{
+    print "Data porting to C is 100% complete\n"
+}
+else
+{
+    print "$dataTotal total bytes of data\n";
+    print "$srcdata bytes of data in src ($srcDataPct%)\n";
+    print "$data bytes of data in data ($dataPct%)\n";
+}

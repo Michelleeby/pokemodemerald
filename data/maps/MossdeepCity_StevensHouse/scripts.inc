@@ -38,7 +38,7 @@ MossdeepCity_StevensHouse_EventScript_StevenGivesDive:: @ 82227CA
 	applymovement 1, MossdeepCity_StevensHouse_Movement_StevenApproachPlayer
 	waitmovement 0
 	msgbox MossdeepCity_StevensHouse_Text_YouveEarnedHMDive, MSGBOX_DEFAULT
-	giveitem_std ITEM_HM08
+	giveitem ITEM_HM08
 	setflag FLAG_RECEIVED_HM08
 	setflag FLAG_OMIT_DIVE_FROM_STEVEN_LETTER
 	msgbox MossdeepCity_StevensHouse_Text_ExplainDive, MSGBOX_DEFAULT
@@ -149,7 +149,7 @@ MossdeepCity_StevensHouse_EventScript_Letter:: @ 822291B
 
 @ Unused, leftover from RS
 MossdeepCity_StevensHouse_EventScript_DiveItemBall:: @ 8222926
-	giveitem_std ITEM_HM08, 1, 1
+	finditem ITEM_HM08
 	setflag FLAG_RECEIVED_HM08
 	end
 
@@ -189,7 +189,8 @@ MossdeepCity_StevensHouse_Text_TakeBallContainingBeldum: @ 8222B9E
 MossdeepCity_StevensHouse_Text_ObtainedBeldum: @ 8222BED
 	.string "{PLAYER} obtained a BELDUM.$"
 
-MossdeepCity_StevensHouse_Text_222C03: @ 8222C03
+@ Unused
+MossdeepCity_StevensHouse_Text_NoSpaceForAnotherMon: @ 8222C03
 	.string "There is no space for another POKéMON.$"
 
 MossdeepCity_StevensHouse_Text_LeftPokeBallWhereItWas: @ 8222C2A

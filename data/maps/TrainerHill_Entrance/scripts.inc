@@ -16,23 +16,20 @@ TrainerHill_Entrance_OnWarp: @ 82680CF
 	end
 
 TrainerHill_Entrance_OnResume: @ 82680D0
-	setvar VAR_0x8004, TRAINER_HILL_FUNC_RESUME_TIMER
-	special CallTrainerHillFunction
+	trainerhill_resumetimer
 	setvar VAR_TEMP_0, 0
-	setvar VAR_0x8004, TRAINER_HILL_FUNC_CLEAR_RESULT
-	special CallTrainerHillFunction
+	trainerhill_clearresult
 	compare VAR_RESULT, 0  @ VAR_RESULT always 0 here
 	goto_if_eq TrainerHill_Entrance_EventScript_TryFaceAttendant
-	setobjectxy EVENT_OBJ_ID_PLAYER, 9, 6
-	applymovement EVENT_OBJ_ID_PLAYER, TrainerHill_Entrance_Movement_PlayerFaceAttendant
+	setobjectxy OBJ_EVENT_ID_PLAYER, 9, 6
+	applymovement OBJ_EVENT_ID_PLAYER, TrainerHill_Entrance_Movement_PlayerFaceAttendant
 	end
 
 TrainerHill_Entrance_EventScript_TryFaceAttendant:: @ 82680FF
-	setvar VAR_0x8004, TRAINER_HILL_FUNC_GET_WON
-	special CallTrainerHillFunction
+	trainerhill_getwon
 	compare VAR_RESULT, TRUE
 	goto_if_eq TrainerHill_Entrance_EventScript_PlayerDontFaceAttendant
-	applymovement EVENT_OBJ_ID_PLAYER, TrainerHill_Entrance_Movement_PlayerFaceAttendant
+	applymovement OBJ_EVENT_ID_PLAYER, TrainerHill_Entrance_Movement_PlayerFaceAttendant
 	end
 
 TrainerHill_Entrance_EventScript_PlayerDontFaceAttendant:: @ 826811A
@@ -63,7 +60,7 @@ TrainerHill_Entrance_OnFrame: @ 826813E
 
 TrainerHill_Entrance_EventScript_ExitElevator:: @ 8268160
 	lockall
-	applymovement EVENT_OBJ_ID_PLAYER, TrainerHill_Entrance_Movement_PlayerExitElevator
+	applymovement OBJ_EVENT_ID_PLAYER, TrainerHill_Entrance_Movement_PlayerExitElevator
 	waitmovement 0
 	setmetatile 17, 10, METATILE_TrainerHill_CounterDoor, 1
 	special DrawWholeMapView
@@ -75,8 +72,7 @@ TrainerHill_Entrance_EventScript_ExitElevator:: @ 8268160
 
 TrainerHill_Entrance_EventScript_ExitChallenge:: @ 8268182
 	setvar VAR_TEMP_0, 1
-	setvar VAR_0x8004, TRAINER_HILL_FUNC_GET_CHALLENGE_STATUS
-	special CallTrainerHillFunction
+	trainerhill_getstatus
 	switch VAR_RESULT
 	case TRAINER_HILL_PLAYER_STATUS_LOST, TrainerHill_Entrance_EventScript_ExitChallengeLost
 	case TRAINER_HILL_PLAYER_STATUS_ECARD_SCANNED, TrainerHill_Entrance_EventScript_ExitChallengeECard
@@ -84,17 +80,17 @@ TrainerHill_Entrance_EventScript_ExitChallenge:: @ 8268182
 
 TrainerHill_Entrance_EventScript_ExitChallengeLost:: @ 82681B5
 	lockall
-	applymovement EVENT_OBJ_ID_PLAYER, TrainerHill_Entrance_Movement_PlayerFaceAttendant
+	applymovement OBJ_EVENT_ID_PLAYER, TrainerHill_Entrance_Movement_PlayerFaceAttendant
 	msgbox TrainerHill_Entrance_Text_TooBadTremendousEffort, MSGBOX_DEFAULT
 	goto TrainerHill_Entrance_EventScript_PlayerExitChallenge
 
 TrainerHill_Entrance_EventScript_ExitChallengeECard:: @ 82681CA
 	lockall
-	applymovement EVENT_OBJ_ID_PLAYER, TrainerHill_Entrance_Movement_PlayerFaceAttendant
+	applymovement OBJ_EVENT_ID_PLAYER, TrainerHill_Entrance_Movement_PlayerFaceAttendant
 	msgbox TrainerHill_Entrance_Text_MovedReceptionHereForSwitch, MSGBOX_DEFAULT
 TrainerHill_Entrance_EventScript_PlayerExitChallenge:: @ 82681DA
 	closemessage
-	applymovement EVENT_OBJ_ID_PLAYER, TrainerHill_Entrance_Movement_PushPlayerBackFromCounter
+	applymovement OBJ_EVENT_ID_PLAYER, TrainerHill_Entrance_Movement_PushPlayerBackFromCounter
 	waitmovement 0
 	setvar VAR_TRAINER_HILL_IS_ACTIVE, 0
 	special HealPlayerParty
@@ -113,8 +109,7 @@ TrainerHill_Entrance_EventScript_Nurse:: @ 82681EF
 TrainerHill_Entrance_EventScript_Attendant:: @ 82681FD
 	lock
 	faceplayer
-	setvar VAR_0x8004, TRAINER_HILL_FUNC_IN_CHALLENGE
-	special CallTrainerHillFunction
+	trainerhill_inchallenge
 	compare VAR_RESULT, FALSE
 	goto_if_eq TrainerHill_Entrance_EventScript_ThanksForPlaying
 	msgbox TrainerHill_Entrance_Text_HopeYouGiveItYourBest, MSGBOX_DEFAULT
@@ -128,15 +123,13 @@ TrainerHill_Entrance_EventScript_AttendantEnd:: @ 8268227
 
 TrainerHill_Entrance_EventScript_EntryTrigger:: @ 8268229
 	lockall
-	applymovement EVENT_OBJ_ID_PLAYER, TrainerHill_Entrance_Movement_PlayerFaceAttendant
+	applymovement OBJ_EVENT_ID_PLAYER, TrainerHill_Entrance_Movement_PlayerFaceAttendant
 	goto_if_unset FLAG_SYS_GAME_CLEAR, TrainerHill_Entrance_EventScript_Closed
 	msgbox TrainerHill_Entrance_Text_WelcomeToTrainerHill, MSGBOX_DEFAULT
-	setvar VAR_0x8004, TRAINER_HILL_FUNC_GET_GAME_SAVED
-	special CallTrainerHillFunction
+	trainerhill_getsaved
 	compare VAR_RESULT, FALSE
 	call_if_eq TrainerHill_Entrance_EventScript_SaveGame
-	setvar VAR_0x8004, TRAINER_HILL_FUNC_GET_ALL_FLOORS_USED
-	special CallTrainerHillFunction
+	trainerhill_allfloorsused
 	compare VAR_RESULT, TRUE
 	goto_if_eq TrainerHill_Entrance_EventScript_AllFloorsUsed
 	msgbox TrainerHill_Entrance_Text_TrainersUpToFloorX, MSGBOX_DEFAULT
@@ -165,15 +158,12 @@ TrainerHill_Entrance_EventScript_ChooseChallenge:: @ 82682C8
 	switch VAR_RESULT
 	case 4, TrainerHill_Entrance_EventScript_CancelEntry
 	case MULTI_B_PRESSED, TrainerHill_Entrance_EventScript_CancelEntry
-	setvar VAR_0x8004, TRAINER_HILL_FUNC_SET_TAG
-	copyvar VAR_0x8005, VAR_RESULT
-	special CallTrainerHillFunction
+	trainerhill_settag VAR_RESULT
 	setvar VAR_TRAINER_HILL_IS_ACTIVE, 1
 	setvar VAR_TEMP_5, 0
 	special HealPlayerParty
 	msgbox TrainerHill_Entrance_Text_TimeProgessGetSetGo, MSGBOX_DEFAULT
-	setvar VAR_0x8004, TRAINER_HILL_FUNC_START
-	special CallTrainerHillFunction
+	trainerhill_start
 	releaseall
 	end
 
@@ -181,33 +171,30 @@ TrainerHill_Entrance_EventScript_CancelEntry:: @ 8268314
 	setvar VAR_TEMP_5, 0
 	msgbox TrainerHill_Entrance_Text_PleaseVisitUsAgain, MSGBOX_DEFAULT
 	closemessage
-	applymovement EVENT_OBJ_ID_PLAYER, TrainerHill_Entrance_Movement_PushPlayerBackFromCounter
+	applymovement OBJ_EVENT_ID_PLAYER, TrainerHill_Entrance_Movement_PushPlayerBackFromCounter
 	waitmovement 0
 	releaseall
 	end
 
 TrainerHill_Entrance_EventScript_SaveGame:: @ 826832E
 	msgbox TrainerHill_Entrance_Text_SaveGameBeforeEnter, MSGBOX_DEFAULT
-	setvar VAR_0x8004, TRAINER_HILL_FUNC_SET_GAME_SAVED
-	special CallTrainerHillFunction
+	trainerhill_setsaved
 	setvar VAR_TEMP_5, 1
 	call Common_EventScript_SaveGame
 	compare VAR_RESULT, FALSE
 	goto_if_eq TrainerHill_Entrance_EventScript_SaveFailed
-	setvar VAR_0x8004, TRAINER_HILL_FUNC_SET_GAME_SAVED
-	special CallTrainerHillFunction
+	trainerhill_setsaved
 	return
 
 TrainerHill_Entrance_EventScript_SaveFailed:: @ 826835C
-	setvar VAR_0x8004, TRAINER_HILL_FUNC_CLEAR_GAME_SAVED
-	special CallTrainerHillFunction
+	trainerhill_clearsaved
 	goto TrainerHill_Entrance_EventScript_CancelEntry
 	end
 
 TrainerHill_Entrance_EventScript_Closed:: @ 826836A
 	msgbox TrainerHill_Entrance_Text_StillGettingReady, MSGBOX_DEFAULT
 	closemessage
-	applymovement EVENT_OBJ_ID_PLAYER, TrainerHill_Entrance_Movement_PushPlayerBackFromCounter
+	applymovement OBJ_EVENT_ID_PLAYER, TrainerHill_Entrance_Movement_PushPlayerBackFromCounter
 	waitmovement 0
 	releaseall
 	end
@@ -232,7 +219,7 @@ TrainerHill_Entrance_Movement_PlayerExitElevator: @ 8268385
 
 TrainerHill_Entrance_EventScript_Records:: @ 8268388
 	lockall
-	fadescreen 1
+	fadescreen FADE_TO_BLACK
 	special ShowTrainerHillRecords
 	waitstate
 	releaseall

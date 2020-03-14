@@ -730,10 +730,10 @@ static const u8 sRubyLevelUpStatBoxStats[] =
 static const struct OamData sOamData_MonIconOnLvlUpBox =
 {
     .y = 0,
-    .affineMode = 0,
-    .objMode = 0,
+    .affineMode = ST_OAM_AFFINE_OFF,
+    .objMode = ST_OAM_OBJ_NORMAL,
     .mosaic = 0,
-    .bpp = 0,
+    .bpp = ST_OAM_4BPP,
     .shape = SPRITE_SHAPE(32x32),
     .x = 0,
     .matrixNum = 0,
@@ -2064,7 +2064,7 @@ static void Cmd_resultmessage(void)
             gPotentialItemEffectBattler = gBattlerTarget;
             gMoveResultFlags &= ~(MOVE_RESULT_FOE_ENDURED | MOVE_RESULT_FOE_HUNG_ON);
             BattleScriptPushCursor();
-            gBattlescriptCurrInstr = BattleScript_HangedOnMsg;
+            gBattlescriptCurrInstr = BattleScript_FocusBandActivates;
             return;
         default:
             if (gMoveResultFlags & MOVE_RESULT_DOESNT_AFFECT_FOE)
@@ -2093,7 +2093,7 @@ static void Cmd_resultmessage(void)
                 gPotentialItemEffectBattler = gBattlerTarget;
                 gMoveResultFlags &= ~(MOVE_RESULT_FOE_ENDURED | MOVE_RESULT_FOE_HUNG_ON);
                 BattleScriptPushCursor();
-                gBattlescriptCurrInstr = BattleScript_HangedOnMsg;
+                gBattlescriptCurrInstr = BattleScript_FocusBandActivates;
                 return;
             }
             else if (gMoveResultFlags & MOVE_RESULT_FAILED)
@@ -2895,16 +2895,16 @@ static void Cmd_seteffectwithchance(void)
         && !(gMoveResultFlags & MOVE_RESULT_NO_EFFECT))
     {
         gBattleCommunication[MOVE_EFFECT_BYTE] &= ~(MOVE_EFFECT_CERTAIN);
-        SetMoveEffect(0, MOVE_EFFECT_CERTAIN);
+        SetMoveEffect(FALSE, MOVE_EFFECT_CERTAIN);
     }
     else if (Random() % 100 < percentChance
              && gBattleCommunication[MOVE_EFFECT_BYTE]
              && !(gMoveResultFlags & MOVE_RESULT_NO_EFFECT))
     {
         if (percentChance >= 100)
-            SetMoveEffect(0, MOVE_EFFECT_CERTAIN);
+            SetMoveEffect(FALSE, MOVE_EFFECT_CERTAIN);
         else
-            SetMoveEffect(0, 0);
+            SetMoveEffect(FALSE, 0);
     }
     else
     {
@@ -3434,7 +3434,7 @@ static void Cmd_getexp(void)
                 gLeveledUpInBattle |= gBitTable[gBattleStruct->expGetterMonId];
                 gBattlescriptCurrInstr = BattleScript_LevelUp;
                 gBattleMoveDamage = (gBattleBufferB[gActiveBattler][2] | (gBattleBufferB[gActiveBattler][3] << 8));
-                AdjustFriendship(&gPlayerParty[gBattleStruct->expGetterMonId], 0);
+                AdjustFriendship(&gPlayerParty[gBattleStruct->expGetterMonId], FRIENDSHIP_EVENT_GROW_LEVEL);
 
                 // update battle mon structure after level up
                 if (gBattlerPartyIndexes[0] == gBattleStruct->expGetterMonId && gBattleMons[0].hp)
@@ -4555,7 +4555,7 @@ static void Cmd_moveend(void)
         case MOVEEND_CHOICE_MOVE: // update choice band move
             if (gHitMarker & HITMARKER_OBEYS
              && holdEffectAtk == HOLD_EFFECT_CHOICE_BAND
-             && gChosenMove != MOVE_STRUGGLE 
+             && gChosenMove != MOVE_STRUGGLE
              && (*choicedMoveAtk == 0 || *choicedMoveAtk == 0xFFFF))
             {
                 if (gChosenMove == MOVE_BATON_PASS && !(gMoveResultFlags & MOVE_RESULT_FAILED))
@@ -6278,7 +6278,7 @@ static void DrawLevelUpWindow1(void)
     u16 currStats[NUM_STATS];
 
     GetMonLevelUpWindowStats(&gPlayerParty[gBattleStruct->expGetterMonId], currStats);
-    DrawLevelUpWindowPg1(0xD, gBattleResources->beforeLvlUp->stats, currStats, 0xE, 0xD, 0xF);
+    DrawLevelUpWindowPg1(0xD, gBattleResources->beforeLvlUp->stats, currStats, TEXT_DYNAMIC_COLOR_5, TEXT_DYNAMIC_COLOR_4, TEXT_DYNAMIC_COLOR_6);
 }
 
 static void DrawLevelUpWindow2(void)
@@ -6286,7 +6286,7 @@ static void DrawLevelUpWindow2(void)
     u16 currStats[NUM_STATS];
 
     GetMonLevelUpWindowStats(&gPlayerParty[gBattleStruct->expGetterMonId], currStats);
-    DrawLevelUpWindowPg2(0xD, currStats, 0xE, 0xD, 0xF);
+    DrawLevelUpWindowPg2(0xD, currStats, TEXT_DYNAMIC_COLOR_5, TEXT_DYNAMIC_COLOR_4, TEXT_DYNAMIC_COLOR_6);
 }
 
 static void sub_804F17C(void)
@@ -6351,7 +6351,7 @@ static void PutLevelAndGenderOnLvlUpBox(void)
     txtPtr = gStringVar4;
     gStringVar4[0] = CHAR_SPECIAL_F9;
     txtPtr++;
-    txtPtr[0] = 5;
+    txtPtr[0] = CHAR_LV_2;
     txtPtr++;
 
     var = (u32)(txtPtr);
@@ -7826,7 +7826,7 @@ static void Cmd_weatherdamage(void)
                 gBattleMoveDamage = 0;
             }
         }
-        if (gBattleWeather & WEATHER_HAIL)
+        if (gBattleWeather & WEATHER_HAIL_ANY)
         {
             if (!IS_BATTLER_OF_TYPE(gBattlerAttacker, TYPE_ICE)
                 && !(gStatuses3[gBattlerAttacker] & STATUS3_UNDERGROUND)

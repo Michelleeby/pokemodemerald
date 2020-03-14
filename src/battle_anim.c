@@ -112,7 +112,7 @@ EWRAM_DATA static u16 sAnimMoveIndex = 0; // Set but unused.
 EWRAM_DATA u8 gBattleAnimAttacker = 0;
 EWRAM_DATA u8 gBattleAnimTarget = 0;
 EWRAM_DATA u16 gAnimBattlerSpecies[MAX_BATTLERS_COUNT] = {0};
-EWRAM_DATA u8 gUnknown_02038440 = 0;
+EWRAM_DATA u8 gAnimCustomPanning = 0;
 
 const struct OamData gOamData_AffineOff_ObjNormal_8x8 =
 {
@@ -1355,7 +1355,7 @@ const struct CompressedSpriteSheet gBattleAnimPicTable[] =
     {gBattleAnimSpriteGfx_Spotlight, 0x0800, ANIM_TAG_SPOTLIGHT},
     {gBattleAnimSpriteGfx_LetterZ, 0x0200, ANIM_TAG_LETTER_Z},
     {gBattleAnimSpriteGfx_RapidSpin, 0x0300, ANIM_TAG_RAPID_SPIN},
-    {gBattleAnimSpriteGfx_TriForceTriangle, 0x0800, ANIM_TAG_TRI_FORCE_TRIANGLE},
+    {gBattleAnimSpriteGfx_TriAttackTriangle, 0x0800, ANIM_TAG_TRI_ATTACK_TRIANGLE},
     {gBattleAnimSpriteGfx_WispOrb, 0x0380, ANIM_TAG_WISP_ORB},
     {gBattleAnimSpriteGfx_WispFire, 0x0800, ANIM_TAG_WISP_FIRE},
     {gBattleAnimSpriteGfx_GoldStars, 0x00c0, ANIM_TAG_GOLD_STARS},
@@ -1648,7 +1648,7 @@ const struct CompressedSpritePalette gBattleAnimPaletteTable[] =
     {gBattleAnimSpritePal_Pokeball, ANIM_TAG_SPOTLIGHT},
     {gBattleAnimSpritePal_LetterZ, ANIM_TAG_LETTER_Z},
     {gBattleAnimSpritePal_RapidSpin, ANIM_TAG_RAPID_SPIN},
-    {gBattleAnimSpritePal_TriForceTriangle, ANIM_TAG_TRI_FORCE_TRIANGLE},
+    {gBattleAnimSpritePal_TriAttackTriangle, ANIM_TAG_TRI_ATTACK_TRIANGLE},
     {gBattleAnimSpritePal_WispOrb, ANIM_TAG_WISP_ORB},
     {gBattleAnimSpritePal_WispOrb, ANIM_TAG_WISP_FIRE},
     {gBattleAnimSpritePal_GoldStars, ANIM_TAG_GOLD_STARS},
@@ -1821,7 +1821,7 @@ void ClearBattleAnimationVars(void)
     sAnimMoveIndex = 0;
     gBattleAnimAttacker = 0;
     gBattleAnimTarget = 0;
-    gUnknown_02038440 = 0;
+    gAnimCustomPanning = 0;
 }
 
 void DoMoveAnim(u16 move)
@@ -2715,7 +2715,8 @@ static void ScriptCmd_goto(void)
     sBattleAnimScriptPtr = T2_READ_PTR(sBattleAnimScriptPtr);
 }
 
-// Uses of this function that rely on a TRUE return are expecting inBattle to not be ticked as defined in contest behavior. As a result, if misused, this function cannot reliably discern between field and contest status and could result in undefined behavior.
+// Uses of this function that rely on a TRUE return are expecting inBattle to not be ticked as defined in contest behavior.
+// As a result, if misused, this function cannot reliably discern between field and contest status and could result in undefined behavior.
 bool8 IsContest(void)
 {
     if (!gMain.inBattle)
@@ -2808,12 +2809,12 @@ static void LoadMoveBg(u16 bgId)
         void *dmaDest;
 
         LZDecompressWram(tilemap, gDecompressionBuffer);
-        sub_80A4720(sub_80A6D94(), (void*)(gDecompressionBuffer), 0x100, 0);
+        sub_80A4720(GetBattleBgPaletteNum(), (void*)(gDecompressionBuffer), 0x100, 0);
         dmaSrc = gDecompressionBuffer;
         dmaDest = (void *)(BG_SCREEN_ADDR(26));
         DmaCopy32(3, dmaSrc, dmaDest, 0x800);
         LZDecompressVram(gBattleAnimBackgroundTable[bgId].image, (void *)(BG_SCREEN_ADDR(4)));
-        LoadCompressedPalette(gBattleAnimBackgroundTable[bgId].palette, sub_80A6D94() * 16, 32);
+        LoadCompressedPalette(gBattleAnimBackgroundTable[bgId].palette, GetBattleBgPaletteNum() * 16, 32);
     }
     else
     {

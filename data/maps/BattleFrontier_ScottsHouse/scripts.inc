@@ -32,7 +32,7 @@ BattleFrontier_ScottsHouse_EventScript_CheckSilverSymbols:: @ 8263704
 	goto_if_unset FLAG_SYS_PIKE_SILVER, BattleFrontier_ScottsHouse_EventScript_CheckGiveShield
 	goto_if_unset FLAG_SYS_PYRAMID_SILVER, BattleFrontier_ScottsHouse_EventScript_CheckGiveShield
 	msgbox BattleFrontier_ScottsHouse_Text_YouveCollectedAllSilverSymbols, MSGBOX_DEFAULT
-	giveitem_std ITEM_LANSAT_BERRY
+	giveitem ITEM_LANSAT_BERRY
 	compare VAR_RESULT, FALSE
 	goto_if_eq BattleFrontier_ScottsHouse_EventScript_BerryPocketFull
 	setflag FLAG_COLLECTED_ALL_SILVER_SYMBOLS
@@ -49,7 +49,7 @@ BattleFrontier_ScottsHouse_EventScript_CheckGoldSymbols:: @ 826376A
 	goto_if_unset FLAG_SYS_PIKE_GOLD, BattleFrontier_ScottsHouse_EventScript_CheckGiveShield
 	goto_if_unset FLAG_SYS_PYRAMID_GOLD, BattleFrontier_ScottsHouse_EventScript_CheckGiveShield
 	msgbox BattleFrontier_ScottsHouse_Text_YouveCollectedAllGoldSymbols, MSGBOX_DEFAULT
-	giveitem_std ITEM_STARF_BERRY
+	giveitem ITEM_STARF_BERRY
 	compare VAR_RESULT, FALSE
 	goto_if_eq BattleFrontier_ScottsHouse_EventScript_BerryPocketFull
 	setflag FLAG_COLLECTED_ALL_GOLD_SYMBOLS
@@ -88,13 +88,13 @@ BattleFrontier_ScottsHouse_EventScript_ArtisanCaveComment:: @ 8263811
 	end
 
 BattleFrontier_ScottsHouse_EventScript_CheckGiveSilverShield:: @ 826381B
-	setvar VAR_FRONTIER_BATTLE_MODE, 0
-	frontier_setlvlmode FRONTIER_LVL_50
-	battletower_getstreak
+	setvar VAR_FRONTIER_BATTLE_MODE, FRONTIER_MODE_SINGLES
+	frontier_set FRONTIER_DATA_LVL_MODE, FRONTIER_LVL_50
+	tower_get TOWER_DATA_WIN_STREAK
 	compare VAR_RESULT, 50
 	goto_if_ge BattleFrontier_ScottsHouse_EventScript_GiveSilverShield
-	frontier_setlvlmode FRONTIER_LVL_OPEN
-	battletower_getstreak
+	frontier_set FRONTIER_DATA_LVL_MODE, FRONTIER_LVL_OPEN
+	tower_get TOWER_DATA_WIN_STREAK
 	compare VAR_RESULT, 50
 	goto_if_ge BattleFrontier_ScottsHouse_EventScript_GiveSilverShield
 	goto BattleFrontier_ScottsHouse_EventScript_RandomComment
@@ -102,7 +102,7 @@ BattleFrontier_ScottsHouse_EventScript_CheckGiveSilverShield:: @ 826381B
 
 BattleFrontier_ScottsHouse_EventScript_GiveSilverShield:: @ 826387A
 	msgbox BattleFrontier_ScottsHouse_Text_Beat50TrainersInARow, MSGBOX_DEFAULT
-	givedecoration_std DECOR_SILVER_SHIELD
+	givedecoration DECOR_SILVER_SHIELD
 	compare VAR_RESULT, FALSE
 	goto_if_eq BattleFrontier_ScottsHouse_EventScript_NoRoomForShield
 	setflag FLAG_RECEIVED_SILVER_SHIELD
@@ -121,13 +121,13 @@ BattleFrontier_ScottsHouse_EventScript_GivenShield:: @ 82638AA
 	end
 
 BattleFrontier_ScottsHouse_EventScript_CheckGiveGoldShield:: @ 82638B4
-	setvar VAR_FRONTIER_BATTLE_MODE, 0
-	frontier_setlvlmode FRONTIER_LVL_50
-	battletower_getstreak
+	setvar VAR_FRONTIER_BATTLE_MODE, FRONTIER_MODE_SINGLES
+	frontier_set FRONTIER_DATA_LVL_MODE, FRONTIER_LVL_50
+	tower_get TOWER_DATA_WIN_STREAK
 	compare VAR_RESULT, 100
 	goto_if_ge BattleFrontier_ScottsHouse_EventScript_GiveGoldShield
-	frontier_setlvlmode FRONTIER_LVL_OPEN
-	battletower_getstreak
+	frontier_set FRONTIER_DATA_LVL_MODE, FRONTIER_LVL_OPEN
+	tower_get TOWER_DATA_WIN_STREAK
 	compare VAR_RESULT, 100
 	goto_if_ge BattleFrontier_ScottsHouse_EventScript_GiveGoldShield
 	goto BattleFrontier_ScottsHouse_EventScript_RandomComment
@@ -135,7 +135,7 @@ BattleFrontier_ScottsHouse_EventScript_CheckGiveGoldShield:: @ 82638B4
 
 BattleFrontier_ScottsHouse_EventScript_GiveGoldShield:: @ 8263913
 	msgbox BattleFrontier_ScottsHouse_Text_Beat100TrainersInARow, MSGBOX_DEFAULT
-	givedecoration_std DECOR_GOLD_SHIELD
+	givedecoration DECOR_GOLD_SHIELD
 	compare VAR_RESULT, FALSE
 	goto_if_eq BattleFrontier_ScottsHouse_EventScript_NoRoomForShield
 	setflag FLAG_RECEIVED_GOLD_SHIELD

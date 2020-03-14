@@ -51,12 +51,12 @@ Route104_EventScript_RivalTrigger:: @ 81ECCB3
 	setflag FLAG_HIDE_RUSTBORO_CITY_RIVAL
 	setvar VAR_RUSTBORO_CITY_STATE, 8
 	setvar VAR_ROUTE104_STATE, 2
-	applymovement EVENT_OBJ_ID_PLAYER, Common_Movement_WalkInPlaceFastestUp
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFastestUp
 	waitmovement 0
 	delay 10
 	addobject 34
 	clearflag FLAG_HIDE_ROUTE_104_RIVAL
-	applymovement EVENT_OBJ_ID_PLAYER, Route104_Movement_PlayerBackUp
+	applymovement OBJ_EVENT_ID_PLAYER, Route104_Movement_PlayerBackUp
 	waitmovement 0
 	applymovement 34, Route104_Movement_RivalExitBrineysCottage
 	waitmovement 0
@@ -108,7 +108,7 @@ Route104_EventScript_MayEncounter:: @ 81ECD4B
 	closemessage
 	delay 30
 	setflag FLAG_ENABLE_RIVAL_MATCH_CALL
-	applymovement EVENT_OBJ_ID_PLAYER, Route104_Movement_PlayerFaceRival
+	applymovement OBJ_EVENT_ID_PLAYER, Route104_Movement_PlayerFaceRival
 	applymovement 34, Route104_Movement_RivalWalkSlowLeft
 	msgbox Route104_Text_MayHowsYourPokedex, MSGBOX_DEFAULT
 	closemessage
@@ -167,19 +167,19 @@ Route104_EventScript_RestoreMusic:: @ 81ECE31
 	return
 
 Route104_EventScript_BattleMayTreecko:: @ 81ECE36
-	trainerbattle_no_intro TRAINER_MAY_14, Route104_Text_MayDefeat
+	trainerbattle_no_intro TRAINER_MAY_RUSTBORO_TREECKO, Route104_Text_MayDefeat
 	setflag FLAG_DEFEATED_RIVAL_ROUTE_104
 	goto Route104_EventScript_MayDefeated
 	end
 
 Route104_EventScript_BattleMayTorchic:: @ 81ECE49
-	trainerbattle_no_intro TRAINER_MAY_15, Route104_Text_MayDefeat
+	trainerbattle_no_intro TRAINER_MAY_RUSTBORO_TORCHIC, Route104_Text_MayDefeat
 	setflag FLAG_DEFEATED_RIVAL_ROUTE_104
 	goto Route104_EventScript_MayDefeated
 	end
 
 Route104_EventScript_BattleMayMudkip:: @ 81ECE5C
-	trainerbattle_no_intro TRAINER_MAY_10, Route104_Text_MayDefeat
+	trainerbattle_no_intro TRAINER_MAY_RUSTBORO_MUDKIP, Route104_Text_MayDefeat
 	setflag FLAG_DEFEATED_RIVAL_ROUTE_104
 	goto Route104_EventScript_MayDefeated
 	end
@@ -197,7 +197,7 @@ Route104_EventScript_BrendanEncounter:: @ 81ECE6F
 	closemessage
 	delay 30
 	setflag FLAG_ENABLE_RIVAL_MATCH_CALL
-	applymovement EVENT_OBJ_ID_PLAYER, Route104_Movement_PlayerFaceRival
+	applymovement OBJ_EVENT_ID_PLAYER, Route104_Movement_PlayerFaceRival
 	applymovement 34, Route104_Movement_RivalWalkSlowLeft
 	msgbox Route104_Text_BrendanHowsYourPokedex, MSGBOX_DEFAULT
 	closemessage
@@ -237,19 +237,19 @@ Route104_EventScript_BrendanDefeated:: @ 81ECF38
 	end
 
 Route104_EventScript_BattleBrendanTreecko:: @ 81ECF4D
-	trainerbattle_no_intro TRAINER_BRENDAN_10, Route104_Text_BrendanDefeat
+	trainerbattle_no_intro TRAINER_BRENDAN_RUSTBORO_TREECKO, Route104_Text_BrendanDefeat
 	setflag FLAG_DEFEATED_RIVAL_ROUTE_104
 	goto Route104_EventScript_BrendanDefeated
 	end
 
 Route104_EventScript_BattleBrendanTorchic:: @ 81ECF60
-	trainerbattle_no_intro TRAINER_BRENDAN_12, Route104_Text_BrendanDefeat
+	trainerbattle_no_intro TRAINER_BRENDAN_RUSTBORO_TORCHIC, Route104_Text_BrendanDefeat
 	setflag FLAG_DEFEATED_RIVAL_ROUTE_104
 	goto Route104_EventScript_BrendanDefeated
 	end
 
 Route104_EventScript_BattleBrendanMudkip:: @ 81ECF73
-	trainerbattle_no_intro TRAINER_BRENDAN_11, Route104_Text_BrendanDefeat
+	trainerbattle_no_intro TRAINER_BRENDAN_RUSTBORO_MUDKIP, Route104_Text_BrendanDefeat
 	setflag FLAG_DEFEATED_RIVAL_ROUTE_104
 	goto Route104_EventScript_BrendanDefeated
 	end
@@ -269,7 +269,7 @@ Route104_EventScript_ExpertF:: @ 81ECF8C
 	faceplayer
 	goto_if_set FLAG_RECEIVED_CHESTO_BERRY_ROUTE_104, Route104_EventScript_ReceivedBerry
 	msgbox Route104_Text_PlantBerriesInSoilTakeThis, MSGBOX_DEFAULT
-	giveitem_std ITEM_CHESTO_BERRY
+	giveitem ITEM_CHESTO_BERRY
 	compare VAR_RESULT, FALSE
 	goto_if_eq Common_EventScript_ShowBagIsFull
 	setflag FLAG_RECEIVED_CHESTO_BERRY_ROUTE_104
@@ -287,7 +287,7 @@ Route104_EventScript_WhiteHerbFlorist:: @ 81ECFCD
 	faceplayer
 	goto_if_set FLAG_RECEIVED_WHITE_HERB, Route104_EventScript_ReceivedWhiteHerb
 	msgbox Route104_Text_DontNeedThisTakeIt, MSGBOX_DEFAULT
-	giveitem_std ITEM_WHITE_HERB
+	giveitem ITEM_WHITE_HERB
 	compare VAR_RESULT, FALSE
 	goto_if_eq Common_EventScript_ShowBagIsFull
 	setflag FLAG_RECEIVED_WHITE_HERB
@@ -340,7 +340,7 @@ Route104_EventScript_Boy2:: @ 81ED057
 	faceplayer
 	goto_if_set FLAG_RECEIVED_TM09, Route104_EventScript_ReceivedBulletSeed
 	msgbox Route104_Text_LikeFillingMouthWithSeedsTakeThis, MSGBOX_DEFAULT
-	giveitem_std ITEM_TM09
+	giveitem ITEM_TM09
 	compare VAR_RESULT, FALSE
 	goto_if_eq Common_EventScript_ShowBagIsFull
 	setflag FLAG_RECEIVED_TM09
@@ -358,13 +358,13 @@ Route104_EventScript_Girl2:: @ 81ED090
 
 Route104_EventScript_SailToDewford:: @ 81ED099
 	setobjectpriority 8, MAP_ROUTE104, 0
-	setobjectpriority EVENT_OBJ_ID_PLAYER, MAP_ROUTE104, 0
+	setobjectpriority OBJ_EVENT_ID_PLAYER, MAP_ROUTE104, 0
 	applymovement 8, Route104_Movement_BrineyBoardBoat
 	waitmovement 0
 	removeobject 8
-	applymovement EVENT_OBJ_ID_PLAYER, Route104_Movement_PlayerBoardBoat
+	applymovement OBJ_EVENT_ID_PLAYER, Route104_Movement_PlayerBoardBoat
 	waitmovement 0
-	hideobjectat EVENT_OBJ_ID_PLAYER, MAP_ROUTE104
+	hideobjectat OBJ_EVENT_ID_PLAYER, MAP_ROUTE104
 	call Common_EventScript_PlayBrineysBoatMusic
 	goto_if_set FLAG_ENABLE_NORMAN_MATCH_CALL, Route104_EventScript_SailToDewfordNoCall
 	goto_if_unset FLAG_ENABLE_NORMAN_MATCH_CALL, Route104_EventScript_SailToDewfordDadCalls
@@ -372,13 +372,13 @@ Route104_EventScript_SailToDewford:: @ 81ED099
 
 Route104_EventScript_SailToDewfordNoCall:: @ 81ED0D9
 	applymovement 7, Route104_Movement_SailToDewford
-	applymovement EVENT_OBJ_ID_PLAYER, Route104_Movement_SailToDewford
+	applymovement OBJ_EVENT_ID_PLAYER, Route104_Movement_SailToDewford
 	waitmovement 0
 	goto Route104_EventScript_ArriveInDewford
 
 Route104_EventScript_SailToDewfordDadCalls:: @ 81ED0EF
 	applymovement 7, Route104_Movement_SailToDewfordBeforeDadCalls
-	applymovement EVENT_OBJ_ID_PLAYER, Route104_Movement_SailToDewfordBeforeDadCalls
+	applymovement OBJ_EVENT_ID_PLAYER, Route104_Movement_SailToDewfordBeforeDadCalls
 	waitmovement 0
 	pokenavcall Route104_Text_DadPokenavCall
 	waitmessage
@@ -389,7 +389,7 @@ Route104_EventScript_SailToDewfordDadCalls:: @ 81ED0EF
 	closemessage
 	delay 30
 	setflag FLAG_ENABLE_NORMAN_MATCH_CALL
-	applymovement EVENT_OBJ_ID_PLAYER, Route104_Movement_SailToDewfordAfterDadCalls
+	applymovement OBJ_EVENT_ID_PLAYER, Route104_Movement_SailToDewfordAfterDadCalls
 	applymovement 7, Route104_Movement_SailToDewfordAfterDadCalls, MAP_ROUTE104
 	waitmovement 7, MAP_ROUTE104
 	waitmovement 0
@@ -397,11 +397,11 @@ Route104_EventScript_SailToDewfordDadCalls:: @ 81ED0EF
 
 Route104_EventScript_ArriveInDewford:: @ 81ED139
 	delay 50
-	applymovement EVENT_OBJ_ID_PLAYER, Route104_Movement_PlayerExitBoat
+	applymovement OBJ_EVENT_ID_PLAYER, Route104_Movement_PlayerExitBoat
 	waitmovement 0
 	call Common_EventScript_StopBrineysBoatMusic
-	showobjectat EVENT_OBJ_ID_PLAYER, MAP_DEWFORD_TOWN
-	applymovement EVENT_OBJ_ID_PLAYER, Route104_Movement_PlayerMoveForBriney
+	showobjectat OBJ_EVENT_ID_PLAYER, MAP_DEWFORD_TOWN
+	applymovement OBJ_EVENT_ID_PLAYER, Route104_Movement_PlayerMoveForBriney
 	waitmovement 0
 	setobjectxyperm 2, 12, 8
 	addobject 2
@@ -415,7 +415,7 @@ Route104_EventScript_ArriveInDewford:: @ 81ED139
 	setflag FLAG_HIDE_ROUTE_104_MR_BRINEY_BOAT
 	hideobjectat 7, MAP_ROUTE104
 	copyvar VAR_BRINEY_LOCATION, VAR_0x8008
-	resetobjectpriority EVENT_OBJ_ID_PLAYER, MAP_ROUTE104
+	resetobjectpriority OBJ_EVENT_ID_PLAYER, MAP_ROUTE104
 	resetobjectpriority 2, MAP_DEWFORD_TOWN
 	copyobjectxytoperm 2
 	setvar VAR_BOARD_BRINEY_BOAT_STATE, 0

@@ -25,7 +25,7 @@ TerraCave_End_EventScript_ShowGroudon:: @ 823B0E3
 
 TerraCave_End_EventScript_Groudon:: @ 823B0EC
 	lockall
-	applymovement EVENT_OBJ_ID_PLAYER, Common_Movement_FaceUp
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_FaceUp
 	waitmovement 0
 	applymovement 1, TerraCave_End_Movement_GroudonApproach
 	waitmovement 0
@@ -47,13 +47,13 @@ TerraCave_End_EventScript_Groudon:: @ 823B0EC
 	goto_if_eq TerraCave_End_EventScript_RanFromGroudon
 	compare VAR_RESULT, B_OUTCOME_PLAYER_TELEPORTED
 	goto_if_eq TerraCave_End_EventScript_RanFromGroudon
-	setvar VAR_SHOULD_END_UNUSUAL_WEATHER, 1
+	setvar VAR_SHOULD_END_ABNORMAL_WEATHER, 1
 	setflag FLAG_DEFEATED_GROUDON
 	releaseall
 	end
 
 TerraCave_End_EventScript_DefeatedGroudon:: @ 823B155
-	setvar VAR_SHOULD_END_UNUSUAL_WEATHER, 1
+	setvar VAR_SHOULD_END_ABNORMAL_WEATHER, 1
 	setflag FLAG_DEFEATED_GROUDON
 	goto Common_EventScript_RemoveStaticPokemon
 	end

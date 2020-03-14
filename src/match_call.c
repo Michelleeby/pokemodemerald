@@ -1060,7 +1060,7 @@ static bool32 SelectMatchCallTrainer(void)
 static u32 GetNumRegisteredNPCs(void)
 {
     u32 i, count;
-    for (i = 0, count = 0; i < 64; i++)
+    for (i = 0, count = 0; i < REMATCH_SPECIAL_TRAINER_START; i++)
     {
         if (FlagGet(FLAG_MATCH_CALL_REGISTERED + i))
             count++;
@@ -1072,7 +1072,7 @@ static u32 GetNumRegisteredNPCs(void)
 static u32 GetActiveMatchCallTrainerId(u32 activeMatchCallId)
 {
     u32 i;
-    for (i = 0; i < 64; i++)
+    for (i = 0; i < REMATCH_SPECIAL_TRAINER_START; i++)
     {
         if (FlagGet(FLAG_MATCH_CALL_REGISTERED + i))
         {
@@ -1114,7 +1114,7 @@ static void StartMatchCall(void)
     if (!gMatchCallState.triggeredFromScript)
     {
         ScriptContext2_Enable();
-        FreezeEventObjects();
+        FreezeObjectEvents();
         sub_808B864();
         sub_808BCF4();
     }
@@ -1287,11 +1287,11 @@ static bool32 sub_81963F0(u8 taskId)
         ChangeBgY(0, 0, 0);
         if (!gMatchCallState.triggeredFromScript)
         {
-            sub_81973A4();
-            playerObjectId = GetEventObjectIdByLocalIdAndMap(EVENT_OBJ_ID_PLAYER, 0, 0);
-            EventObjectClearHeldMovementIfFinished(&gEventObjects[playerObjectId]);
-            ScriptMovement_UnfreezeEventObjects();
-            UnfreezeEventObjects();
+            LoadMessageBoxAndBorderGfx();
+            playerObjectId = GetObjectEventIdByLocalIdAndMap(OBJ_EVENT_ID_PLAYER, 0, 0);
+            ObjectEventClearHeldMovementIfFinished(&gObjectEvents[playerObjectId]);
+            ScriptMovement_UnfreezeObjectEvents();
+            UnfreezeObjectEvents();
             ScriptContext2_Disable();
         }
 
@@ -1384,7 +1384,7 @@ static u16 GetRematchTrainerLocation(int matchCallId)
 static u32 GetNumRematchTrainersFought(void)
 {
     u32 i, count;
-    for (i = 0, count = 0; i < 64; i++)
+    for (i = 0, count = 0; i < REMATCH_SPECIAL_TRAINER_START; i++)
     {
         if (HasTrainerBeenFought(gRematchTable[i].trainerIds[0]))
             count++;
@@ -1746,7 +1746,7 @@ static void PopulateBattleFrontierStreak(int matchCallId, u8 *destStr)
     ConvertIntToDecimalStringN(destStr, gBattleFrontierStreakInfo.streak, STR_CONV_MODE_LEFT_ALIGN, i);
 }
 
-static const u16 sBadgeFlags[] =
+static const u16 sBadgeFlags[NUM_BADGES] =
 {
     FLAG_BADGE01_GET,
     FLAG_BADGE02_GET,
@@ -1762,7 +1762,7 @@ static int GetNumOwnedBadges(void)
 {
     u32 i;
 
-    for (i = 0; i < 8; i++)
+    for (i = 0; i < NUM_BADGES; i++)
     {
         if (!FlagGet(sBadgeFlags[i]))
             break;
@@ -1961,7 +1961,7 @@ static const u8 *const sBirchDexRatingTexts[] =
     gBirchDexRatingText_DexCompleted,
 };
 
-void sub_8197080(u8 *destStr)
+void BufferPokedexRatingForMatchCall(u8 *destStr)
 {
     int numSeen, numCaught;
     u8 *str;
