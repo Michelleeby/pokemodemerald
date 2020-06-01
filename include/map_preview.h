@@ -3,6 +3,15 @@
 
 enum MapPreviewScreenId
 {
+    MPS_PETALBURG_WOODS = 0,
+    MPS_METEOR_FALLS,
+    // to do: other map previews
+    MPS_COUNT
+};
+
+/* FR
+enum MapPreviewScreenId
+{
     MPS_VIRIDIAN_FOREST = 0,
     MPS_MT_MOON,
     MPS_DIGLETTS_CAVE,
@@ -33,6 +42,7 @@ enum MapPreviewScreenId
     MPS_VIAPOIS_CHAMBER,
     MPS_COUNT
 };
+*/
 
 #define MPS_TYPE_CAVE   0
 #define MPS_TYPE_FOREST 1

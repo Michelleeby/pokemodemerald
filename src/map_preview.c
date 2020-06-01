@@ -18,6 +18,12 @@
 #include "constants/region_map_sections.h"
 #include "constants/rgb.h"
 
+// Defines
+//  In FRLG, each area had a world map flag set upon visiting.
+//  The map preview duration was longer for the first visit, and shorter thereafter. 
+//  To make the duration time dependent, set FLAG_BASED_MAP_PREVIEW_TIME to TRUE
+#define FLAG_BASED_MAP_PREVIEW_TIME     FALSE
+
 // Function Declarations
 static void Task_RunMapPreviewScreenForest(u8 taskId);
 static u16 MapPreview_GetDuration(u8 mapsec);
@@ -96,16 +102,40 @@ static const u8 sAlteringCaveMapPreviewTilemap[] = INCBIN_U8("graphics/map_previ
 
 static const struct MapPreviewScreen sMapPreviewScreenData[MPS_COUNT] =
 {
-    [MPS_VIRIDIAN_FOREST] = 
+    [MPS_PETALBURG_WOODS] = 
     {
-        .mapsec = MAPSEC_PETALBURG_WOODS,    //MAPSEC_VIRIDIAN_FOREST,
+        .mapsec = MAPSEC_PETALBURG_WOODS,
         .type = MPS_TYPE_FOREST,
-        //.flagId = FLAG_WORLD_MAP_VIRIDIAN_FOREST,   //determines length of time the preview is shown (shorter if already visited)
+        #if FLAG_BASED_MAP_PREVIEW_TIME
+        .flagId = FLAG_VISITED_PETALBURG_WOODS, //flag needs to be added to constants/flags.h
+        #endif
         .tilesptr = sViridianForestMapPreviewTiles,
         .tilemapptr = sViridianForestMapPreviewTilemap,
         .palptr = sViridianForestMapPreviewPalette
     },
-    /*
+    [MPS_METEOR_FALLS] = 
+    {
+        .mapsec = MAPSEC_METEOR_FALLS,
+        .type = MPS_TYPE_CAVE,
+        #if FLAG_BASED_MAP_PREVIEW_TIME
+        .flagId = FLAG_VISITED_METEOR_FALLS, //flag needs to be added to constants/flags.h
+        #endif
+        .tilesptr = sMtMoonMapPreviewTiles,
+        .tilemapptr = sMtMoonMapPreviewTilemap,
+        .palptr = sMtMoonMapPreviewPalette
+    },
+    //etc...
+    
+    /* Firered map preview entries for reference
+    [MPS_VIRIDIAN_FOREST] = 
+    {
+        .mapsec = MAPSEC_VIRIDIAN_FOREST,
+        .type = MPS_TYPE_FOREST,
+        .flagId = FLAG_WORLD_MAP_VIRIDIAN_FOREST,
+        .tilesptr = sViridianForestMapPreviewTiles,
+        .tilemapptr = sViridianForestMapPreviewTilemap,
+        .palptr = sViridianForestMapPreviewPalette
+    },
     [MPS_MT_MOON] = 
     {
         .mapsec = MAPSEC_MT_MOON,
@@ -622,57 +652,51 @@ static u16 MapPreview_GetDuration(u8 mapsec)
         return 0;
     }
     
-    /*
-    flagId = sMapPreviewScreenData[idx].flagId;
-    if (sMapPreviewScreenData[idx].type == MPS_TYPE_CAVE)
-    {
-        if (!FlagGet(flagId))
+    #if FLAG_BASED_MAP_PREVIEW_TIME
+        flagId = sMapPreviewScreenData[idx].flagId;
+        if (sMapPreviewScreenData[idx].type == MPS_TYPE_CAVE)
         {
-            return 120;
+            if (!FlagGet(flagId))
+            {
+                return 120;
+            }
+            else
+            {
+                return 40;
+            }
         }
         else
         {
-            return 40;
+            
+            if (sHasVisitedMapBefore)
+            {
+                return 120;
+            }
+            else
+            {
+                return 40;
+            }
         }
-    }
-    else
-    {
-        
-        if (sHasVisitedMapBefore)
-        {
-            return 120;
-        }
-        else
-        {
-            return 40;
-        }
-    }
-    */
-    
-    if (sHasVisitedMapBefore)
-    {
+    #else
         return 120;
-    }
-    else
-    {
-        return 40;
-    }
+    #endif
 }
 
 void MapPreview_SetFlag(u16 flagId)
 {
-    /*
-    if (!FlagGet(flagId))
-    {
-        sHasVisitedMapBefore = TRUE;
-    }
-    else
-    {
+    #if FLAG_BASED_MAP_PREVIEW_TIME
+        if (!FlagGet(flagId))
+        {
+            sHasVisitedMapBefore = TRUE;
+        }
+        else
+        {
+            sHasVisitedMapBefore = FALSE;
+        }
+        FlagSet(flagId);
+    #else
         sHasVisitedMapBefore = FALSE;
-    }
-    FlagSet(flagId);
-    */
-    sHasVisitedMapBefore = FALSE;
+    #endif
 }
 
 // from pokefirered fldeff_flash.c but works better here imo
