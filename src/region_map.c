@@ -301,7 +301,7 @@ static const u8 sMapHealLocations[][3] =
     {MAP_GROUP(LILYCOVE_CITY), MAP_NUM(LILYCOVE_CITY), HEAL_LOCATION_LILYCOVE_CITY},
     {MAP_GROUP(MOSSDEEP_CITY), MAP_NUM(MOSSDEEP_CITY), HEAL_LOCATION_MOSSDEEP_CITY},
     {MAP_GROUP(SOOTOPOLIS_CITY), MAP_NUM(SOOTOPOLIS_CITY), HEAL_LOCATION_SOOTOPOLIS_CITY},
-    {MAP_GROUP(EVER_GRANDE_CITY), MAP_NUM(EVER_GRANDE_CITY), HEAL_LOCATION_EVER_GRANDE_CITY_1},
+    {MAP_GROUP(EVER_GRANDE_CITY), MAP_NUM(EVER_GRANDE_CITY), HEAL_LOCATION_EVER_GRANDE_CITY},
     {MAP_GROUP(ROUTE101), MAP_NUM(ROUTE101), 0},
     {MAP_GROUP(ROUTE102), MAP_NUM(ROUTE102), 0},
     {MAP_GROUP(ROUTE103), MAP_NUM(ROUTE103), 0},
@@ -547,15 +547,15 @@ bool8 LoadRegionMapGfx(void)
     {
     case 0:
         if (gRegionMap->bgManaged)
-            decompress_and_copy_tile_data_to_vram(gRegionMap->bgNum, sRegionMapBg_GfxLZ, 0, 0, 0);
+            DecompressAndCopyTileDataToVram(gRegionMap->bgNum, sRegionMapBg_GfxLZ, 0, 0, 0);
         else
             LZ77UnCompVram(sRegionMapBg_GfxLZ, (u16 *)BG_CHAR_ADDR(2));
         break;
     case 1:
         if (gRegionMap->bgManaged)
         {
-            if (!free_temp_tile_data_buffers_if_possible())
-                decompress_and_copy_tile_data_to_vram(gRegionMap->bgNum, sRegionMapBg_TilemapLZ, 0, 0, 1);
+            if (!FreeTempTileDataBuffersIfPossible())
+                DecompressAndCopyTileDataToVram(gRegionMap->bgNum, sRegionMapBg_TilemapLZ, 0, 0, 1);
         }
         else
         {
@@ -563,7 +563,7 @@ bool8 LoadRegionMapGfx(void)
         }
         break;
     case 2:
-        if (!free_temp_tile_data_buffers_if_possible())
+        if (!FreeTempTileDataBuffersIfPossible())
             LoadPalette(sRegionMapBg_Pal, 0x70, 0x60);
         break;
     case 3:
@@ -1003,8 +1003,8 @@ static void InitMapBasedOnPlayerLocation(void)
             gRegionMap->playerIsInCave = TRUE;
         break;
     case MAP_TYPE_UNDERGROUND:
-    case MAP_TYPE_UNUSED_2:
-        if (gMapHeader.flags & MAP_ALLOW_ESCAPE_ROPE)
+    case MAP_TYPE_UNKNOWN:
+        if (gMapHeader.flags & MAP_ALLOW_ESCAPING)
         {
             mapHeader = Overworld_GetMapHeaderByGroupAndId(gSaveBlock1Ptr->escapeWarp.mapGroup, gSaveBlock1Ptr->escapeWarp.mapNum);
             gRegionMap->mapSecId = mapHeader->regionMapSectionId;
@@ -1710,7 +1710,7 @@ void CB2_OpenFlyMap(void)
         PutWindowTilemap(2);
         FillWindowPixelBuffer(2, PIXEL_FILL(0));
         AddTextPrinterParameterized(2, 1, gText_FlyToWhere, 0, 1, 0, NULL);
-        schedule_bg_copy_tilemap_to_vram(0);
+        ScheduleBgCopyTilemapToVram(0);
         gMain.state++;
         break;
     case 8:
@@ -1778,7 +1778,7 @@ static void DrawFlyDestTextWindow(void)
                     AddTextPrinterParameterized(1, 1, sFlyMap->regionMap.mapSecName, 0, 1, 0, NULL);
                     name = sMultiNameFlyDestinations[i].name[sFlyMap->regionMap.posWithinMapSec];
                     AddTextPrinterParameterized(1, 1, name, GetStringRightAlignXOffset(1, name, 96), 17, 0, NULL);
-                    schedule_bg_copy_tilemap_to_vram(0);
+                    ScheduleBgCopyTilemapToVram(0);
                     gUnknown_03001180 = TRUE;
                 }
                 break;
@@ -1796,7 +1796,7 @@ static void DrawFlyDestTextWindow(void)
                 FillWindowPixelBuffer(0, PIXEL_FILL(1));
             }
             AddTextPrinterParameterized(0, 1, sFlyMap->regionMap.mapSecName, 0, 1, 0, NULL);
-            schedule_bg_copy_tilemap_to_vram(0);
+            ScheduleBgCopyTilemapToVram(0);
             gUnknown_03001180 = FALSE;
         }
     }
@@ -1809,7 +1809,7 @@ static void DrawFlyDestTextWindow(void)
         }
         FillWindowPixelBuffer(0, PIXEL_FILL(1));
         CopyWindowToVram(0, 2);
-        schedule_bg_copy_tilemap_to_vram(0);
+        ScheduleBgCopyTilemapToVram(0);
         gUnknown_03001180 = FALSE;
     }
 }
@@ -1998,10 +1998,10 @@ static void CB_ExitFlyMap(void)
                     SetWarpDestinationToHealLocation(HEAL_LOCATION_BATTLE_FRONTIER_OUTSIDE_EAST);
                     break;
                 case MAPSEC_LITTLEROOT_TOWN:
-                    SetWarpDestinationToHealLocation(gSaveBlock2Ptr->playerGender == MALE ? HEAL_LOCATION_LITTLEROOT_TOWN_1 : HEAL_LOCATION_LITTLEROOT_TOWN_2);
+                    SetWarpDestinationToHealLocation(gSaveBlock2Ptr->playerGender == MALE ? HEAL_LOCATION_LITTLEROOT_TOWN_BRENDANS_HOUSE : HEAL_LOCATION_LITTLEROOT_TOWN_MAYS_HOUSE);
                     break;
                 case MAPSEC_EVER_GRANDE_CITY:
-                    SetWarpDestinationToHealLocation(FlagGet(FLAG_LANDMARK_POKEMON_LEAGUE) && sFlyMap->regionMap.posWithinMapSec == 0 ? HEAL_LOCATION_EVER_GRANDE_CITY_2 : HEAL_LOCATION_EVER_GRANDE_CITY_1);
+                    SetWarpDestinationToHealLocation(FlagGet(FLAG_LANDMARK_POKEMON_LEAGUE) && sFlyMap->regionMap.posWithinMapSec == 0 ? HEAL_LOCATION_EVER_GRANDE_CITY_POKEMON_LEAGUE : HEAL_LOCATION_EVER_GRANDE_CITY);
                     break;
                 default:
                     if (sMapHealLocations[sFlyMap->regionMap.mapSecId][2] != 0)
