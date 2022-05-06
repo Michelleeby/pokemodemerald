@@ -462,9 +462,9 @@ void MapPreview_LoadGfx(u8 mapsec)
     idx = GetMapPreviewScreenIdx(mapsec);
     if (idx != MPS_COUNT)
     {
-       reset_temp_tile_data_buffers();
+       ResetTempTileDataBuffers();
        LoadPalette(sMapPreviewScreenData[idx].palptr, 0xD0, 0x60);
-       decompress_and_copy_tile_data_to_vram(0, sMapPreviewScreenData[idx].tilesptr, 0, 0, 0);
+       DecompressAndCopyTileDataToVram(0, sMapPreviewScreenData[idx].tilesptr, 0, 0, 0);
        if (GetBgTilemapBuffer(0) == NULL)
        {
            SetBgTilemapBuffer(0, Alloc(BG_SCREEN_SIZE));
@@ -490,7 +490,7 @@ static void MapPreview_Unload(s32 windowId)
 
 static bool32 MapPreview_IsGfxLoadFinished(void)
 {
-    return free_temp_tile_data_buffers_if_possible();
+    return FreeTempTileDataBuffersIfPossible();
 }
 
 void MapPreview_StartForestTransition(u8 mapsec)
@@ -527,7 +527,7 @@ static u16 MapPreview_CreateMapNameWindow(u8 mapsec)
     PutWindowTilemap(windowId);
     color[0] = TEXT_COLOR_WHITE; // Access violation
     color[1] = TEXT_COLOR_RED; // Access violation
-    color[2] = TEXT_COLOR_LIGHT_GREY; // Access violation
+    color[2] = TEXT_COLOR_LIGHT_GRAY; // Access violation
     GetMapName(gStringVar4, mapsec, 0);
     xctr = 104 - GetStringWidth(2, gStringVar4, 0);
     AddTextPrinterParameterized4(windowId, 2, xctr / 2, 2, 0, 0, color/* Access violation */, -1, gStringVar4);

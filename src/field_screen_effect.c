@@ -36,7 +36,6 @@
 #include "trainer_hill.h"
 #include "fldeff.h"
 
-// This file's functions.
 static void Task_ExitNonAnimDoor(u8);
 static void Task_ExitNonDoor(u8);
 static void Task_DoContestHallWarp(u8);
@@ -50,13 +49,13 @@ static void Task_EnableScriptAfterMusicFade(u8 taskId);
 // data[0] is used universally by tasks in this file as a state for switches
 #define tState       data[0]
 
-// const
-static const u16 sFlashLevelPixelRadii[] = { 200, 72, 64, 56, 48, 40, 32, 24, 0 };
-const s32 gMaxFlashLevel = ARRAY_COUNT(sFlashLevelPixelRadii) - 1;
+// Smaller flash level -> larger flash radius
+static const u16 sFlashLevelToRadius[] = { 200, 72, 64, 56, 48, 40, 32, 24, 0 };
+const s32 gMaxFlashLevel = ARRAY_COUNT(sFlashLevelToRadius) - 1;
 
 const struct ScanlineEffectParams sFlashEffectParams =
 {
-    (void *)REG_ADDR_WIN0H,
+    &REG_WIN0H,
     ((DMA_ENABLE | DMA_START_HBLANK | DMA_REPEAT | DMA_DEST_RELOAD) << 16) | 1,
     1
 };
@@ -212,7 +211,7 @@ static void Task_ReturnToFieldWirelessLink(u8 taskId)
         if (!IsLinkTaskFinished())
         {
             if (++task->data[1] > 1800)
-                GetLinkmanErrorParams(0x6000);
+                RfuSetErrorParams(F_RFU_ERROR_6 | F_RFU_ERROR_7);
         }
         else
         {
@@ -243,9 +242,7 @@ void Task_ReturnToFieldRecordMixing(u8 taskId)
         break;
     case 1:
         if (IsLinkTaskFinished())
-        {
             task->tState++;
-        }
         break;
     case 2:
         StartSendingKeysToLink();
@@ -513,7 +510,7 @@ void DoDiveWarp(void)
     CreateTask(Task_WarpAndLoadMap, 10);
 }
 
-void DoSootopolisLegendWarp(void)
+void DoWhiteFadeWarp(void)
 {
     ScriptContext2_Enable();
     TryFadeOutOldMapMusic();
@@ -981,14 +978,14 @@ static u8 StartUpdateOrbFlashEffect(s32 centerX, s32 centerY, s32 initialFlashRa
 #undef tFlashRadiusDelta
 #undef tClearScanlineEffect
 
-// A higher flashLevel value is a smaller flash radius (more darkness). 0 is full brightness
-void AnimateFlash(u8 flashLevel)
+// A higher flash level is a smaller flash radius (more darkness). 0 is full brightness
+void AnimateFlash(u8 newFlashLevel)
 {
-    u8 curFlashLevel = Overworld_GetFlashLevel();
+    u8 curFlashLevel = GetFlashLevel();
     bool8 fullBrightness = FALSE;
-    if (!flashLevel)
+    if (newFlashLevel == 0)
         fullBrightness = TRUE;
-    StartUpdateFlashLevelEffect(DISPLAY_WIDTH / 2, DISPLAY_HEIGHT / 2, sFlashLevelPixelRadii[curFlashLevel], sFlashLevelPixelRadii[flashLevel], fullBrightness, 1);
+    StartUpdateFlashLevelEffect(DISPLAY_WIDTH / 2, DISPLAY_HEIGHT / 2, sFlashLevelToRadius[curFlashLevel], sFlashLevelToRadius[newFlashLevel], fullBrightness, 1);
     StartWaitForFlashUpdate();
     ScriptContext2_Enable();
 }
@@ -997,7 +994,7 @@ void WriteFlashScanlineEffectBuffer(u8 flashLevel)
 {
     if (flashLevel)
     {
-        SetFlashScanlineEffectWindowBoundaries(&gScanlineEffectRegBuffers[0][0], DISPLAY_WIDTH / 2, DISPLAY_HEIGHT / 2, sFlashLevelPixelRadii[flashLevel]);
+        SetFlashScanlineEffectWindowBoundaries(&gScanlineEffectRegBuffers[0][0], DISPLAY_WIDTH / 2, DISPLAY_HEIGHT / 2, sFlashLevelToRadius[flashLevel]);
         CpuFastSet(&gScanlineEffectRegBuffers[0], &gScanlineEffectRegBuffers[1], 480);
     }
 }
@@ -1095,7 +1092,7 @@ static void LoadOrbEffectPalette(bool8 blueOrb)
     }
 }
 
-static bool8 sub_80B02C8(u16 shakeDir)
+static bool8 UpdateOrbEffectBlend(u16 shakeDir)
 {
     u8 lo = REG_BLDALPHA & 0xFF;
     u8 hi = REG_BLDALPHA >> 8;
@@ -1103,21 +1100,17 @@ static bool8 sub_80B02C8(u16 shakeDir)
     if (shakeDir != 0)
     {
         if (lo)
-        {
             lo--;
-        }
     }
     else
     {
-        if (hi < 0x10)
-        {
+        if (hi < 16)
             hi++;
-        }
     }
 
     SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(lo, hi));
 
-    if (lo == 0 && hi == 0x10)
+    if (lo == 0 && hi == 16)
         return TRUE;
     else
         return FALSE;
@@ -1159,7 +1152,7 @@ static void Task_OrbEffect(u8 taskId)
         tState = 1;
         break;
     case 1:
-        sub_8199DF0(0, PIXEL_FILL(1), 0, 1);
+        BgDmaFill(0, PIXEL_FILL(1), 0, 1);
         LoadOrbEffectPalette(tBlueOrb);
         StartUpdateOrbFlashEffect(tCenterX, tCenterY, 1, 160, 1, 2);
         tState = 2;
@@ -1201,10 +1194,10 @@ static void Task_OrbEffect(u8 taskId)
         {
             tShakeDelay = 8;
             tShakeDir ^= 1;
-            if (sub_80B02C8(tShakeDir) == TRUE)
+            if (UpdateOrbEffectBlend(tShakeDir) == TRUE)
             {
                 tState = 5;
-                sub_8199DF0(0, PIXEL_FILL(0), 0, 1);
+                BgDmaFill(0, PIXEL_FILL(0), 0, 1);
             }
         }
         break;
