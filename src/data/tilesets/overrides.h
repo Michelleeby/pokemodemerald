@@ -1,4 +1,4 @@
-const struct PaletteOverride gTilesetPalOverrides_General[] = 
+struct PaletteOverride gTilesetPalOverrides_General[] = 
 {
     { 
         .slot = 1, 
@@ -20,7 +20,7 @@ const struct PaletteOverride gTilesetPalOverrides_General[] =
     },
 };
 
-const struct PaletteOverride gTilesetPalOverrides_Petalburg[] =
+struct PaletteOverride gTilesetPalOverrides_Petalburg[] =
 {
     { 
         .slot = 6,

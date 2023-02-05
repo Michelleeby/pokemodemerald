@@ -8,7 +8,7 @@ struct PaletteOverride
     u8 slot;
     u8 startHour;
     u8 endHour;
-    void *palette;
+    const void *palette;
 };
 
 extern EWRAM_DATA u16 gPlttBufferPreDN[];
