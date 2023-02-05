@@ -301,6 +301,9 @@ static u8 ChooseWildMonLevel(const struct WildPokemon *wildPokemon)
 static u16 GetCurrentMapWildMonHeaderId(void)
 {
     u16 i;
+    
+    RtcCalcLocalTime();
+    u8 timeOfDay = GetCurrentTimeOfDay();
 
     for (i = 0; ; i++)
     {
@@ -319,6 +322,11 @@ static u16 GetCurrentMapWildMonHeaderId(void)
                     alteringCaveId = 0;
 
                 i += alteringCaveId;
+            }
+            if (gWildMonHeaders[timeOfDay].mapGroup == gSaveBlock1Ptr->location.mapGroup &&
+                gWildMonHeaders[timeOfDay].mapNum == gSaveBlock1Ptr->location.mapNum)
+            {
+                i += timeOfDay;
             }
 
             return i;
