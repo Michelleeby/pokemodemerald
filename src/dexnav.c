@@ -668,12 +668,12 @@ static bool8 DexNavPickTile(u8 environment, u8 areaX, u8 areaY, bool8 smallScan)
                             break; //occurs at same z coord
                         
                         scale = 440 - (smallScan * 200) - (GetPlayerDistance(topX, topY) / 2)  - (2 * (topX + topY));
-                        weight = ((Random() % scale) < 1) && !MapGridIsImpassableAt(topX, topY);
+                        weight = ((Random() % scale) < 1) && !MapGridGetCollisionAt(topX, topY);
                     }
                     else
                     { // outdoors: grass
                         scale = 100 - (GetPlayerDistance(topX, topY) * 2);
-                        weight = (Random() % scale <= 5) && !MapGridIsImpassableAt(topX, topY);
+                        weight = (Random() % scale <= 5) && !MapGridGetCollisionAt(topX, topY);
                     }
                 }
                 break;
@@ -684,7 +684,7 @@ static bool8 DexNavPickTile(u8 environment, u8 areaX, u8 areaY, bool8 smallScan)
                     if (IsElevationMismatchAt(gObjectEvents[gPlayerAvatar.spriteId].currentElevation, topX, topY))
                         break;
 
-                    weight = (Random() % scale <= 1) && !MapGridIsImpassableAt(topX, topY);
+                    weight = (Random() % scale <= 1) && !MapGridGetCollisionAt(topX, topY);
                 }
                 break;
             default:
@@ -862,7 +862,7 @@ static void Task_InitDexNavSearch(u8 taskId)
     {
         Free(sDexNavSearchDataPtr);
         FreeMonIconPalettes();
-        ScriptContext1_SetupScript(EventScript_TooDark);
+        ScriptContext_SetupScript(EventScript_TooDark);
         DestroyTask(taskId);
         return;
     }
@@ -871,7 +871,7 @@ static void Task_InitDexNavSearch(u8 taskId)
     {
         Free(sDexNavSearchDataPtr);
         FreeMonIconPalettes();
-        ScriptContext1_SetupScript(EventScript_NotFoundNearby);
+        ScriptContext_SetupScript(EventScript_NotFoundNearby);
         DestroyTask(taskId);
         return;
     }
@@ -993,7 +993,7 @@ static void EndDexNavSearchSetupScript(const u8 *script, u8 taskId)
 {
     gSaveBlock1Ptr->dexNavChain = 0;   //reset chain
     EndDexNavSearch(taskId);
-    ScriptContext1_SetupScript(script);
+    ScriptContext_SetupScript(script);
 }
 
 static u8 GetMovementProximityBySearchLevel(void)
@@ -1081,7 +1081,7 @@ static void Task_DexNavSearch(u8 taskId)
         return;
     }
     
-    if (ScriptContext2_IsEnabled() == TRUE)
+    if (ArePlayerFieldControlsLocked() == TRUE)
     { // check if script just executed
         //gSaveBlock1Ptr->dexNavChain = 0;  //issue with reusable repels
         EndDexNavSearch(taskId);
@@ -1104,7 +1104,7 @@ static void Task_DexNavSearch(u8 taskId)
         
         FlagClear(FLAG_SYS_DEXNAV_SEARCH);
         gDexnavBattle = TRUE;        
-        ScriptContext1_SetupScript(EventScript_StartDexNavBattle);
+        ScriptContext_SetupScript(EventScript_StartDexNavBattle);
         Free(sDexNavSearchDataPtr);
         DestroyTask(taskId);
         return;
@@ -1341,8 +1341,8 @@ static u16 DexNavGenerateHeldItem(u16 species, u8 searchLevel)
 {
     u16 randVal = Random() % 100;
     u8 searchLevelInfluence = searchLevel >> 1;
-    u16 item1 = gBaseStats[species].itemCommon;
-    u16 item2 = gBaseStats[species].itemRare;
+    u16 item1 = gSpeciesInfo[species].itemCommon;
+    u16 item2 = gSpeciesInfo[species].itemRare;
     
     // if both are the same, 100% to hold
     if (item1 == item2)
@@ -1415,9 +1415,9 @@ static u8 DexNavGetAbilityNum(u16 species, u8 searchLevel)
     }
     
     #ifdef BATTLE_ENGINE    // if using RHH, the base stats abilities field is expanded
-    if (genAbility && gBaseStats[species].abilities[2] != ABILITY_NONE && GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_CAUGHT))
+    if (genAbility && gSpeciesInfo[species].abilities[2] != ABILITY_NONE && GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_CAUGHT))
     #else
-    if (genAbility && gBaseStats[species].abilityHidden != ABILITY_NONE && GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_CAUGHT))
+    if (genAbility && gSpeciesInfo[species].abilityHidden != ABILITY_NONE && GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_CAUGHT))
     #endif
     {
         //Only give hidden ability if Pokemon has been caught before
@@ -1426,7 +1426,7 @@ static u8 DexNavGetAbilityNum(u16 species, u8 searchLevel)
     else
     {
         //Pick a normal ability of that Pokemon
-        if (gBaseStats[species].abilities[1] != ABILITY_NONE)
+        if (gSpeciesInfo[species].abilities[1] != ABILITY_NONE)
             abilityNum = Random() & 1;
         else
             abilityNum = 0;
@@ -1868,7 +1868,7 @@ static void CB1_InitDexNavSearch(void)
 {
     u8 taskId;
     
-    if (!gPaletteFade.active && !ScriptContext2_IsEnabled() && gMain.callback2 == CB2_Overworld)
+    if (!gPaletteFade.active && !ArePlayerFieldControlsLocked() && gMain.callback2 == CB2_Overworld)
     {
         SetMainCallback1(CB1_Overworld);
         taskId = CreateTask(Task_InitDexNavSearch, 0);
@@ -2139,8 +2139,8 @@ static void PrintCurrentSpeciesInfo(void)
         AddTextPrinterParameterized3(WINDOW_INFO, 0, 0, SPECIES_INFO_Y, sFontColor_Black, 0, gSpeciesNames[species]);
     
     //type icon(s)
-    type1 = gBaseStats[species].type1;
-    type2 = gBaseStats[species].type2;
+    type1 = gSpeciesInfo[species].types[0];
+    type2 = gSpeciesInfo[species].types[1];
     if (species == SPECIES_NONE)
         type1 = type2 = TYPE_MYSTERY;
     
@@ -2174,11 +2174,11 @@ static void PrintCurrentSpeciesInfo(void)
     else if (GetSetPokedexFlag(dexNum, FLAG_GET_CAUGHT))
     {
         #ifdef BATTLE_ENGINE
-        if (gBaseStats[species].abilities[2] != ABILITY_NONE)
-            AddTextPrinterParameterized3(WINDOW_INFO, 0, 0, HA_INFO_Y, sFontColor_Black, 0, gAbilityNames[gBaseStats[species].abilities[2]]);
+        if (gSpeciesInfo[species].abilities[2] != ABILITY_NONE)
+            AddTextPrinterParameterized3(WINDOW_INFO, 0, 0, HA_INFO_Y, sFontColor_Black, 0, gAbilityNames[gSpeciesInfo[species].abilities[2]]);
         #else
-        if (gBaseStats[species].abilityHidden != ABILITY_NONE)           
-            AddTextPrinterParameterized3(WINDOW_INFO, 0, 0, HA_INFO_Y, sFontColor_Black, 0, gAbilityNames[gBaseStats[species].abilityHidden]);
+        if (gSpeciesInfo[species].abilityHidden != ABILITY_NONE)           
+            AddTextPrinterParameterized3(WINDOW_INFO, 0, 0, HA_INFO_Y, sFontColor_Black, 0, gAbilityNames[gSpeciesInfo[species].abilityHidden]);
         #endif
         else
             AddTextPrinterParameterized3(WINDOW_INFO, 0, 0, HA_INFO_Y, sFontColor_Black, 0, gText_None);

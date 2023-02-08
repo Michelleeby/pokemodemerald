@@ -3,6 +3,28 @@
 
 #include "constants/event_object_movement.h"
 
+// Palette slots for overworld NPCs.
+// The same standard set of palettes for overworld objects are normally always loaded at the same
+// time while walking around the overworld. The only exceptions are the palettes for the player and
+// the "special" NPC, which can be swapped out. This also means that e.g. two "special" NPCs
+// with competing palettes cannot be properly loaded at the same time.
+enum {
+    PALSLOT_PLAYER,
+    PALSLOT_PLAYER_REFLECTION,
+    PALSLOT_NPC_1,
+    PALSLOT_NPC_2,
+    PALSLOT_NPC_3,
+    PALSLOT_NPC_4,
+    PALSLOT_NPC_1_REFLECTION,
+    PALSLOT_NPC_2_REFLECTION,
+    PALSLOT_NPC_3_REFLECTION,
+    PALSLOT_NPC_4_REFLECTION,
+    PALSLOT_NPC_SPECIAL,
+    PALSLOT_NPC_SPECIAL_REFLECTION,
+    OBJ_PALSLOT_COUNT
+    // the remaining sprite palette slots (12-15) are used by field effects, the interface, etc.
+};
+
 enum SpinnerRunnerFollowPatterns
 {
     RUNFOLLOW_ANY,
@@ -253,6 +275,7 @@ u8 GetSlideMovementAction(u32);
 u8 GetJumpMovementAction(u32);
 u8 GetJump2MovementAction(u32);
 u8 CreateCopySpriteAt(struct Sprite *sprite, s16 x, s16 y, u8 subpriority);
+bool8 IsElevationMismatchAt(u8, s16, s16);
 
 u8 MovementType_WanderAround_Step0(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderAround_Step1(struct ObjectEvent *, struct Sprite *);
