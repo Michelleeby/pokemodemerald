@@ -1,8 +1,17 @@
-<!--- Provide a general summary of your changes in the Title above -->
+# 👋 Title of the PR
 
-## Description
-<!--- Describe your changes in detail -->
+## 📝 Description of the PR
 
-## **Discord contact info**
-<!--- formatted as name#numbers, e.g. PikalaxALT#5823 -->
-<!--- Contributors must join https://discord.gg/d5dubZ3 -->
+## 📖 Documentation of the PR
+
+## 📦 List of the packages
+
+## 📋 Tasks
+
+- [ ] Add tests
+- [ ] Add documentation
+- [ ] Update dependencies
+
+## 📎 Screenshots
+
+## 📚 References
