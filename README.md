@@ -24,6 +24,8 @@ git remote add michelleeby https://github.com/Michelleeby/pokemodemerald.git
 git pull michelleeby mod
 ```
 
+For more information about the mods available, have a look at [closed Pull Requests](https://github.com/Michelleeby/pokemodemerald/pulls?q=is%3Apr+is%3Aclosed+label%3Amod).
+
 ## 🪵 Branches
 
 Pokémod Emerald has two major branches: `main` and `game`. The `main` branch is in sync with pret's `master` branch, and is used as the base for all `mod` branches and the `game` branch.
