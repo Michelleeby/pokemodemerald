@@ -303,9 +303,10 @@ static u8 ChooseWildMonLevel(const struct WildPokemon *wildPokemon)
 static u16 GetCurrentMapWildMonHeaderId(void)
 {
     u16 i;
+    u8 timeOfDay;
     
     RtcCalcLocalTime();
-    u8 timeOfDay = GetCurrentTimeOfDay();
+    timeOfDay = GetCurrentTimeOfDay();
 
     for (i = 0; ; i++)
     {
