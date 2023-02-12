@@ -1,31 +1,35 @@
-# Pokémon Emerald
+# 👋 Welcome to Pokémod Emerald
 
-This is a decompilation of Pokémon Emerald.
+## 📖 Table of Contents
 
-It builds the following ROM:
+- [📝 Introduction](#-introduction)
+- [📚 Installation](#-installation)
+- [🪵 Branches](#-branches)
 
-* [**pokeemerald.gba**](https://datomatic.no-intro.org/index.php?page=show_record&s=23&n=1961) `sha1: f3ae088181bf583e55daf962a92bb46f4f1d07b7`
+## 📝 Introduction
 
-To set up the repository, see [INSTALL.md](INSTALL.md).
+In the world of Pokémod Emerald, you find yourself alone, in the back of a moving truck, already knowing who you are. You're May. The daughter of Norman, the gym leader of Petalburg City. Soon to be trainer. Someday, champion.
 
+## 📚 Installation
 
-## See also
+Please refer to the [Installation Guide](INSTALL.md) for detailed instructions on how to install Pokémod Emerald. Please note that you'll want to build from the `game` branch instead of `main`.
 
-Other disassembly and/or decompilation projects:
-* [**Pokémon Red and Blue**](https://github.com/pret/pokered)
-* [**Pokémon Gold and Silver (Space World '97 demo)**](https://github.com/pret/pokegold-spaceworld)
-* [**Pokémon Yellow**](https://github.com/pret/pokeyellow)
-* [**Pokémon Trading Card Game**](https://github.com/pret/poketcg)
-* [**Pokémon Pinball**](https://github.com/pret/pokepinball)
-* [**Pokémon Stadium**](https://github.com/pret/pokestadium)
-* [**Pokémon Gold and Silver**](https://github.com/pret/pokegold)
-* [**Pokémon Crystal**](https://github.com/pret/pokecrystal)
-* [**Pokémon Ruby and Sapphire**](https://github.com/pret/pokeruby)
-* [**Pokémon Pinball: Ruby & Sapphire**](https://github.com/pret/pokepinballrs)
-* [**Pokémon FireRed and LeafGreen**](https://github.com/pret/pokefirered)
-* [**Pokémon Mystery Dungeon: Red Rescue Team**](https://github.com/pret/pmd-red)
+### Installing a specific mod
 
+```bash
+git remote add michelleeby https://github.com/Michelleeby/pokemodemerald.git
+```
 
-## Contacts
+```bash
+git pull michelleeby mod
+```
 
-You can find us on [Discord](https://discord.gg/d5dubZ3) and [IRC](https://web.libera.chat/?#pret).
+For more information about the mods available, have a look at [closed Pull Requests](https://github.com/Michelleeby/pokemodemerald/pulls?q=is%3Apr+is%3Aclosed+label%3Amod).
+
+## 🪵 Branches
+
+Pokémod Emerald has two major branches: `main` and `game`. The `main` branch is in sync with pret's `master` branch, and is used as the base for all `mod` branches and the `game` branch.
+
+The `game` branch is an aggregate of all `mod` branches. To merge a `mod` branch into `game`, first create a new branch from `mod`, `mod-built`, and merge `game` into `mod-built`. Then, merge `mod-built` into `game`. This method ensures that the `mod` branch stays in sync with `main`:
+
+![branching workflow](assets/branching-workflow.jpg)
