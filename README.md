@@ -45,6 +45,7 @@ The `game` branch is an aggregate of all `mod` branches. To merge a `mod` branch
 - [ ] Add nature colored stats
 - [ ] Add item description headers
 - [ ] Add type effectiveness shows in battle
+- [ ] Add custom battle mugshots
 - [ ] Develop daynight system, add window lighting overrides.
 - [ ] Develop daynight system, time of day affects battle scene.
 
@@ -67,8 +68,8 @@ The `game` branch is an aggregate of all `mod` branches. To merge a `mod` branch
 - [ ] Add dynamic wild Pokémon levels
 - [ ] Add dynamic trainer levels
 - [ ] Add modern moves and movesets
-- [ ] Develop daynight system, add an `attack` and `defense` buff to wild Pokémon found during the `night`.
-- [ ] Develop daynight system, add a `special attack` and `special defense` buff to wild Pokémon found during the `morning`.
+- [ ] Develop daynight system, add an `attack` and `defense` buff to wild Pokémon found during the `night`
+- [ ] Develop daynight system, add a `special attack` and `special defense` buff to wild Pokémon found during the `morning`
 - [ ] Develop DexNav, hook into dynamic wild Pokémon leveling
 
 ### 📖 Story
