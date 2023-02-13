@@ -1,6 +1,7 @@
 #include "global.h"
 #include "battle_pyramid.h"
 #include "bg.h"
+#include "daynight.h"
 #include "fieldmap.h"
 #include "fldeff.h"
 #include "fldeff_misc.h"
@@ -879,17 +880,20 @@ void LoadTilesetPalette(struct Tileset const *tileset, u16 destOffset, u16 size)
     {
         if (tileset->isSecondary == FALSE)
         {
+            gPaletteOverrides[0] = tileset->overrides;
             LoadPalette(&black, destOffset, PLTT_SIZEOF(1));
-            LoadPalette(tileset->palettes[0] + 1, destOffset + 1, size - PLTT_SIZEOF(1));
+            LoadPaletteDayNight(tileset->palettes[0] + 1, destOffset + 1, size - PLTT_SIZEOF(1));
             ApplyGlobalTintToPaletteEntries(destOffset + 1, (size - PLTT_SIZEOF(1)) >> 1);
         }
         else if (tileset->isSecondary == TRUE)
         {
-            LoadPalette(tileset->palettes[NUM_PALS_IN_PRIMARY], destOffset, size);
+            gPaletteOverrides[1] = tileset->overrides;
+            LoadPaletteDayNight(tileset->palettes[NUM_PALS_IN_PRIMARY], destOffset, size);
             ApplyGlobalTintToPaletteEntries(destOffset, size >> 1);
         }
         else
         {
+            gPaletteOverrides[2] = tileset->overrides;
             LoadCompressedPalette((const u32 *)tileset->palettes, destOffset, size);
             ApplyGlobalTintToPaletteEntries(destOffset, size >> 1);
         }
