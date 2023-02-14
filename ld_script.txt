@@ -1315,6 +1315,7 @@ SECTIONS {
     ALIGN(4)
     {
         src/graphics.o(.rodata);
+        src/tilesets.o(.data);
     } =0
 
     extra :
