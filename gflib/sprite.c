@@ -1627,6 +1627,14 @@ u8 LoadSpritePaletteDayNight(const struct SpritePalette *palette)
     }
 }
 
+void LoadSpritePalettesDayNight(const struct SpritePalette *palettes)
+{
+    u8 i;
+    for (i = 0; palettes[i].data != NULL; i++)
+        if (LoadSpritePaletteDayNight(&palettes[i]) == 0xFF)
+            break;
+}
+
 void LoadSpritePalettes(const struct SpritePalette *palettes)
 {
     u8 i;
