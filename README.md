@@ -46,6 +46,7 @@ The `game` branch is an aggregate of all `mod` branches. To merge a `mod` branch
 - [ ] Add item description headers
 - [ ] Add type effectiveness shows in battle
 - [ ] Add custom battle mugshots
+- [ ] Add map description headers
 - [ ] Develop daynight system, add window lighting overrides.
 - [ ] Develop daynight system, time of day affects battle scene.
 
@@ -58,6 +59,7 @@ The `game` branch is an aggregate of all `mod` branches. To merge a `mod` branch
 - [ ] Add HM items
 - [ ] Add item alternatives for trade evolutions
 - [ ] Add modern repel system
+- [ ] Add remove Pokémon data encryption
 - [ ] Add nature mints
 - [ ] Add access to the PC from the start menu
 - [ ] Add Generation 6-style experience share
