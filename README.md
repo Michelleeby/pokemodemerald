@@ -67,8 +67,8 @@ The `game` branch is an aggregate of all `mod` branches. To merge a `mod` branch
 
 ### ⚙️ Core mechanics
 
-- [ ] Add dynamic wild Pokémon levels
-- [ ] Add dynamic trainer levels
+- [x] Add dynamic wild Pokémon levels
+- [x] Add dynamic trainer levels
 - [ ] Add modern moves and movesets
 - [ ] Develop daynight system, add an `attack` and `defense` buff to wild Pokémon found during the `night`
 - [ ] Develop daynight system, add a `special attack` and `special defense` buff to wild Pokémon found during the `morning`
