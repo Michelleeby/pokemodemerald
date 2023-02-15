@@ -268,33 +268,26 @@ static u8 ChooseWildMonLevel(const struct WildPokemon *wildPokemon)
     u8 range;
     u8 rand;
 
-    // Make sure minimum level is less than maximum level
-    if (wildPokemon->maxLevel >= wildPokemon->minLevel)
-    {
-        min = wildPokemon->minLevel;
-        max = wildPokemon->maxLevel;
-    }
-    else
-    {
-        min = wildPokemon->maxLevel;
-        max = wildPokemon->minLevel;
-    }
-    range = max - min + 1;
-    rand = Random() % range;
+    u8 count = gPlayerPartyCount;
+    u8 fixedLVL = 0;
 
-    // check ability for max level mon
-    if (!GetMonData(&gPlayerParty[0], MON_DATA_SANITY_IS_EGG))
+    while (count-- > 0)
     {
-        u8 ability = GetMonAbility(&gPlayerParty[0]);
-        if (ability == ABILITY_HUSTLE || ability == ABILITY_VITAL_SPIRIT || ability == ABILITY_PRESSURE)
-        {
-            if (Random() % 2 == 0)
-                return max;
-
-            if (rand != 0)
-                rand--;
+        if (GetMonData(&gPlayerParty[count], MON_DATA_SPECIES) != SPECIES_NONE){
+            fixedLVL += (GetMonData(&gPlayerParty[count], MON_DATA_LEVEL));
         }
     }
+    fixedLVL = fixedLVL / gPlayerPartyCount;
+
+    {
+        min = fixedLVL-3;
+        max = fixedLVL+3;
+    }
+    if (min <= 0)
+		min = 1;
+    range = max - min + 1; // note that range will always be equal to 7 in this case: fixedLVL+3 - (fixedLVL-3) + 1 = fixedLVL - fixedLVL + 3 +3 +1 = 7
+    rand = Random() % range;
+
     return min + rand;
 }
 
