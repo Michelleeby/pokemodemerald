@@ -2,6 +2,7 @@
 #include "wild_encounter.h"
 #include "pokemon.h"
 #include "metatile_behavior.h"
+#include "daynight.h"
 #include "fieldmap.h"
 #include "random.h"
 #include "field_player_avatar.h"
@@ -11,6 +12,7 @@
 #include "pokeblock.h"
 #include "battle_setup.h"
 #include "roamer.h"
+#include "rtc.h"
 #include "tv.h"
 #include "link.h"
 #include "script.h"
@@ -294,6 +296,10 @@ static u8 ChooseWildMonLevel(const struct WildPokemon *wildPokemon)
 static u16 GetCurrentMapWildMonHeaderId(void)
 {
     u16 i;
+    u8 timeOfDay;
+    
+    RtcCalcLocalTime();
+    timeOfDay = GetCurrentTimeOfDay();
 
     for (i = 0; ; i++)
     {
@@ -312,6 +318,11 @@ static u16 GetCurrentMapWildMonHeaderId(void)
                     alteringCaveId = 0;
 
                 i += alteringCaveId;
+            }
+            if (gWildMonHeaders[timeOfDay].mapGroup == gSaveBlock1Ptr->location.mapGroup &&
+                gWildMonHeaders[timeOfDay].mapNum == gSaveBlock1Ptr->location.mapNum)
+            {
+                i += timeOfDay;
             }
 
             return i;
