@@ -1,4 +1,5 @@
 #include "global.h"
+#include "daynight.h"
 #include "decompress.h"
 #include "event_object_movement.h"
 #include "field_camera.h"
@@ -35,6 +36,7 @@
 #define subsprite_table(ptr) {.subsprites = ptr, .subspriteCount = (sizeof ptr) / (sizeof(struct Subsprite))}
 
 EWRAM_DATA s32 gFieldEffectArguments[8] = {0};
+EWRAM_DATA u16 gReflectionPaletteBuffer[0x10] = {0};
 
 // Static type declarations
 
@@ -281,6 +283,9 @@ bool8 (*const gFieldEffectScriptFuncs[])(u8 **, u32 *) =
     FieldEffectCmd_loadgfx_callnative,
     FieldEffectCmd_loadtiles_callnative,
     FieldEffectCmd_loadfadedpal_callnative,
+    FieldEffectCmd_loadfadedpalnotint,
+    FieldEffectCmd_loadpalnotint,
+    FieldEffectCmd_loadfadedpalnotint_callnative,
 };
 
 static const struct OamData sOam_64x64 =
@@ -762,6 +767,28 @@ bool8 FieldEffectCmd_loadfadedpal_callnative(u8 **script, u32 *val)
     return TRUE;
 }
 
+bool8 FieldEffectCmd_loadfadedpalnotint(u8 **script, u32 *val)
+{
+    (*script)++;
+    FieldEffectScript_LoadFadedPaletteNoTint(script);
+    return TRUE;
+}
+
+bool8 FieldEffectCmd_loadpalnotint(u8 **script, u32 *val)
+{
+    (*script)++;
+    FieldEffectScript_LoadPaletteNoTint(script);
+    return TRUE;
+}
+
+bool8 FieldEffectCmd_loadfadedpalnotint_callnative(u8 **script, u32 *val)
+{
+    (*script)++;
+    FieldEffectScript_LoadFadedPaletteNoTint(script);
+    FieldEffectScript_CallNative(script, val);
+    return TRUE;
+}
+
 u32 FieldEffectScript_ReadWord(u8 **script)
 {
     return (*script)[0]
@@ -782,11 +809,28 @@ void FieldEffectScript_LoadFadedPalette(u8 **script)
 {
     struct SpritePalette *palette = (struct SpritePalette *)FieldEffectScript_ReadWord(script);
     LoadSpritePalette(palette);
+    UpdatePaletteGammaType(IndexOfSpritePaletteTag(palette->tag), COLOR_MAP_DARK_CONTRAST);
+    LoadSpritePaletteDayNight(palette);
     UpdateSpritePaletteWithWeather(IndexOfSpritePaletteTag(palette->tag));
     (*script) += 4;
 }
 
 void FieldEffectScript_LoadPalette(u8 **script)
+{
+    struct SpritePalette *palette = (struct SpritePalette *)FieldEffectScript_ReadWord(script);
+    LoadSpritePaletteDayNight(palette);
+    (*script) += 4;
+}
+
+void FieldEffectScript_LoadFadedPaletteNoTint(u8 **script)
+{
+    struct SpritePalette *palette = (struct SpritePalette *)FieldEffectScript_ReadWord(script);
+    LoadSpritePalette(palette);
+    UpdateSpritePaletteWithWeather(IndexOfSpritePaletteTag(palette->tag));
+    (*script) += 4;
+}
+
+void FieldEffectScript_LoadPaletteNoTint(u8 **script)
 {
     struct SpritePalette *palette = (struct SpritePalette *)FieldEffectScript_ReadWord(script);
     LoadSpritePalette(palette);
@@ -3114,10 +3158,13 @@ u8 FldEff_RayquazaSpotlight(void)
 
 u8 FldEff_NPCFlyOut(void)
 {
-    u8 spriteId = CreateSprite(gFieldEffectObjectTemplatePointers[FLDEFFOBJ_BIRD], 0x78, 0, 1);
-    struct Sprite *sprite = &gSprites[spriteId];
+    u8 spriteId;
+    struct Sprite *sprite;
 
-    sprite->oam.paletteNum = 0;
+    LoadFieldEffectPalette(FLDEFFOBJ_BIRD);
+    spriteId = CreateSprite(gFieldEffectObjectTemplatePointers[FLDEFFOBJ_BIRD], 0x78, 0, 1);
+    sprite = &gSprites[spriteId];
+
     sprite->oam.priority = 1;
     sprite->callback = SpriteCB_NPCFlyOut;
     sprite->data[1] = gFieldEffectArguments[0];
@@ -3297,9 +3344,10 @@ static u8 CreateFlyBirdSprite(void)
 {
     u8 spriteId;
     struct Sprite *sprite;
+
+    LoadFieldEffectPalette(FLDEFFOBJ_BIRD);
     spriteId = CreateSprite(gFieldEffectObjectTemplatePointers[FLDEFFOBJ_BIRD], 0xff, 0xb4, 0x1);
     sprite = &gSprites[spriteId];
-    sprite->oam.paletteNum = 0;
     sprite->oam.priority = 1;
     sprite->callback = SpriteCB_FlyBirdLeaveBall;
     return spriteId;

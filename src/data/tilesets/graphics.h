@@ -1634,3 +1634,11 @@ const u16 gTilesetPalettes_UnionRoom[][16] =
 };
 
 const u32 gTilesetTiles_UnionRoom[] = INCBIN_U32("data/tilesets/secondary/union_room/tiles.4bpp.lz");
+
+const u32 gTilesetPalOverride_General01[] = INCBIN_U32("data/tilesets/primary/general/palettes/01_over.gbapal");
+
+const u32 gTilesetPalOverride_General05[] = INCBIN_U32("data/tilesets/primary/general/palettes/05_over.gbapal");
+
+const u32 gTilesetPalOverride_Petalburg06[] = INCBIN_U32("data/tilesets/secondary/petalburg/palettes/06_over.gbapal");
+
+const u32 gTilesetPalOverride_Petalburg08[] = INCBIN_U32("data/tilesets/secondary/petalburg/palettes/08_over.gbapal");

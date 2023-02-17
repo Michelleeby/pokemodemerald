@@ -4,6 +4,7 @@
 #include "bg.h"
 #include "contest.h"
 #include "data.h"
+#include "daynight.h"
 #include "decompress.h"
 #include "dma3.h"
 #include "gpu_regs.h"
@@ -2104,7 +2105,7 @@ u8 CreateAdditionalMonSpriteForMoveAnim(u16 species, bool8 isBackpic, u8 id, s16
         gMonSpritesGfxPtr->buffer = AllocZeroed(0x2000);
     if (!isBackpic)
     {
-        LoadCompressedPalette(GetMonSpritePalFromSpeciesAndPersonality(species, trainerId, personality), OBJ_PLTT_ID(palette), PLTT_SIZE_4BPP);
+        LoadCompressedPaletteDayNight(GetMonSpritePalFromSpeciesAndPersonality(species, trainerId, personality), OBJ_PLTT_ID(palette), PLTT_SIZE_4BPP);
         if (ignoreDeoxysForm == TRUE || ShouldIgnoreDeoxysForm(5, battlerId) == TRUE || gBattleSpritesDataPtr->battlerData[battlerId].transformSpecies != 0)
             LoadSpecialPokePic_DontHandleDeoxys(&gMonFrontPicTable[species],
                                                 gMonSpritesGfxPtr->buffer,
@@ -2120,7 +2121,7 @@ u8 CreateAdditionalMonSpriteForMoveAnim(u16 species, bool8 isBackpic, u8 id, s16
     }
     else
     {
-        LoadCompressedPalette(GetMonSpritePalFromSpeciesAndPersonality(species, trainerId, personality), OBJ_PLTT_ID(palette), PLTT_SIZE_4BPP);
+        LoadCompressedPaletteDayNight(GetMonSpritePalFromSpeciesAndPersonality(species, trainerId, personality), OBJ_PLTT_ID(palette), PLTT_SIZE_4BPP);
         if (ignoreDeoxysForm == TRUE || ShouldIgnoreDeoxysForm(5, battlerId) == TRUE || gBattleSpritesDataPtr->battlerData[battlerId].transformSpecies != 0)
             LoadSpecialPokePic_DontHandleDeoxys(&gMonBackPicTable[species],
                                                 gMonSpritesGfxPtr->buffer,
