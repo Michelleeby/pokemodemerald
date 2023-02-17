@@ -37,8 +37,6 @@ LilycoveCity_MoveDeletersHouse_EventScript_ChooseMonAndMoveToForget::
 	end
 
 LilycoveCity_MoveDeletersHouse_EventScript_TryForgetMove::
-	special IsLastMonThatKnowsSurf
-	goto_if_eq VAR_RESULT, TRUE, LilycoveCity_MoveDeletersHouse_EventScript_LastMonWithSurf
 	special MoveDeleterForgetMove
 	playfanfare MUS_MOVE_DELETED
 	waitfanfare
@@ -59,12 +57,6 @@ LilycoveCity_MoveDeletersHouse_EventScript_EggCantForgetMoves::
 
 LilycoveCity_MoveDeletersHouse_EventScript_ComeAgain::
 	msgbox LilycoveCity_MoveDeletersHouse_Text_ComeAgain, MSGBOX_DEFAULT
-	releaseall
-	end
-
-LilycoveCity_MoveDeletersHouse_EventScript_LastMonWithSurf::
-	special BufferMoveDeleterNicknameAndMove
-	msgbox LilycoveCity_MoveDeletersHouse_Text_CantForgetSurf, MSGBOX_DEFAULT
 	releaseall
 	end
 
@@ -100,9 +92,3 @@ LilycoveCity_MoveDeletersHouse_Text_ComeAgain:
 LilycoveCity_MoveDeletersHouse_Text_EggCantForgetMoves:
 	.string "What?\n"
 	.string "No EGG should know any moves.$"
-
-LilycoveCity_MoveDeletersHouse_Text_CantForgetSurf:
-	.string "Hm!\p"
-	.string "Your {STR_VAR_1} doesn't seem willing\n"
-	.string "to forget SURF.$"
-

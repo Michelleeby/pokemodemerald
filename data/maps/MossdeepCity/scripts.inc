@@ -379,8 +379,8 @@ MossdeepCity_Text_LifeNeedsSeaToLive:
 
 MossdeepCity_Text_SurfExhilarating:
 	.string "A voyage on a ship is fine.\p"
-	.string "But crossing the sea with POKéMON\n"
-	.string "using SURF…\p"
+	.string "But crossing the sea with your POKéMON\n"
+	.string "riding your SURFBOARD…\p"
 	.string "Now that's an exhilarating trip!\n"
 	.string "Wouldn't you agree, youngster?$"
 
