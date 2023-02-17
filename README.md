@@ -57,7 +57,7 @@ The `game` branch is an aggregate of all `mod` branches. To merge a `mod` branch
 - [ ] Add HGSS-style Pokédex
 - [ ] Add reusable TMs
 - [ ] Add HM items
-- [ ] Add item alternatives for trade evolutions
+- [x] Add item alternatives for trade evolutions
 - [ ] Add modern repel system
 - [ ] Add remove Pokémon data encryption
 - [ ] Add nature mints
