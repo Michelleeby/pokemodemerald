@@ -63,7 +63,7 @@ gBirchDexRatingText_LessThan110::
 
 gBirchDexRatingText_LessThan120::
 	.string "There might be POKéMON that can be\n"
-	.string "found using ROCK SMASH.$"
+	.string "found using your HAMMER.$"
 
 gBirchDexRatingText_LessThan130::
 	.string "You should get some more POKéMON\n"
