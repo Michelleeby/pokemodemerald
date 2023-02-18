@@ -295,7 +295,7 @@ static void CB2_LoadCableCar(void)
         for (i = 0; i < ARRAY_COUNT(sSpriteSheets) - 1; i++)
             LoadCompressedSpriteSheet(&sSpriteSheets[i]);
 
-        LoadSpritePalettes(sSpritePalettes);
+        LoadSpritePalettesDayNight(sSpritePalettes);
         sCableCar->groundTilemap = malloc_and_decompress(sGround_Tilemap, &sizeOut);
         sCableCar->treesTilemap = malloc_and_decompress(sTrees_Tilemap, &sizeOut);
         sCableCar->bgMountainsTilemap = malloc_and_decompress(sBgMountains_Tilemap, &sizeOut);
