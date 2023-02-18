@@ -11,6 +11,7 @@
 #include "constants/battle_setup.h"
 #include "constants/battle_tent.h"
 #include "constants/battle_tower.h"
+#include "constants/battle_transition.h"
 #include "constants/berry.h"
 #include "constants/cable_club.h"
 #include "constants/coins.h"
