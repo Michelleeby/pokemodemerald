@@ -331,30 +331,33 @@
 #define B_WIN_TYPE_ARENA  1
 
 // Window Ids for sStandardBattleWindowTemplates / sBattleArenaWindowTemplates
-#define B_WIN_MSG                 0
-#define B_WIN_ACTION_PROMPT       1 // "What will {x} do?"
-#define B_WIN_ACTION_MENU         2 // "Fight/Pokémon/Bag/Run" menu
-#define B_WIN_MOVE_NAME_1         3 // Top left
-#define B_WIN_MOVE_NAME_2         4 // Top right
-#define B_WIN_MOVE_NAME_3         5 // Bottom left
-#define B_WIN_MOVE_NAME_4         6 // Bottom right
-#define B_WIN_PP                  7
-#define B_WIN_SPLIT_ICON          8
-#define B_WIN_PP_REMAINING        9
-#define B_WIN_MOVE_TYPE          10
-#define B_WIN_SWITCH_PROMPT      11 // "Switch which?"
-#define B_WIN_YESNO              12
-#define B_WIN_LEVEL_UP_BOX       13
-#define B_WIN_LEVEL_UP_BANNER    14
-#define B_WIN_VS_PLAYER          15
-#define B_WIN_VS_OPPONENT        16
-#define B_WIN_VS_MULTI_PLAYER_1  17
-#define B_WIN_VS_MULTI_PLAYER_2  18
-#define B_WIN_VS_MULTI_PLAYER_3  19
-#define B_WIN_VS_MULTI_PLAYER_4  20
-#define B_WIN_VS_OUTCOME_DRAW    21
-#define B_WIN_VS_OUTCOME_LEFT    22
-#define B_WIN_VS_OUTCOME_RIGHT   23
+#define B_WIN_MSG                        0
+#define B_WIN_ACTION_PROMPT              1 // "What will {x} do?"
+#define B_WIN_ACTION_MENU                2 // "Fight/Pokémon/Bag/Run" menu
+#define B_WIN_MOVE_NAME_1                3 // Top left
+#define B_WIN_MOVE_NAME_2                4 // Top right
+#define B_WIN_MOVE_NAME_3                5 // Bottom left
+#define B_WIN_MOVE_NAME_4                6 // Bottom right
+#define B_WIN_PP                         7
+#define B_WIN_SPLIT_ICON                 8
+#define B_WIN_PP_REMAINING               9
+#define B_WIN_MOVE_TYPE                 10
+#define B_WIN_SWITCH_PROMPT             11 // "Switch which?"
+#define B_WIN_YESNO                     12
+#define B_WIN_LEVEL_UP_BOX              13
+#define B_WIN_LEVEL_UP_BANNER           14
+#define B_WIN_VS_PLAYER                 15
+#define B_WIN_VS_OPPONENT               16
+#define B_WIN_VS_MULTI_PLAYER_1         17
+#define B_WIN_VS_MULTI_PLAYER_2         18
+#define B_WIN_VS_MULTI_PLAYER_3         19
+#define B_WIN_VS_MULTI_PLAYER_4         20
+#define B_WIN_VS_OUTCOME_DRAW           21
+#define B_WIN_VS_OUTCOME_LEFT           22
+#define B_WIN_VS_OUTCOME_RIGHT          23
+#define B_WIN_MOVE_SUPER_EFFECTIVE      24
+#define B_WIN_MOVE_NOT_VERY_EFFECTIVE   25
+#define B_WIN_MOVE_NO_EFFECT            26
 
 // The following are duplicate id values for windows that Battle Arena uses differently.
 #define ARENA_WIN_PLAYER_NAME      15
