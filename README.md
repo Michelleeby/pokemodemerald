@@ -45,8 +45,8 @@ The `game` branch is an aggregate of all `mod` branches. To merge a `mod` branch
 - [x] Develop daynight system, time of day affects battle scene.
 - [x] Add nature colored stats
 - [x] Add type effectiveness shows in battle
-- [ ] Add item description headers
-- [ ] Add map description headers
+- [x] Add item description headers
+- [x] Add map description headers
 - [ ] Add custom battle mugshots
 - [ ] Develop daynight system, add window lighting overrides.
 
