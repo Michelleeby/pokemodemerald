@@ -1,6 +1,7 @@
 #include "global.h"
 #include "malloc.h"
 #include "battle.h"
+#include "battle_transition.h"
 #include "data.h"
 #include "graphics.h"
 #include "constants/items.h"

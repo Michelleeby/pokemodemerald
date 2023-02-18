@@ -22,6 +22,7 @@ PetalburgCity_WallysHouse_EventScript_GiveHM03Surf::
 	lockall
 	msgbox PetalburgCity_WallysHouse_Text_PleaseExcuseUs, MSGBOX_DEFAULT
 	giveitem ITEM_HM03
+	giveitem ITEM_SURFBOARD
 	setflag FLAG_RECEIVED_HM03
 	msgbox PetalburgCity_WallysHouse_Text_SurfGoAllSortsOfPlaces, MSGBOX_DEFAULT
 	setvar VAR_PETALBURG_CITY_STATE, 5
@@ -104,7 +105,7 @@ PetalburgCity_WallysHouse_Text_PleaseExcuseUs:
 	.string "I'd really like you to have this.$"
 
 PetalburgCity_WallysHouse_Text_SurfGoAllSortsOfPlaces:
-	.string "If your POKéMON can SURF, you'll be\n"
+	.string "If you can ride a SURFBOARD, you'll be\n"
 	.string "able to go to all sorts of places.$"
 
 PetalburgCity_WallysHouse_Text_WallyIsComingHomeSoon:

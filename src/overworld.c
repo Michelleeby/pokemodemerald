@@ -6,6 +6,7 @@
 #include "bg.h"
 #include "cable_club.h"
 #include "clock.h"
+#include "daynight.h"
 #include "event_data.h"
 #include "event_object_movement.h"
 #include "event_scripts.h"
@@ -31,6 +32,7 @@
 #include "malloc.h"
 #include "m4a.h"
 #include "map_name_popup.h"
+#include "map_preview.h"
 #include "match_call.h"
 #include "menu.h"
 #include "metatile_behavior.h"
@@ -102,7 +104,7 @@ static void CB2_LoadMapOnReturnToFieldCableClub(void);
 static void CB2_LoadMap2(void);
 static void VBlankCB_Field(void);
 static void SpriteCB_LinkPlayer(struct Sprite *);
-static void ChooseAmbientCrySpecies(void);
+void ChooseAmbientCrySpecies(void);
 static void DoMapLoadLoop(u8 *);
 static bool32 LoadMapInStepsLocal(u8 *, bool32);
 static bool32 LoadMapInStepsLink(u8 *);
@@ -1304,7 +1306,7 @@ void UpdateAmbientCry(s16 *state, u16 *delayCounter)
     }
 }
 
-static void ChooseAmbientCrySpecies(void)
+void ChooseAmbientCrySpecies(void)
 {
     if ((gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE130)
      && gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE130))
@@ -1779,6 +1781,7 @@ static void VBlankCB_Field(void)
     FieldUpdateBgTilemapScroll();
     TransferPlttBuffer();
     TransferTilesetAnimsBuffer();
+    CheckClockForImmediateTimeEvents();
 }
 
 static void InitCurrentFlashLevelScanlineEffect(void)
@@ -1933,8 +1936,15 @@ static bool32 LoadMapInStepsLocal(u8 *state, bool32 a2)
         (*state)++;
         break;
     case 11:
-        if (gMapHeader.showMapName == TRUE && SecretBaseMapPopupEnabled() == TRUE)
+        if (GetLastUsedWarpMapSectionId() != gMapHeader.regionMapSectionId && MapHasPreviewScreen(gMapHeader.regionMapSectionId, MPS_TYPE_FOREST) == TRUE)
+        {
+            MapPreview_LoadGfx(gMapHeader.regionMapSectionId);
+            MapPreview_StartForestTransition(gMapHeader.regionMapSectionId);
+        }
+        else if (gMapHeader.showMapName == TRUE && SecretBaseMapPopupEnabled() == TRUE)
+        {
             ShowMapNamePopup();
+        }
         (*state)++;
         break;
     case 12:
@@ -2127,10 +2137,7 @@ static void ResumeMap(bool32 a1)
     ResetAllPicSprites();
     ResetCameraUpdateInfo();
     InstallCameraPanAheadCallback();
-    if (!a1)
-        InitObjectEventPalettes(0);
-    else
-        InitObjectEventPalettes(1);
+    FreeAllSpritePalettes();
 
     FieldEffectActiveListClear();
     StartWeather();
@@ -3215,3 +3222,9 @@ static void SpriteCB_LinkPlayer(struct Sprite *sprite)
         sprite->data[7]++;
     }
 }
+
+u8 GetLastUsedWarpMapSectionId(void)
+{
+    return Overworld_GetMapHeaderByGroupAndId(gLastUsedWarp.mapGroup, gLastUsedWarp.mapNum)->regionMapSectionId;
+}
+
