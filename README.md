@@ -54,9 +54,9 @@ The `game` branch is an aggregate of all `mod` branches. To merge a `mod` branch
 
 - [x] Add HM items
 - [x] Add item alternatives for trade evolutions
-- [ ] Add modern repel system
-- [ ] Add reusable TMs
-- [ ] Add access to the PC from the start menu
+- [x] Add modern repel system
+- [x] Add reusable TMs
+- [x] Add access to the PC from the Pokénav
 - [ ] Add Generation 6-style experience share
 - [ ] Add saveblock expansion
 - [ ] Add DexNav
