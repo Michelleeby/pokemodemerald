@@ -90,6 +90,7 @@ SECTIONS {
         src/pokemon_jump.o(.text);
         src/minigame_countdown.o(.text);
         src/rtc.o(.text);
+        src/daynight.o(.text);
         src/main_menu.o(.text);
         src/battle_controllers.o(.text);
         src/decompress.o(.text);
@@ -343,6 +344,7 @@ SECTIONS {
         src/gym_leader_rematch.o(.text);
         src/battle_transition_frontier.o(.text);
         src/international_string_util.o(.text);
+        src/map_preview.o(.text);
     } =0
 
     script_data :
@@ -478,6 +480,7 @@ SECTIONS {
         src/pokemon_jump.o(.rodata);
         src/minigame_countdown.o(.rodata);
         src/rtc.o(.rodata);
+        src/daynight.o(.rodata);
         src/main_menu.o(.rodata);
         src/battle_controllers.o(.rodata);
         src/digit_obj_util.o(.rodata);
@@ -705,6 +708,7 @@ SECTIONS {
         data/mystery_gift.o(.rodata);
         src/m4a_tables.o(.rodata);
         data/sound_data.o(.rodata);
+        src/map_preview.o(.rodata);
     } =0
 
     song_data :
@@ -1313,6 +1317,7 @@ SECTIONS {
     ALIGN(4)
     {
         src/graphics.o(.rodata);
+        src/tilesets.o(.data);
     } =0
 
     extra :

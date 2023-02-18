@@ -944,18 +944,21 @@ RustboroCity_EventScript_BrendanBrineyHint::
 	end
 
 RustboroCity_EventScript_BattleBrendanTreecko::
+	setvar VAR_MUGSHOT_ID, MUGSHOT_BRENDAN
 	trainerbattle_no_intro TRAINER_BRENDAN_RUSTBORO_TREECKO, RustboroCity_Text_BrendanDefeat
 	setflag FLAG_DEFEATED_RIVAL_RUSTBORO
 	goto RustboroCity_EventScript_BrendanBrineyHint
 	end
 
 RustboroCity_EventScript_BattleBrendanTorchic::
+	setvar VAR_MUGSHOT_ID, MUGSHOT_BRENDAN
 	trainerbattle_no_intro TRAINER_BRENDAN_RUSTBORO_TORCHIC, RustboroCity_Text_BrendanDefeat
 	setflag FLAG_DEFEATED_RIVAL_RUSTBORO
 	goto RustboroCity_EventScript_BrendanBrineyHint
 	end
 
 RustboroCity_EventScript_BattleBrendanMudkip::
+	setvar VAR_MUGSHOT_ID, MUGSHOT_BRENDAN
 	trainerbattle_no_intro TRAINER_BRENDAN_RUSTBORO_MUDKIP, RustboroCity_Text_BrendanDefeat
 	setflag FLAG_DEFEATED_RIVAL_RUSTBORO
 	goto RustboroCity_EventScript_BrendanBrineyHint

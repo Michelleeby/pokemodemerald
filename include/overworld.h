@@ -54,6 +54,7 @@ extern u8 gFieldLinkPlayerCount;
 
 extern const struct UCoords32 gDirectionToVectors[];
 
+void ChooseAmbientCrySpecies(void);
 void DoWhiteOut(void);
 void Overworld_ResetStateAfterFly(void);
 void Overworld_ResetStateAfterTeleport(void);
@@ -154,5 +155,6 @@ bool32 Overworld_RecvKeysFromLinkIsRunning(void);
 bool32 Overworld_SendKeysToLinkIsRunning(void);
 bool32 IsSendingKeysOverCable(void);
 void ClearLinkPlayerObjectEvents(void);
+u8 GetLastUsedWarpMapSectionId(void);
 
 #endif // GUARD_OVERWORLD_H
