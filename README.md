@@ -47,29 +47,28 @@ The `game` branch is an aggregate of all `mod` branches. To merge a `mod` branch
 - [x] Add type effectiveness shows in battle
 - [x] Add item description headers
 - [x] Add map description headers
-- [ ] Add custom battle mugshots
+- [x] Add custom battle mugshots
 - [ ] Develop daynight system, add window lighting overrides.
 
 ### 🎮 Gameplay
 
 - [x] Add HM items
 - [x] Add item alternatives for trade evolutions
+- [ ] Add modern repel system
+- [ ] Add reusable TMs
+- [ ] Add access to the PC from the start menu
+- [ ] Add Generation 6-style experience share
 - [ ] Add saveblock expansion
 - [ ] Add DexNav
 - [ ] Add HGSS-style Pokédex
-- [ ] Add reusable TMs
-- [ ] Add modern repel system
 - [ ] Add remove Pokémon data encryption
 - [ ] Add nature mints
-- [ ] Add access to the PC from the start menu
-- [ ] Add Generation 6-style experience share
 - [ ] Develop daynight system, update wild Pokémon found during the `morning`, `day`, and `night`
 
 ### ⚙️ Core mechanics
 
 - [x] Add dynamic wild Pokémon levels
 - [x] Add dynamic trainer levels
-- [ ] Add modern moves and movesets
 - [ ] Develop daynight system, add an `attack` and `defense` buff to wild Pokémon found during the `night`
 - [ ] Develop daynight system, add a `special attack` and `special defense` buff to wild Pokémon found during the `morning`
 - [ ] Develop DexNav, hook into dynamic wild Pokémon leveling
