@@ -309,16 +309,19 @@ LilycoveCity_EventScript_BattleMayMudkip::
 	end
 
 LilycoveCity_EventScript_BattleBrendanTreecko::
+	setvar VAR_MUGSHOT_ID, MUGSHOT_BRENDAN
 	trainerbattle_no_intro TRAINER_BRENDAN_LILYCOVE_TREECKO, LilycoveCity_Text_BrendanDefeat
 	goto LilycoveCity_EventScript_DefeatedBrendan
 	end
 
 LilycoveCity_EventScript_BattleBrendanTorchic::
+	setvar VAR_MUGSHOT_ID, MUGSHOT_BRENDAN
 	trainerbattle_no_intro TRAINER_BRENDAN_LILYCOVE_TORCHIC, LilycoveCity_Text_BrendanDefeat
 	goto LilycoveCity_EventScript_DefeatedBrendan
 	end
 
 LilycoveCity_EventScript_BattleBrendanMudkip::
+	setvar VAR_MUGSHOT_ID, MUGSHOT_BRENDAN
 	trainerbattle_no_intro TRAINER_BRENDAN_LILYCOVE_MUDKIP, LilycoveCity_Text_BrendanDefeat
 	goto LilycoveCity_EventScript_DefeatedBrendan
 	end
