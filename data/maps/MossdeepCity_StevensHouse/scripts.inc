@@ -41,6 +41,7 @@ MossdeepCity_StevensHouse_EventScript_StevenGivesDive::
 	waitmovement 0
 	msgbox MossdeepCity_StevensHouse_Text_YouveEarnedHMDive, MSGBOX_DEFAULT
 	giveitem ITEM_HM08
+	giveitem ITEM_DIVING_SUIT
 	setflag FLAG_RECEIVED_HM08
 	setflag FLAG_OMIT_DIVE_FROM_STEVEN_LETTER
 	msgbox MossdeepCity_StevensHouse_Text_ExplainDive, MSGBOX_DEFAULT
@@ -155,18 +156,19 @@ MossdeepCity_StevensHouse_Text_YouveEarnedHMDive:
 	.string "As you can see, there's not much here,\n"
 	.string "but this is my home.\p"
 	.string "Thank you for all that you've done.\p"
-	.string "This is my token of appreciation.\n"
+	.string "These are my tokens of appreciation.\n"
 	.string "It's the HIDDEN MACHINE DIVE.\p"
+	.string "And a DIVING SUIT.\p"
 	.string "No need to be shy--you've earned\n"
-	.string "this HM.$"
+	.string "these.$"
 
 MossdeepCity_StevensHouse_Text_ExplainDive:
-	.string "STEVEN: While you're using SURF, you\n"
+	.string "STEVEN: Riding your SURFBOARD, you\n"
 	.string "should notice dark patches of water.\p"
-	.string "Use DIVE if you come to deep water\n"
-	.string "like it. You'll drop to the seafloor.\p"
+	.string "When you do, use your DIVING SUIT\l"
+	.string "to dive to the seafloor below.\p"
 	.string "When you want to come back up, use\n"
-	.string "DIVE again.\p"
+	.string "your DIVING SUIT again.\p"
 	.string "In some places, it won't be possible\n"
 	.string "for you to surface, though.$"
 
