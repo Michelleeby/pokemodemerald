@@ -41,23 +41,25 @@ The `game` branch is an aggregate of all `mod` branches. To merge a `mod` branch
 
 - [x] Add daynight system
 - [x] Add dynamic overworld palettes
-- [ ] Add attack type battle icons
+- [x] Add attack type battle icons
+- [x] Develop daynight system, time of day affects battle scene.
 - [ ] Add nature colored stats
 - [ ] Add item description headers
 - [ ] Add type effectiveness shows in battle
 - [ ] Add custom battle mugshots
+- [ ] Add map description headers
 - [ ] Develop daynight system, add window lighting overrides.
-- [ ] Develop daynight system, time of day affects battle scene.
 
 ### 🎮 Gameplay
 
+- [x] Add HM items
+- [x] Add item alternatives for trade evolutions
 - [ ] Add saveblock expansion
 - [ ] Add DexNav
 - [ ] Add HGSS-style Pokédex
 - [ ] Add reusable TMs
-- [ ] Add HM items
-- [ ] Add item alternatives for trade evolutions
 - [ ] Add modern repel system
+- [ ] Add remove Pokémon data encryption
 - [ ] Add nature mints
 - [ ] Add access to the PC from the start menu
 - [ ] Add Generation 6-style experience share
@@ -65,8 +67,8 @@ The `game` branch is an aggregate of all `mod` branches. To merge a `mod` branch
 
 ### ⚙️ Core mechanics
 
-- [ ] Add dynamic wild Pokémon levels
-- [ ] Add dynamic trainer levels
+- [x] Add dynamic wild Pokémon levels
+- [x] Add dynamic trainer levels
 - [ ] Add modern moves and movesets
 - [ ] Develop daynight system, add an `attack` and `defense` buff to wild Pokémon found during the `night`
 - [ ] Develop daynight system, add a `special attack` and `special defense` buff to wild Pokémon found during the `morning`
@@ -76,6 +78,6 @@ The `game` branch is an aggregate of all `mod` branches. To merge a `mod` branch
 
 - [ ] Remove character creation and begin game with May
 - [ ] May Chapter 1 - Littleroot Town
-- [ ] May Chapter 2 - Pelaburg gym
-- [ ] May Chapter 3 - Champion's Match
+- [ ] May Chapter 2 - Petalburg gym
+- [ ] May Chapter 3 - Champions
 - [ ] May Chapter 4 - Battle Frontier
