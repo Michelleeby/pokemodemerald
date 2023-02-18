@@ -208,7 +208,7 @@ Route103_Text_PetePostBattle:
 	.string "Oh, I understand where you're coming\n"
 	.string "from now.\p"
 	.string "If I had a POKéMON that trusty,\n"
-	.string "I'd want to SURF on it, too!$"
+	.string "I'd ride my SURFBOARD with it, too!$"
 
 Route103_Text_IsabelleIntro:
 	.string "Watch where you're going!\n"
@@ -4230,7 +4230,8 @@ Route128_Text_RubenPostBattle:
 Route128_Text_WayneIntro:
 	.string "I want to visit EVER GRANDE, so I\n"
 	.string "caught myself a POKéMON that knows\l"
-	.string "the move WATERFALL to crest the falls.$"
+	.string "the move WATERFALL to crest the falls\l"
+	.string "with me while I ride my SURFBOARD.$"
 
 Route128_Text_WayneDefeat:
 	.string "I'm crestfallen!$"
@@ -4238,7 +4239,7 @@ Route128_Text_WayneDefeat:
 Route128_Text_WaynePostBattle:
 	.string "Awww, phooey!\p"
 	.string "My POKéMON knows WATERFALL, but\n"
-	.string "I don't have the SOOTOPOLIS GYM BADGE!$"
+	.string "I don't have a SURFBOARD!$"
 
 Route128_Text_HarrisonIntro:
 	.string "You're looking awfully tough.\n"
@@ -4737,10 +4738,10 @@ Route134_Text_KelvinDefeat:
 	.string "Please, stop! Please!$"
 
 Route134_Text_KelvinPostBattle:
-	.string "If we can't SURF, how are we supposed\n"
-	.string "to get home?\p"
-	.string "Actually, I know a fainted POKéMON\n"
-	.string "can still SURF, but it feels wrong.$"
+	.string "If we can't ride a SURFBOARD,\n"
+	.string "how are we supposed to get home?\p"
+	.string "I know my fainted POKéMON\n"
+	.string "can still help, but it feels wrong.$"
 
 Route134_Text_MarleyIntro:
 	.string "Can your POKéMON dodge our\n"
