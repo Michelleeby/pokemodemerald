@@ -30,6 +30,7 @@
 #include "palette.h"
 #include "party_menu.h"
 #include "pokedex.h"
+#include "pokenav.h"
 #include "pokemon.h"
 #include "pokemon_icon.h"
 #include "pokemon_summary_screen.h"
@@ -2344,9 +2345,9 @@ static void DexNavGuiInit(MainCallback callback)
     SetMainCallback2(DexNav_RunSetup);
 }
 
-void Task_OpenDexNavFromStartMenu(u8 taskId)
+void Task_OpenDexNavFromPokenav(u8 taskId)
 {
-    if (!gPaletteFade.active)
+    if (!gPaletteFade.active && WaitForPokenavShutdownFade())
     {
         CleanupOverworldWindowsAndTilemaps();
         DexNavGuiInit(CB2_ReturnToFieldWithOpenMenu);
