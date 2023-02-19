@@ -648,7 +648,8 @@ $(PKNAVOPTIONSGFXDIR)/options.4bpp: $(PKNAVOPTIONSGFXDIR)/hoenn_map.4bpp \
                                     $(PKNAVOPTIONSGFXDIR)/ribbons.4bpp \
                                     $(PKNAVOPTIONSGFXDIR)/switch_off.4bpp \
 									$(PKNAVOPTIONSGFXDIR)/dexnav.4bpp \
-                                    $(PKNAVOPTIONSGFXDIR)/party.4bpp \
+									$(PKNAVOPTIONSGFXDIR)/pc.4bpp \
+									$(PKNAVOPTIONSGFXDIR)/party.4bpp \
                                     $(PKNAVOPTIONSGFXDIR)/search.4bpp \
                                     $(PKNAVOPTIONSGFXDIR)/cool.4bpp \
                                     $(PKNAVOPTIONSGFXDIR)/beauty.4bpp \

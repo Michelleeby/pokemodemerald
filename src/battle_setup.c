@@ -818,6 +818,9 @@ static u8 GetTrainerBattleTransition(void)
     if (gTrainerBattleOpponent_A == TRAINER_SECRET_BASE)
         return B_TRANSITION_CHAMPION;
 
+    if (gTrainers[gTrainerBattleOpponent_A].hasCustomTransition)
+        return gTrainers[gTrainerBattleOpponent_A].transition;
+
     if (gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_ELITE_FOUR)
     {
         if (gTrainerBattleOpponent_A == TRAINER_SIDNEY)

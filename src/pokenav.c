@@ -496,7 +496,7 @@ static void Task_Pokenav(u8 taskId)
             if (calledFromScript)
                 SetMainCallback2(CB2_ReturnToFieldContinueScriptPlayMapMusic);
             else
-                if (FlagGet(FLAG_SYS_DEXNAV_FROM_POKENAV))
+                if (FlagGet(FLAG_SYS_DEXNAV_FROM_POKENAV) || FlagGet(FLAG_SYS_PC_FROM_POKENAV))
                     SetMainCallback2(CB2_ReturnToField);
                 else
                     SetMainCallback2(CB2_ReturnToFieldWithOpenMenu);

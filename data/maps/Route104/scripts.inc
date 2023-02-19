@@ -230,18 +230,21 @@ Route104_EventScript_BrendanDefeated::
 	end
 
 Route104_EventScript_BattleBrendanTreecko::
+	setvar VAR_MUGSHOT_ID, MUGSHOT_BRENDAN
 	trainerbattle_no_intro TRAINER_BRENDAN_RUSTBORO_TREECKO, Route104_Text_BrendanDefeat
 	setflag FLAG_DEFEATED_RIVAL_ROUTE_104
 	goto Route104_EventScript_BrendanDefeated
 	end
 
 Route104_EventScript_BattleBrendanTorchic::
+	setvar VAR_MUGSHOT_ID, MUGSHOT_BRENDAN
 	trainerbattle_no_intro TRAINER_BRENDAN_RUSTBORO_TORCHIC, Route104_Text_BrendanDefeat
 	setflag FLAG_DEFEATED_RIVAL_ROUTE_104
 	goto Route104_EventScript_BrendanDefeated
 	end
 
 Route104_EventScript_BattleBrendanMudkip::
+	setvar VAR_MUGSHOT_ID, MUGSHOT_BRENDAN
 	trainerbattle_no_intro TRAINER_BRENDAN_RUSTBORO_MUDKIP, Route104_Text_BrendanDefeat
 	setflag FLAG_DEFEATED_RIVAL_ROUTE_104
 	goto Route104_EventScript_BrendanDefeated
@@ -338,7 +341,7 @@ Route104_EventScript_Boy2::
 	end
 
 Route104_EventScript_ReceivedBulletSeed::
-	msgbox Route104_Text_TMsAreOneTimeUse, MSGBOX_DEFAULT
+	msgbox Route104_Text_TMsCanBeReused, MSGBOX_DEFAULT
 	release
 	end
 
@@ -1035,12 +1038,9 @@ Route104_Text_LikeFillingMouthWithSeedsTakeThis:
 	.string "Use it on a POKéMON, and it will learn\n"
 	.string "a move for firing seeds rapidly.$"
 
-Route104_Text_TMsAreOneTimeUse:
-	.string "A word of advice!\p"
-	.string "A TM, TECHNICAL MACHINE, is good only\n"
-	.string "for one-time use.\p"
-	.string "Once you use it, it's gone.\n"
-	.string "Think twice before using it!$"
+Route104_Text_TMsCanBeReused:
+	.string "By the way, a TM, TECHNICAL MACHINE,\n"
+	.string "can be used as many times as you want!$"
 
 Route104_Text_DontNeedThisTakeIt:
 	.string "This FLOWER SHOP started selling\n"

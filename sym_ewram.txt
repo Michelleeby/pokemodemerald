@@ -43,6 +43,7 @@
 	.include "src/field_control_avatar.o"
 	.include "src/event_data.o"
 	.include "src/start_menu.o"
+	.include "src/daynight.o"
 	.include "src/tileset_anims.o"
 	.include "src/palette.o"
 	.include "src/sound.o"
@@ -149,3 +150,4 @@
 	.include "src/trainer_hill.o"
 	.include "src/rayquaza_scene.o"
 	.include "src/dexnav.o"
+    .include "src/map_preview.o"
