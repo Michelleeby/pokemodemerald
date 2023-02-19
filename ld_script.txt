@@ -344,6 +344,7 @@ SECTIONS {
         src/gym_leader_rematch.o(.text);
         src/battle_transition_frontier.o(.text);
         src/international_string_util.o(.text);
+		src/dexnav.o(.text);
         src/map_preview.o(.text);
     } =0
 
@@ -708,6 +709,7 @@ SECTIONS {
         data/mystery_gift.o(.rodata);
         src/m4a_tables.o(.rodata);
         data/sound_data.o(.rodata);
+		src/dexnav.o(.rodata);
         src/map_preview.o(.rodata);
     } =0
 

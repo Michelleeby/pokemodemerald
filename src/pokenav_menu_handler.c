@@ -1,5 +1,6 @@
 #include "global.h"
 #include "pokenav.h"
+#include "dexnav.h"
 #include "event_data.h"
 #include "event_scripts.h"
 #include "main.h"
@@ -44,7 +45,7 @@ static const u8 sLastCursorPositions[] =
     [POKENAV_MENU_TYPE_DEFAULT]           = 2,
     [POKENAV_MENU_TYPE_UNLOCK_MC]         = 3,
     [POKENAV_MENU_TYPE_UNLOCK_MC_RIBBONS] = 4,
-    [POKENAV_MENU_TYPE_CONDITION]         = 3,
+    [POKENAV_MENU_TYPE_CONDITION]         = 4,
     [POKENAV_MENU_TYPE_CONDITION_SEARCH]  = 5
 };
 
@@ -73,11 +74,12 @@ static const u8 sMenuItems[][MAX_POKENAV_MENUITEMS] =
     },
     [POKENAV_MENU_TYPE_CONDITION] =
     {
+        POKENAV_MENUITEM_CONDITION_DEXNAV,
         POKENAV_MENUITEM_CONDITION_ACCESS_PC,
         POKENAV_MENUITEM_CONDITION_PARTY,
         POKENAV_MENUITEM_CONDITION_SEARCH,
         POKENAV_MENUITEM_CONDITION_CANCEL,
-        [4 ... MAX_POKENAV_MENUITEMS - 1] = POKENAV_MENUITEM_SWITCH_OFF
+        [5 ... MAX_POKENAV_MENUITEMS - 1] = POKENAV_MENUITEM_SWITCH_OFF
     },
     [POKENAV_MENU_TYPE_CONDITION_SEARCH] =
     {
@@ -154,7 +156,7 @@ bool32 PokenavCallback_Init_ConditionMenu(void)
 
     menu->menuType = POKENAV_MENU_TYPE_CONDITION;
     menu->cursorPos = 0;   //party
-    menu->currMenuItem = POKENAV_MENUITEM_CONDITION_ACCESS_PC;
+    menu->currMenuItem = POKENAV_MENUITEM_CONDITION_DEXNAV;
     menu->helpBarIndex = HELPBAR_NONE;
     SetMenuInputHandler(menu);
     return TRUE;
@@ -346,6 +348,23 @@ static u32 HandleCantOpenRibbonsInput(struct Pokenav_Menu *menu)
     return POKENAV_MENU_FUNC_NONE;
 }
 
+static u32 HandleCantOpenDexnavInput(struct Pokenav_Menu *menu)
+{
+    if (UpdateMenuCursorPos(menu))
+    {
+        menu->callback = HandleConditionMenuInput;
+        return POKENAV_MENU_FUNC_MOVE_CURSOR;
+    }
+
+    if (JOY_NEW(A_BUTTON | B_BUTTON))
+    {
+        menu->callback = HandleConditionMenuInput;
+        return POKENAV_MENU_FUNC_RESHOW_DESCRIPTION;
+    }
+
+    return POKENAV_MENU_FUNC_NONE;
+}
+
 static u32 HandleCantAccessPCInput(struct Pokenav_Menu *menu)
 {
     if (UpdateMenuCursorPos(menu))
@@ -389,7 +408,17 @@ static u32 HandleConditionMenuInput(struct Pokenav_Menu *menu)
             menu->currMenuItem = sMenuItems[POKENAV_MENU_TYPE_CONDITION_SEARCH][0];
             menu->callback = HandleConditionSearchMenuInput;
             return POKENAV_MENU_FUNC_OPEN_CONDITION_SEARCH;
-
+        case POKENAV_MENUITEM_CONDITION_DEXNAV:
+            if (IsMapTypeOutdoors(gMapHeader.mapType))
+            {
+                FlagSet(FLAG_SYS_DEXNAV_FROM_POKENAV);
+                CreateTask(Task_OpenDexNavFromPokenav, 0);
+                return POKENAV_MENU_FUNC_EXIT;
+            } else
+            {
+                menu->callback = HandleCantOpenDexnavInput;
+                return POKENAV_MENU_FUNC_CANNOT_OPEN_DEXNAV;
+            }
         case POKENAV_MENUITEM_CONDITION_ACCESS_PC:
             if(Overworld_MapTypeAllowsTeleportAndFly(gMapHeader.mapType)){
                 FlagSet(FLAG_SYS_PC_FROM_POKENAV);

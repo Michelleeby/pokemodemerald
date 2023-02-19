@@ -43,6 +43,7 @@
 #include "trainer_card.h"
 #include "window.h"
 #include "union_room.h"
+#include "wild_encounter.h"
 #include "constants/battle_frontier.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
@@ -62,7 +63,7 @@ enum
     MENU_ACTION_PLAYER_LINK,
     MENU_ACTION_REST_FRONTIER,
     MENU_ACTION_RETIRE_FRONTIER,
-    MENU_ACTION_PYRAMID_BAG
+    MENU_ACTION_PYRAMID_BAG,
 };
 
 // Save status
@@ -168,7 +169,7 @@ static const struct MenuAction sStartMenuItems[] =
     [MENU_ACTION_PLAYER_LINK]     = {gText_MenuPlayer,  {.u8_void = StartMenuLinkModePlayerNameCallback}},
     [MENU_ACTION_REST_FRONTIER]   = {gText_MenuRest,    {.u8_void = StartMenuSaveCallback}},
     [MENU_ACTION_RETIRE_FRONTIER] = {gText_MenuRetire,  {.u8_void = StartMenuBattlePyramidRetireCallback}},
-    [MENU_ACTION_PYRAMID_BAG]     = {gText_MenuBag,     {.u8_void = StartMenuBattlePyramidBagCallback}}
+    [MENU_ACTION_PYRAMID_BAG]     = {gText_MenuBag,     {.u8_void = StartMenuBattlePyramidBagCallback}},
 };
 
 static const struct BgTemplate sBgTemplates_LinkBattleSave[] =
@@ -288,22 +289,17 @@ static void AddStartMenuAction(u8 action)
 }
 
 static void BuildNormalStartMenu(void)
-{
+{    
     if (FlagGet(FLAG_SYS_POKEDEX_GET) == TRUE)
-    {
         AddStartMenuAction(MENU_ACTION_POKEDEX);
-    }
+    
     if (FlagGet(FLAG_SYS_POKEMON_GET) == TRUE)
-    {
         AddStartMenuAction(MENU_ACTION_POKEMON);
-    }
 
     AddStartMenuAction(MENU_ACTION_BAG);
 
     if (FlagGet(FLAG_SYS_POKENAV_GET) == TRUE)
-    {
         AddStartMenuAction(MENU_ACTION_POKENAV);
-    }
 
     AddStartMenuAction(MENU_ACTION_PLAYER);
     AddStartMenuAction(MENU_ACTION_SAVE);
@@ -587,7 +583,7 @@ static bool8 HandleStartMenuInput(void)
             if (GetNationalPokedexCount(FLAG_GET_SEEN) == 0)
                 return FALSE;
         }
-
+        
         gMenuCallback = sStartMenuItems[sCurrentStartMenuActions[sStartMenuCursorPos]].func.u8_void;
 
         if (gMenuCallback != StartMenuSaveCallback
@@ -611,7 +607,7 @@ static bool8 HandleStartMenuInput(void)
     return FALSE;
 }
 
-static bool8 StartMenuPokedexCallback(void)
+bool8 StartMenuPokedexCallback(void)
 {
     if (!gPaletteFade.active)
     {
